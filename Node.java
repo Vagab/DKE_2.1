@@ -1,10 +1,12 @@
 import java.lang.Math;
+import java.awt.*;
 
 public class Node {
 
     private String label;
     private int X, Y;       //coordinates of the node in the board
     private Node upRight, upLeft, right, left, dRight, dLeft; // connections with other nodes
+    private Color color;
 
     boolean isUpperTriangle; //if the Node is located in the upper triangle of the board
 
@@ -18,6 +20,13 @@ public class Node {
         if(this.X<=8){this.isUpperTriangle = true;}    //
         else{ this.isUpperTriangle = false;}
 
+    }
+
+    public void setColor(Color color){this.color = color;}
+    public Color getColor(){
+        if(this.color == null){return Color.WHITE;}
+        else
+            return this.color;
     }
 
     public String getLabel(){return this.label;}

@@ -1,4 +1,5 @@
 import org.w3c.dom.CDATASection;
+import java.awt.*;
 
 public class Graph {
 
@@ -32,10 +33,16 @@ public class Graph {
         makeNodes();
         makeNodeList();
         connectEdges();
+        initializeStartingPositions();
 
-        System.out.println(nodeList[80].getdRight().getLabel());
+       // System.out.println(nodeList[80].getdRight().getLabel());
 
-        testNode(nodeList[50]);
+        testNode(nodeList[50]); //test adjacent nodes
+        testNodeColor(QA);      //test the color of a node by printing it
+
+
+
+
 
 
     }
@@ -82,10 +89,18 @@ public class Graph {
 
     }
 
+    public static void testNodeColor(Node node){
+
+        if(node.getColor().equals(Color.BLUE)){System.out.println("The color of the node " + node.getLabel() + " is BLUE");}
+        else if(node.getColor().equals(Color.RED)){System.out.println("The color of the node " + node.getLabel() + " is RED");}
+        else{System.out.println("The color of the node " + node.getLabel() + " is WHITE");}
+
+    }
 
 
 
-    public static void makeNodes(){
+
+    private static void makeNodes(){
 
         AA = new Node("AA",0,0);
 
@@ -186,7 +201,7 @@ public class Graph {
         QA = new Node("QA",16,0);
     }
 
-    public static void makeNodeList(){
+    private static void makeNodeList(){
 
         nodeList = new Node[]{AA,
                 BA, BB,
@@ -209,7 +224,7 @@ public class Graph {
 
     }
 
-    public static void connectEdges(){
+    private static void connectEdges(){
 
         /*
         *   Method to connect the graph
@@ -220,6 +235,14 @@ public class Graph {
             for(int j=0; j<nodeList.length; j++){
                 nodeList[i].addEdge(nodeList[j]);
             }
+        }
+
+    }
+
+    private static void initializeStartingPositions(){
+        for(int i=0; i<6; i++){
+            nodeList[i].setColor(Color.BLUE);
+            nodeList[80-i].setColor(Color.RED);
         }
 
     }
