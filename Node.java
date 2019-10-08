@@ -8,7 +8,7 @@ public class Node {
     private Node upRight, upLeft, right, left, dRight, dLeft; // connections with other nodes
     private Color color;
 
-    boolean isUpperTriangle; //if the Node is located in the upper triangle of the board
+    boolean isUpperTriangle, isMiddle; //if the Node is located in the upper triangle of the board or in the center
 
 
 
@@ -17,7 +17,8 @@ public class Node {
         this.X = X;
         this.Y = Y;
 
-        if(this.X<=8){this.isUpperTriangle = true;}    //
+        if(this.X<=7){this.isUpperTriangle = true;}    //
+        else if(this.X==8){this.isMiddle = true;}
         else{ this.isUpperTriangle = false;}
 
     }
@@ -98,6 +99,7 @@ public class Node {
             }
            // else{System.out.println("No adjacent connection");}
         }
+
         else{ //if not UpperTriangle
             if(this.Y == toConnect.getY()){
                 this.dRight = toConnect;
@@ -112,7 +114,7 @@ public class Node {
     }
 
     else if(this.X > toConnect.getX()){  //upRigt and upLeft
-        if(this.isUpperTriangle){
+        if(this.isUpperTriangle || this.isMiddle){
             if(this.Y > toConnect.getY()){
                 this.upLeft = toConnect;
                 System.out.println(this.upLeft.getLabel() + " is upLeft of " + this.getLabel());
