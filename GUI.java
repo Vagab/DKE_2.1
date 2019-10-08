@@ -15,10 +15,16 @@ public class GUI extends JComponent {
 
     private Image backgroundImage;
     Graphics g;
+    Graph board;
     //Region regions;
+
+    Node[] nodeList;
 
 
     public GUI(){
+
+    this.board = new Graph();
+    this.nodeList = board.getNodes();
 
     }
 
@@ -48,6 +54,32 @@ public class GUI extends JComponent {
         //  g2.setPaint(Color.CYAN);
         //  g2.fillRect(0,0,2500,2500);
 
+        g2.setPaint(Color.WHITE);
+
+        /*for(int i=0; i<9; i++){
+            for(int j=0; j<9; j++){
+
+                g2.setPaint(board.getNodeColor(9*i+j));
+                g2.fillOval((i*50) + 700 -(j*50), (i*50) + (j*50) , 50, 50);
+
+
+            }
+        }*/
+
+        for(int i=0; i<nodeList.length; i++){
+            g2.setPaint(board.getNodeColor(i));
+
+            if(i<=44) {
+                g2.fillOval(board.getNodeYCoords(i) * 60 + 700 - board.getNodeXCoords(i)*30, board.getNodeXCoords(i) * 40 + 100, 40, 40);
+                g2.setPaint(Color.ORANGE);
+                g2.drawString(board.getNodeLabel(i),15 + board.getNodeYCoords(i) * 60 + 700 - board.getNodeXCoords(i)*30,20 + board.getNodeXCoords(i) * 40 + 100);
+            }
+            else {
+                g2.fillOval(board.getNodeYCoords(i) * 60 + 700 - (16 - board.getNodeXCoords(i)) * 30, board.getNodeXCoords(i) * 40 + 100, 40, 40);
+                g2.setPaint(Color.GREEN);
+                g2.drawString(board.getNodeLabel(i), 15 + board.getNodeYCoords(i) * 60 + 700 - (16 - board.getNodeXCoords(i)) * 30, 20 + board.getNodeXCoords(i) * 40 + 100);
+            }
+        }
 
 
 

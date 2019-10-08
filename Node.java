@@ -7,6 +7,8 @@ public class Node {
     private int X, Y;       //coordinates of the node in the board
     private Node upRight, upLeft, right, left, dRight, dLeft; // connections with other nodes
     private Color color;
+    private Node[] adjacentNeigh = {upRight, upLeft, right, left, dRight, dLeft};
+    private boolean occupied;
 
     boolean isUpperTriangle, isMiddle; //if the Node is located in the upper triangle of the board or in the center
 
@@ -153,6 +155,22 @@ public class Node {
         System.out.println("No adjacent connection");
     }
 
+    }
+
+
+    public boolean isOccupied(){
+        return this.occupied;
+    }
+    public Node[] adjN(){
+        Node[] neigh =  {upRight, upLeft, right, left, dRight, dLeft};
+        return neigh;
+    }
+    public Node getAdj(int i){
+        Node[] neigh =  {upRight, upLeft, right, left, dRight, dLeft};
+        return neigh[i];
+    }
+    public void setOccupy(){
+        occupied = true;
     }
 
 

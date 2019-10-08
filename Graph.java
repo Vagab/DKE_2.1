@@ -1,5 +1,6 @@
 import org.w3c.dom.CDATASection;
 import java.awt.*;
+import java.util.ArrayList;
 
 public class Graph {
 
@@ -40,7 +41,43 @@ public class Graph {
         testNode(nodeList[50]); //test adjacent nodes
         testNodeColor(QA);      //test the color of a node by printing it
 
+        testNode(GE);
 
+        IE.setOccupy();
+        HC.setOccupy();
+        KE.setOccupy();
+        GC.setOccupy();
+        HE.setOccupy();
+        System.out.println(FD.getdLeft().getLabel());
+
+        popularChoice(HB);
+        display();
+
+    }
+
+    public  Graph(){
+
+        makeNodes();
+        makeNodeList();
+        connectEdges();
+        initializeStartingPositions();
+
+        // System.out.println(nodeList[80].getdRight().getLabel());
+
+        testNode(nodeList[50]); //test adjacent nodes
+        testNodeColor(QA);      //test the color of a node by printing it
+
+        testNode(GE);
+
+        IE.setOccupy();
+        HC.setOccupy();
+        KE.setOccupy();
+        GC.setOccupy();
+        HE.setOccupy();
+        System.out.println(FD.getdLeft().getLabel());
+
+        popularChoice(HB);
+        display();
 
 
 
@@ -247,6 +284,22 @@ public class Graph {
 
     }
 
+    public String getNodeLabel(int node){
+        return nodeList[node].getLabel();
+    }
+    public Color getNodeColor(int node){
+        return nodeList[node].getColor();
+    }
+    public int getNodeXCoords(int node){
+        return nodeList[node].getX();
+    }
+    public int getNodeYCoords(int node){
+        return nodeList[node].getY();
+    }
+    public Node[] getNodes(){
+        return this.nodeList;
+    }
+
 
     public static void printCells(){
 
@@ -260,6 +313,55 @@ public class Graph {
         }
 
     }
+
+
+    //Oscar
+
+    public static ArrayList<Node> oG = new ArrayList<Node>();
+    public static void popularChoice(Node n){
+        Node[] availableNodes = n.adjN();
+        for(int i=0; i<availableNodes.length; i++){
+            choose(availableNodes[i], i);
+        }
+
+
+    }
+
+
+    public static void choose(Node n, int i){
+        Node[] av = n.adjN();
+        if(n.isOccupied()==false){
+            oG.add(n);
+        }
+        else if(av[i].isOccupied()==false){
+            oG.add(av[i]);
+            isItGucci(av[i], i);
+        }
+
+    }
+
+    public static void isItGucci(Node n, int m){
+        Node[] y = n.adjN();
+        for(int i=0; i<y.length; i++){
+            if(y[i].getLabel().equals("White") && (i+m)!=5){
+                if(y[i].getAdj(i).getLabel().equals("White")){
+                    oG.add(y[i].getAdj(i));
+                    isItGucci(y[i].getAdj(i), i);
+                }
+            }
+        }
+    }
+    public static void display(){
+        Node[] y = LD.adjN();
+        for (int i=0; i<oG.size();i++ ) {
+            System.out.println("possible move "+oG.get(i).getLabel());
+        }
+    }
+
+
+
+
+
 
 
 

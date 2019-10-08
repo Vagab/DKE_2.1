@@ -13,7 +13,7 @@ public class CCheckers {
 
     public static void main(String[] args){
 
-        frame = new JFrame("Risk");
+        frame = new JFrame("Chinese Checkers");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         //sets fullscreen
