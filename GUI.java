@@ -145,8 +145,7 @@ public class GUI extends JComponent {
         ){
             this.firstMove=false;
 
-            if(player1){player1=false;}
-            else{player1 = true;}
+
 
             if(Math.abs(nodeList[selectedNode].getX() - nodeList[previousSelectedNode].getX()) <= 1
             && Math.abs(nodeList[selectedNode].getY() - nodeList[previousSelectedNode].getY()) <= 1
@@ -156,6 +155,8 @@ public class GUI extends JComponent {
 
                 nodeList[selectedNode].setColor(nodeList[previousSelectedNode].getColor());
                 nodeList[previousSelectedNode].setColor(Color.WHITE);
+                if(player1){player1=false;}
+                else{player1 = true;}
             }
 
             else{this.firstMove=true;}
