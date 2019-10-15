@@ -1,4 +1,5 @@
 import org.w3c.dom.CDATASection;
+import java.awt.*;
 import java.util.ArrayList;
 
 public class Graph {
@@ -33,12 +34,41 @@ public class Graph {
         makeNodes();
         makeNodeList();
         connectEdges();
+        initializeStartingPositions();
 
-        System.out.println(nodeList[80].getdRight().getLabel());
+       // System.out.println(nodeList[80].getdRight().getLabel());
 
-        testNode(nodeList[50]);
+        testNode(nodeList[50]); //test adjacent nodes
+        testNodeColor(QA);      //test the color of a node by printing it
 
-        IE.setOccupy();
+
+    /*    DC.setOccupy();
+        DA.setOccupy();
+        CA.setOccupy();
+        CB.setOccupy();
+        BB.setOccupy();
+        HE.setOccupy();*/
+        testNode(GE);
+        /*popularChoice(DB);
+        display();*/
+
+    }
+
+    public  Graph(){
+
+        makeNodes();
+        makeNodeList();
+        connectEdges();
+        initializeStartingPositions();
+
+        // System.out.println(nodeList[80].getdRight().getLabel());
+
+        testNode(nodeList[50]); //test adjacent nodes
+        testNodeColor(QA);      //test the color of a node by printing it
+
+        testNode(GE);
+
+        /*IE.setOccupy();
         HC.setOccupy();
         KE.setOccupy();
         GC.setOccupy();
@@ -46,7 +76,7 @@ public class Graph {
         System.out.println(FD.getdLeft().getLabel());
 
         popularChoice(HB);
-        display();
+        display();*/
 
 
 
@@ -92,6 +122,14 @@ public class Graph {
             else{System.out.println("There is no UpLeft node for " + node.getLabel());}
 
         }
+
+    }
+
+    public static void testNodeColor(Node node){
+
+        if(node.getColor().equals(Color.BLUE)){System.out.println("The color of the node " + node.getLabel() + " is BLUE");}
+        else if(node.getColor().equals(Color.RED)){System.out.println("The color of the node " + node.getLabel() + " is RED");}
+        else{System.out.println("The color of the node " + node.getLabel() + " is WHITE");}
 
     }
 
@@ -201,8 +239,7 @@ public class Graph {
 
     private static void makeNodeList(){
 
-        nodeList = new Node[]{
-                AA,
+        nodeList = new Node[]{AA,
                 BA, BB,
                 CA, CB, CC,
                 DA, DB, DC, DD,
@@ -238,6 +275,33 @@ public class Graph {
 
     }
 
+    private static void initializeStartingPositions(){
+        for(int i=0; i<10; i++){
+            nodeList[i].setColor(Color.BLUE);
+            nodeList[80-i].setColor(Color.RED);
+        }
+
+    }
+
+    public String getNodeLabel(int node){
+        return nodeList[node].getLabel();
+    }
+    public Node getSecNode(int node){
+        return nodeList[node];
+    }
+    public Color getNodeColor(int node){
+        return nodeList[node].getColor();
+    }
+    public int getNodeXCoords(int node){
+        return nodeList[node].getX();
+    }
+    public int getNodeYCoords(int node){
+        return nodeList[node].getY();
+    }
+    public Node[] getNodes(){
+        return this.nodeList;
+    }
+
 
     public static void printCells(){
 
@@ -251,20 +315,30 @@ public class Graph {
         }
 
     }
+
+
+    //Oscar
+
     public static ArrayList<Node> oG = new ArrayList<Node>();
-    public static void popularChoice(Node n){
+    public static ArrayList<Node> popularChoice(Node n){
+        oG.clear();
         Node[] availableNodes = n.adjN();
         for(int i=0; i<availableNodes.length; i++){
             choose(availableNodes[i], i);
         }
 
+        return oG;
 
     }
 
 
     public static void choose(Node n, int i){
         Node[] av = n.adjN();
-        if(n.isOccupied()==false){
+
+        if(av[i].getLabel()=="null"){
+
+        }
+        else if(n.isOccupied()==false){
             oG.add(n);
         }
         else if(av[i].isOccupied()==false){
@@ -277,7 +351,11 @@ public class Graph {
     public static void isItGucci(Node n, int m){
         Node[] y = n.adjN();
         for(int i=0; i<y.length; i++){
+            if(y[i].getLabel()=="null"){
+            }
             if(y[i].isOccupied()==true && (i+m)!=5){
+                if(y[i].getAdj(i).getLabel()=="null"){
+                }
                 if(y[i].getAdj(i).isOccupied()==false){
                     oG.add(y[i].getAdj(i));
                     isItGucci(y[i].getAdj(i), i);
@@ -286,11 +364,15 @@ public class Graph {
         }
     }
     public static void display(){
-        Node[] y = LD.adjN();
         for (int i=0; i<oG.size();i++ ) {
             System.out.println("possible move "+oG.get(i).getLabel());
         }
     }
+
+
+
+
+
 
 
 

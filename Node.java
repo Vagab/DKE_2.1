@@ -1,24 +1,43 @@
 import java.lang.Math;
+import java.awt.*;
 
 public class Node {
 
     private String label;
     private int X, Y;       //coordinates of the node in the board
     private Node upRight, upLeft, right, left, dRight, dLeft; // connections with other nodes
+    private Color color;
     private Node[] adjacentNeigh = {upRight, upLeft, right, left, dRight, dLeft};
+    private boolean occupied = false;
 
-    boolean isUpperTriangle; //if the Node is located in the upper triangle of the board
+    boolean isUpperTriangle, isMiddle; //if the Node is located in the upper triangle of the board or in the center
 
-    private boolean occupied;
+
 
     public Node(String label, int X, int Y){
         this.label = label;
         this.X = X;
         this.Y = Y;
-        occupied = false;
-        if(this.X<=8){this.isUpperTriangle = true;}    //
+
+        if(this.X<=7){this.isUpperTriangle = true;}    //
+        else if(this.X==8){this.isMiddle = true;}
         else{ this.isUpperTriangle = false;}
 
+    }
+
+    public void setColor(Color color){
+        if(color.equals(Color.BLUE)|| color.equals(Color.RED)){
+            occupied = true;
+        }
+        else{
+            occupied = false;
+        }
+        this.color = color;
+    }
+    public Color getColor(){
+        if(this.color == null){return Color.WHITE;}
+        else
+            return this.color;
     }
 
     public String getLabel(){return this.label;}
@@ -90,6 +109,7 @@ public class Node {
             }
            // else{System.out.println("No adjacent connection");}
         }
+
         else{ //if not UpperTriangle
             if(this.Y == toConnect.getY()){
                 this.dRight = toConnect;
@@ -104,7 +124,7 @@ public class Node {
     }
 
     else if(this.X > toConnect.getX()){  //upRigt and upLeft
-        if(this.isUpperTriangle){
+        if(this.isUpperTriangle || this.isMiddle){
             if(this.Y > toConnect.getY()){
                 this.upLeft = toConnect;
                 System.out.println(this.upLeft.getLabel() + " is upLeft of " + this.getLabel());
@@ -144,18 +164,34 @@ public class Node {
     }
 
     }
+
+
     public boolean isOccupied(){
         return this.occupied;
     }
     public Node[] adjN(){
         Node[] neigh =  {upRight, upLeft, right, left, dRight, dLeft};
+        for(int i=0; i<neigh.length; i++){
+            if(neigh[i]==null){
+                neigh[i]=new Node("null", -1, -1);
+            }
+        }
         return neigh;
     }
     public Node getAdj(int i){
         Node[] neigh =  {upRight, upLeft, right, left, dRight, dLeft};
+        if(neigh[i]==null){
+            return new Node("null", -1, -1);
+        }
         return neigh[i];
     }
     public void setOccupy(){
         occupied = true;
     }
+
+
+
+
+
+
 }
