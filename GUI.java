@@ -107,7 +107,6 @@ public class GUI extends JComponent {
 
 
     public void clickedForNode(int var1, int var2){
-        System.out.println("hello, its me");
 
         for(int i=0; i<81; i++){
 
@@ -137,14 +136,24 @@ public class GUI extends JComponent {
     }
 
     public void setMove(int chosenNode){
-        higlight(board.getSecNode(chosenNode));
+
         this.previousSelectedNode = this.selectedNode;
         this.selectedNode = chosenNode;
 
         if(previousSelectedNode==selectedNode){
             removehighlight(nodeList[previousSelectedNode], nodeList[selectedNode]);
         }
-
+        ArrayList<Node> stopBugs = board.popularChoice(nodeList[previousSelectedNode]);
+        boolean allgood = false;
+        for(int i=0; i<stopBugs.size(); i++){
+            if(stopBugs.get(i)==nodeList[selectedNode]){
+                allgood = true;
+            }
+        }
+        if(allgood==false){
+            removeOneHighlight(nodeList[previousSelectedNode]);
+        }
+        higlight(board.getSecNode(chosenNode));
         if(this.firstMove
                 && ((nodeList[previousSelectedNode].getColor().equals(Color.BLUE) && player1)
                 || (nodeList[previousSelectedNode].getColor().equals(Color.RED) && !player1)
@@ -173,7 +182,7 @@ public class GUI extends JComponent {
 
     }
 
-    public void higlight(Node n){
+    public void higlight(Node n){ //This method higlights the possible nodes where the player can go to
         if(player1 && n.getColor()==Color.BLUE){
             ArrayList<Node> tr = board.popularChoice(n);
             for(int i=0; i<tr.size(); i++){
@@ -188,7 +197,7 @@ public class GUI extends JComponent {
         }
     }
 
-    public void removehighlight(Node n, Node m){
+    public void removehighlight(Node n, Node m){ //Method that allows to remove the higlight if you double click
         ArrayList<Node> tr = board.popularChoice(n);
         for(int i=0; i<tr.size(); i++){
             if(tr.get(i)==m){
@@ -203,6 +212,12 @@ public class GUI extends JComponent {
 
             tr.get(i).setColor(Color.WHITE);
 
+        }
+    }
+    public void removeOneHighlight(Node n){//method that removes the higlight when choosing another node
+        ArrayList<Node> tr = board.popularChoice(n);
+        for(int i=0; i<tr.size(); i++){
+            tr.get(i).setColor(Color.WHITE);
         }
     }
 
