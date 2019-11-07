@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.Scanner;
 
 
-class introMenu {
+public class introMenu {
 
     private static JFrame frame;
     private static GUI6players disp;
@@ -42,7 +42,6 @@ class introMenu {
             Font font = new Font("Serif", Font.BOLD, 25);
 
             status_panel.add(status);
-
 
             // start buttons
             final JPanel control_panel = new JPanel();

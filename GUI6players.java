@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 
 public class GUI6players extends JComponent {
@@ -89,17 +88,9 @@ public class GUI6players extends JComponent {
         for (int i = 0; i < nodeList.length; i++) {
 
             g2.setPaint(board.getNodeColor(i));
-            if (i <= 64) {    // 0 <= i <= 9  Player 1 zone
-                g2.fillOval(board.getNodeYCoords(i) * interval + 700 - board.getNodeXCoords(i) * interval/2, (int) (board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + 100), diameter, diameter);
-                g2.setPaint(Color.ORANGE);
-                g2.drawString(board.getNodeLabel(i), board.getNodeYCoords(i) * interval + 715 - board.getNodeXCoords(i) * interval/2, (int) (board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + 120));
-            }
-            else{
-                g2.fillOval(board.getNodeYCoords(i) * interval  + 700 - (16-board.getNodeXCoords(i)) * interval/2, (int) (board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + 100), diameter, diameter);
-                g2.setPaint(Color.GREEN);
-                g2.drawString(board.getNodeLabel(i), board.getNodeYCoords(i) * interval + 715 - (16 - board.getNodeXCoords(i))* interval/2, (int) (board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + 120));
-            }
-
+            g2.fillOval(board.getNodeYCoords(i) * interval + 700 - board.getNodeXCoords(i) * interval/2, (int) (board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + 100), diameter, diameter);
+            g2.setPaint(Color.ORANGE);
+            g2.drawString(board.getNodeLabel(i), board.getNodeYCoords(i) * interval + 715 - board.getNodeXCoords(i) * interval/2, (int) (board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + 120));
         }
 
     }
@@ -228,26 +219,12 @@ public class GUI6players extends JComponent {
     public void clickedForNode(int var1, int var2) {
 
         for (int i = 0; i <= 120; i++) {
-
-            if (i <= 64) {
-
                 if (var1 >= board.getNodeYCoords(i) * interval + 700 - board.getNodeXCoords(i) * interval/2
                         && var1 <= board.getNodeYCoords(i) * interval + 700 - board.getNodeXCoords(i) * interval/2 + diameter
                         && var2 >= board.getNodeXCoords(i) * (int)(Math.sqrt(3)/2.0 * interval) + 100
                         && var2 <= board.getNodeXCoords(i) * (int)(Math.sqrt(3)/2.0 * interval) + 100 + diameter) {
-
                     setMove(i);
                 }
-            }
-            else {
-                if (var1 >= board.getNodeYCoords(i) * interval + 700 - (16 - board.getNodeXCoords(i)) * interval/2
-                        && var1 <= board.getNodeYCoords(i) * interval + 700 - (16 - board.getNodeXCoords(i)) * interval/2 + diameter
-                        && var2 >= board.getNodeXCoords(i) * (int)(Math.sqrt(3)/2.0 * interval) + 100
-                        && var2 <= board.getNodeXCoords(i) * (int)(Math.sqrt(3)/2.0 * interval) + 100 + diameter) {
-                    setMove(i);
-                }
-
-            }
         }
 
         /*System.out.println("PreviousSelectedNode: " + board.getNodeLabel(this.previousSelectedNode) +

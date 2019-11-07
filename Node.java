@@ -18,11 +18,6 @@ public class Node {
         this.label = label;
         this.X = X;
         this.Y = Y;
-
-        if(this.X<=7){this.isUpperTriangle = true;}    //
-        else if(this.X==8){this.isMiddle = true;}
-        else{ this.isUpperTriangle = false;}
-
     }
 
     public void setColor(Color color){
@@ -102,7 +97,6 @@ public class Node {
         }
 
         if(this.X < toConnect.getX()){  //dRight and dLeft
-            if(this.isUpperTriangle){
                 if(this.Y < toConnect.getY()){
                     this.dRight = toConnect;
                     //System.out.println(this.dRight.getLabel() + " is dRight of " + this.getLabel());
@@ -111,23 +105,9 @@ public class Node {
                     this.dLeft = toConnect;
                     //System.out.println(this.dLeft.getLabel() + " is dLeft of " + this.getLabel());
                 }
-            }
-
-            else{ //if not UpperTriangle
-                if(this.Y == toConnect.getY()){
-                    this.dRight = toConnect;
-                    //System.out.println(this.dRight.getLabel() + " is dRight of " + this.getLabel());
-                }
-                else if(this.Y > toConnect.getY()){
-                    this.dLeft = toConnect;
-                    //System.out.println(this.dLeft.getLabel() + " is dLeft of " + this.getLabel());
-                }
-                //else{System.out.println("No adjacent connection");}
-            }
         }
 
         else if(this.X > toConnect.getX()){  //upRight and upLeft
-            if(this.isUpperTriangle || this.isMiddle){
                 if(this.Y > toConnect.getY()){
                     this.upLeft = toConnect;
                     //System.out.println(this.upLeft.getLabel() + " is upLeft of " + this.getLabel());
@@ -137,18 +117,6 @@ public class Node {
                     //System.out.println(this.upRight.getLabel() + " is upRight of " + this.getLabel());
                 }
                 // else{System.out.println("No adjacent connection");}
-            }
-            else{
-                if(this.Y == toConnect.getY()){
-                    this.upLeft = toConnect;
-                    //System.out.println(this.upLeft.getLabel() + " is upLeft of " + this.getLabel());
-                }
-                else if(this.Y < toConnect.getY()){
-                    this.upRight = toConnect;
-                    //System.out.println(this.upRight.getLabel() + " is upRight of " + this.getLabel());
-                }
-                // else{System.out.println("No adjacent connection");}
-            }
         }
 
         else if(this.X == toConnect.getX()){    //right and left, no need to check which triangle it is
@@ -181,6 +149,7 @@ public class Node {
             }
         }
         return neigh;
+
     }
     public Node getAdj(int i){
         Node[] neigh =  {upRight, upLeft, right, left, dRight, dLeft};
@@ -193,10 +162,5 @@ public class Node {
     public void setOccupy(){
         occupied = true;
     }
-
-
-
-
-
 
 }

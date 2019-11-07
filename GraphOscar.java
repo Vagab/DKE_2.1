@@ -13,23 +13,23 @@ public class GraphOscar {
     public int numPly; // Number of players
 
     private static Node
-            AA,
-            BA, BB,
-            CA, CB, CC,
-            DA, DB, DC, DD,
+                            AA,
+                            BA, BB,
+                            CA, CB, CC,
+                            DA, DB, DC, DD,
             E4, E3, E2, E1, EA, EB, EC, ED, EE, EF, EG, EH, EI,
-            F3, F2, F1, FA, FB, FC, FD, FE, FF, FG, FH, FI,
-            G2, G1, GA, GB, GC, GD, GE, GF, GG, GH, GI,
-            H1, HA, HB, HC, HD, HE, HF, HG, HH, HI,
-            IA, IB, IC, ID, IE, IF, IG, IH, II,
-            J1, JA, JB, JC, JD, JE, JF, JG, JH, JI,
-            K2, K1, KA, KB, KC, KD, KE, KF, KG, KH, KI,
-            L3, L2, L1, LA, LB, LC, LD, LE, LF, LG, LH, LI,
+                F3, F2, F1, FA, FB, FC, FD, FE, FF, FG, FH, FI,
+                    G2, G1, GA, GB, GC, GD, GE, GF, GG, GH, GI,
+                        H1, HA, HB, HC, HD, HE, HF, HG, HH, HI,
+                            IA, IB, IC, ID, IE, IF, IG, IH, II,
+                        J1, JA, JB, JC, JD, JE, JF, JG, JH, JI,
+                    K2, K1, KA, KB, KC, KD, KE, KF, KG, KH, KI,
+                L3, L2, L1, LA, LB, LC, LD, LE, LF, LG, LH, LI,
             M4, M3, M2, M1, MA, MB, MC, MD, ME, MF, MG, MH, MI,
-            NA, NB, NC, ND,
-            OA, OB, OC,
-            PA, PB,
-            QA;
+                            NA, NB, NC, ND,
+                            OA, OB, OC,
+                            PA, PB,
+                            QA;
 
     public static void main(String args[]){
 
@@ -102,159 +102,144 @@ public class GraphOscar {
 
     private static void makeNodes(){
 
-        AA = new Node("AA",0,0);
+        AA = new Node("0",0,0); //AA
 
-        BA = new Node("BA",1,0);
-        BB = new Node("BB",1,1);
+        BA = new Node("1",1,0); //AB
+        BB = new Node("2",1,1); //BB
 
-        CA = new Node("CA",2,0);
-        CB = new Node("CB",2,1);
-        CC = new Node("CC",2,2);
+        CA = new Node("3",2,0); //CA
+        CB = new Node("4",2,1); //CB
+        CC = new Node("5",2,2); //CC
 
-        DA = new Node("DA",3,0);
-        DB = new Node("DB",3,1);
-        DC = new Node("DC",3,2);
-        DD = new Node("DD",3,3);
+        DA = new Node("6",3,0); //DA
+        DB = new Node("7",3,1); //DB
+        DC = new Node("8",3,2); //DC
+        DD = new Node("9",3,3); //DD
 
-        EA = new Node("EA",4,0);
-        EB = new Node("EB",4,1);
-        EC = new Node("EC",4,2);
-        ED = new Node("ED",4,3);
-        EE = new Node("EE",4,4);
+        E4 = new Node("10",4, -4); //E4
+        E3 = new Node("11",4, -3); //E3
+        E2 = new Node("12",4, -2); //E2
+        E1 = new Node("13",4, -1); //E1
+        EA = new Node("14",4,0); //EA
+        EB = new Node("15",4,1); //EB
+        EC = new Node("16",4,2); //EC
+        ED = new Node("17",4,3); //ED
+        EE = new Node("18",4,4); //EE
+        EF = new Node("19",4, 5); //EF
+        EG = new Node("20",4, 6); //EG
+        EH = new Node("21",4, 7); //EH
+        EI = new Node("22",4, 8); //EI
 
-        EF = new Node("EF",4, 5);
-        EG = new Node("EG",4, 6);
-        EH = new Node("EH",4, 7);
-        EI = new Node("EI",4, 8);
+        F3 = new Node("23",5, -3); //F3
+        F2 = new Node("24",5, -2); //F2
+        F1 = new Node("25",5, -1); //F1
+        FA = new Node("26",5,0); //FA
+        FB = new Node("27",5,1); //FB
+        FC = new Node("28",5,2); //FC
+        FD = new Node("29",5,3); //FD
+        FE = new Node("30",5,4); //FE
+        FF = new Node("31",5,5); //FF
+        FG = new Node("32",5, 6); //FG
+        FH = new Node("33",5, 7); //FH
+        FI = new Node("34",5, 8); //FI
 
-        E1 = new Node("E1",4, -1);
-        E2 = new Node("E2",4, -2);
-        E3 = new Node("E3",4, -3);
-        E4 = new Node("E4",4, -4);
+        G2 = new Node("35",6,-2); //G2
+        G1 = new Node("36",6,-1); //G1
+        GA = new Node("37",6,0); //GA
+        GB = new Node("38",6,1); //GB
+        GC = new Node("39",6,2); //GC
+        GD = new Node("40",6,3); //GD
+        GE = new Node("41",6,4); //GE
+        GF = new Node("42",6,5); //GF
+        GG = new Node("43",6,6); //GG
+        GH = new Node("44",6,7); //GH
+        GI = new Node("45",6,8); //GI
 
-        FA = new Node("FA",5,0);
-        FB = new Node("FB",5,1);
-        FC = new Node("FC",5,2);
-        FD = new Node("FD",5,3);
-        FE = new Node("FE",5,4);
-        FF = new Node("FF",5,5);
+        H1 = new Node("46",7, -1); //H1
+        HA = new Node("47",7,0); //HA
+        HB = new Node("48",7,1); //HB
+        HC = new Node("49",7,2); //HC
+        HD = new Node("50",7,3); //HD
+        HE = new Node("51",7,4); //HE
+        HF = new Node("52",7,5); //HF
+        HG = new Node("53",7,6); //HG
+        HH = new Node("54",7,7); //HH
+        HI = new Node("55",7,8); //HI
 
-        FG = new Node("FG",5, 6);
-        FH = new Node("FH",5, 7);
-        FI = new Node("FI",5, 8);
+        IA = new Node("56",8,0); //IA
+        IB = new Node("57",8,1); //IB
+        IC = new Node("58",8,2); //IC
+        ID = new Node("59",8,3); //ID
+        IE = new Node("60",8,4); //IE
+        IF = new Node("61",8,5); //IF
+        IG = new Node("62",8,6); //IG
+        IH = new Node("63",8,7); //IH
+        II = new Node("64",8,8); //II
 
-        F1 = new Node("F1",5, -1);
-        F2 = new Node("F2",5, -2);
-        F3 = new Node("F3",5, -3);
+        J1 = new Node("65",9, 0); //J1
+        JA = new Node("66",9,1); //JA
+        JB = new Node("67",9,2); //JB
+        JC = new Node("68",9,3); //JC
+        JD = new Node("69",9,4); //JD
+        JE = new Node("70",9,5); //JE
+        JF = new Node("71",9,6); //JF
+        JG = new Node("72",9,7); //JG
+        JH = new Node("73",9,8); //JH
+        JI = new Node("74",9,9); //JI
 
-        GA = new Node("GA",6,0);
-        GB = new Node("GB",6,1);
-        GC = new Node("GC",6,2);
-        GD = new Node("GD",6,3);
-        GE = new Node("GE",6,4);
-        GF = new Node("GF",6,5);
-        GG = new Node("GG",6,6);
+        K2 = new Node("75",10,0);
+        K1 = new Node("76",10,1);
+        KA = new Node("77",10,2);
+        KB = new Node("78",10,3);
+        KC = new Node("79",10,4);
+        KD = new Node("80",10,5);
+        KE = new Node("81",10,6);
+        KF = new Node("82",10,7);
+        KG = new Node("83",10,8);
+        KH = new Node("84",10,9);
+        KI = new Node("85",10,10);
 
-        GH = new Node("GH",6,7);
-        GI = new Node("GI",6,8);
+        L3 = new Node("86",11,0);
+        L2 = new Node("87",11,1);
+        L1 = new Node("88",11,2);
+        LA = new Node("89",11,3);
+        LB = new Node("90",11,4);
+        LC = new Node("91",11,5);
+        LD = new Node("92",11,6);
+        LE = new Node("93",11,7);
+        LF = new Node("94",11,8);
+        LG = new Node("95",11,9);
+        LH = new Node("96",11,10);
+        LI = new Node("97",11,11);
 
-        G1 = new Node("G1",6,-1);
-        G2 = new Node("G2",6,-2);
+        M4 = new Node("98",12,0);
+        M3 = new Node("99",12,1);
+        M2 = new Node("100",12,2);
+        M1 = new Node("101",12,3);
+        MA = new Node("102",12,4);
+        MB = new Node("103",12,5);
+        MC = new Node("104",12,6);
+        MD = new Node("105",12,7);
+        ME = new Node("106",12,8);
+        MF = new Node("107",12,9);
+        MG = new Node("108",12,10);
+        MH = new Node("109",12,11);
+        MI = new Node("110",12,12);
 
-        HA = new Node("HA",7,0);
-        HB = new Node("HB",7,1);
-        HC = new Node("HC",7,2);
-        HD = new Node("HD",7,3);
-        HE = new Node("HE",7,4);
-        HF = new Node("HF",7,5);
-        HG = new Node("HG",7,6);
-        HH = new Node("HH",7,7);
 
-        HI = new Node("HH",7,8);
+        NA = new Node("111",13,5);
+        NB = new Node("112",13,6);
+        NC = new Node("113",13,7);
+        ND = new Node("114",13,8);
 
-        H1 = new Node("H1",7, -1);
+        OA = new Node("115",14,6);
+        OB = new Node("116",14,7);
+        OC = new Node("117",14,8);
 
-        IA = new Node("IA",8,0);
-        IB = new Node("IB",8,1);
-        IC = new Node("IC",8,2);
-        ID = new Node("ID",8,3);
-        IE = new Node("IE",8,4);
-        IF = new Node("IF",8,5);
-        IG = new Node("IG",8,6);
-        IH = new Node("IH",8,7);
-        II = new Node("II",8,8);
+        PA = new Node("118",15,7);
+        PB = new Node("119",15,8);
 
-        JA = new Node("JA",9,0);
-        JB = new Node("JB",9,1);
-        JC = new Node("JC",9,2);
-        JD = new Node("JD",9,3);
-        JE = new Node("JE",9,4);
-        JF = new Node("JF",9,5);
-        JG = new Node("JG",9,6);
-        JH = new Node("JH",9,7);
-
-        JI = new Node("JI",9, 8);
-
-        J1 = new Node("J1",9, -1);
-
-        KA = new Node("KA",10,0);
-        KB = new Node("KB",10,1);
-        KC = new Node("KC",10,2);
-        KD = new Node("KD",10,3);
-        KE = new Node("KE",10,4);
-        KF = new Node("KF",10,5);
-        KG = new Node("KG",10,6);
-
-        KH = new Node("KH",10,7);
-        KI = new Node("KI",10,8);
-
-        K1 = new Node("K1",10,-1);
-        K2 = new Node("K2",10,-2);
-
-        LA = new Node("LA",11,0);
-        LB = new Node("LB",11,1);
-        LC = new Node("LC",11,2);
-        LD = new Node("LD",11,3);
-        LE = new Node("LE",11,4);
-        LF = new Node("LF",11,5);
-
-        LG = new Node("LG",11,6);
-        LH = new Node("LH",11,7);
-        LI = new Node("LI",11,8);
-
-        L1 = new Node("L1",11,-1);
-        L2 = new Node("L2",11,-2);
-        L3 = new Node("L3",11,-3);
-
-        MA = new Node("MA",12,0);
-        MB = new Node("MB",12,1);
-        MC = new Node("MC",12,2);
-        MD = new Node("MD",12,3);
-        ME = new Node("ME",12,4);
-
-        MF = new Node("MF",12,5);
-        MG = new Node("MG",12,6);
-        MH = new Node("MH",12,7);
-        MI = new Node("MI",12,8);
-
-        M1 = new Node("M1",12,-1);
-        M2 = new Node("M2",12,-2);
-        M3 = new Node("M3",12,-3);
-        M4 = new Node("M4",12,-4);
-
-        NA = new Node("NA",13,0);
-        NB = new Node("NB",13,1);
-        NC = new Node("NB",13,2);
-        ND = new Node("NB",13,3);
-
-        OA = new Node("OA",14,0);
-        OB = new Node("OB",14,1);
-        OC = new Node("OC",14,2);
-
-        PA = new Node("PA",15,0);
-        PB = new Node("PB",15,1);
-
-        QA = new Node("QA",16,0);
+        QA = new Node("120",16,8);
     }
 
     private static void makeNodeList(){
