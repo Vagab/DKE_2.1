@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 
-
 public class GUI extends JComponent {
 
     //Jel
@@ -143,8 +142,6 @@ public class GUI extends JComponent {
         )) {
             this.firstMove = false;
 
-
-
             if (selectedNode != previousSelectedNode && !nodeList[previousSelectedNode].getColor().equals(Color.YELLOW)
                     && nodeList[selectedNode].getColor().equals(Color.YELLOW)
             ) {
@@ -215,7 +212,6 @@ public class GUI extends JComponent {
             tr.get(i).setColor(Color.WHITE);
         }
     }
-
 
     class MousePressListener implements MouseListener {
         MousePressListener() {

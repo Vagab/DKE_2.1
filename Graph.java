@@ -1,6 +1,7 @@
 import org.w3c.dom.CDATASection;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Graph {
 
@@ -36,9 +37,12 @@ public class Graph {
         makeNodes();
         makeNodeList();
         connectEdges();
-        testNode(nodeList[50]); //test adjacent nodes
-        testNodeColor(IE);      //test the color of a node by printing it
-        testNode(CA);
+//        testNode(nodeList[50]); //test adjacent nodes
+//        testNodeColor(IE);      //test the color of a node by printing it
+//        testNode(CA);
+        System.out.println(stepDistance(AA,QA));
+        Node[] nodes1 = {AA,BA,BB,CA,CB,CC};
+        System.out.println(Arrays.toString(centroid(nodes1)));
     }
 
     public Graph(){
@@ -427,6 +431,30 @@ public class Graph {
         for (int i=0; i<oG.size();i++ ) {
             System.out.println("possible move "+oG.get(i).getLabel());
         }
+    }
+
+    public static int stepDistance(Node node1, Node node2) {
+        int dx = node2.getX() - node1.getX();
+        int dy = node2.getY() - node1.getY();
+        if (Math.signum(dx) != Math.signum(dy)) {
+            return Math.abs(dx - dy);
+        }
+        else {
+            return Math.abs(Math.max(dx,dy));
+        }
+    }
+
+    public static double[] centroid(Node[] nodes) {
+        double x = 0;
+        double y = 0;
+        double[] centroidCoordinates = new double[2];
+        for (Node node : nodes) {
+            x += node.getX();
+            y += node.getY();
+        }
+        centroidCoordinates[0] = x/nodes.length;
+        centroidCoordinates[1] = y/nodes.length;
+        return centroidCoordinates;
     }
 
 }
