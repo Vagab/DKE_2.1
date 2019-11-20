@@ -98,9 +98,42 @@ public class GUI extends JComponent {
 
     }
 
+    public void AI1() {
+        if (!player1) {
+            Node destinationNode = board.getAIDestinationNode();
+            ArrayList<Node> AIArmy = new ArrayList<>();
+            //Get red AI nodes
+            for (Node node : nodeList) {
+                if (node.getColor().equals(Color.RED)) {
+                    AIArmy.add(node);
+                }
+            }
+            System.out.println(AIArmy);
+            Node maxAdvanceNode = null;
+            int smallestDistanceToDestination = 100;
+            for (Node node : AIArmy) {
+                ArrayList<Node> tr = board.popularChoice(node);
+                System.out.println("             " + node.getLabel());
+//                for (Node check : tr) {
+//                    if (!check.getLabel().equals("null")) {
+//                        System.out.println(check.getLabel());
+//                    }
+//                }
+                for (Node move : tr) {
+//                    System.out.println(board.stepDistance(move, destinationNode));
+                    if (!move.getLabel().equals("null")) {
+                        if (board.stepDistance(move, destinationNode) < smallestDistanceToDestination) {
+                            maxAdvanceNode = move;
+                        }
+                    }
+                }
+            }
+            System.out.println(maxAdvanceNode.getLabel());
+            setMove(board.getNodeListNumber(maxAdvanceNode));
+        }
+    }
 
     public void clickedForNode(int var1, int var2) {
-
         for(int i=0; i<81; i++){
             if (var1 >= board.getNodeYCoords(i) * interval + 700 - board.getNodeXCoords(i) * interval/2
                     && var1 <= board.getNodeYCoords(i) * interval + 700 - board.getNodeXCoords(i) * interval/2 + diameter
@@ -137,7 +170,7 @@ public class GUI extends JComponent {
         }
 
         if (((nodeList[previousSelectedNode].getColor().equals(Color.BLUE) && player1)
-                || (nodeList[previousSelectedNode].getColor().equals(Color.RED) && !player1)
+//                || (nodeList[previousSelectedNode].getColor().equals(Color.RED) && !player1)
 
         )) {
             this.firstMove = false;
@@ -178,12 +211,13 @@ public class GUI extends JComponent {
             for (int i = 0; i < tr.size(); i++) {
                 tr.get(i).setColor(Color.YELLOW);
             }
-        } else if (!player1 && n.getColor() == Color.RED) {
-            ArrayList<Node> tr = board.popularChoice(n);
-            for (int i = 0; i < tr.size(); i++) {
-                tr.get(i).setColor(Color.YELLOW);
-            }
         }
+//        else if (!player1 && n.getColor() == Color.RED) {
+//            ArrayList<Node> tr = board.popularChoice(n);
+//            for (int i = 0; i < tr.size(); i++) {
+//                tr.get(i).setColor(Color.YELLOW);
+//            }
+//        }
 
 
     }
@@ -227,6 +261,7 @@ public class GUI extends JComponent {
             int var2 = var1.getX();
             int var3 = var1.getY();
             GUI.this.clickedForNode(var2, var3);
+            AI1();
         }
 
         public void mouseEntered(MouseEvent var1) {

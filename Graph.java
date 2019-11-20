@@ -37,12 +37,14 @@ public class Graph {
         makeNodes();
         makeNodeList();
         connectEdges();
-//        testNode(nodeList[50]); //test adjacent nodes
+        testNode(nodeList[80]); //test adjacent nodes
 //        testNodeColor(IE);      //test the color of a node by printing it
 //        testNode(CA);
+        System.out.println(stepDistance(QA,AA));
         System.out.println(stepDistance(AA,QA));
-        Node[] nodes1 = {AA,BA,BB,CA,CB,CC};
-        System.out.println(Arrays.toString(centroid(nodes1)));
+//        Node[] nodes1 = {AA,BA,BB,CA,CB,CC};
+//        System.out.println(Arrays.toString(centroid(nodes1)));
+//        System.out.println(straightLineDistance(AA,PB));//TODO
     }
 
     public Graph(){
@@ -192,8 +194,8 @@ public class Graph {
 
         NA = new Node("NA",13,5);
         NB = new Node("NB",13,6);
-        NC = new Node("NB",13,7);
-        ND = new Node("NB",13,8);
+        NC = new Node("NC",13,7);
+        ND = new Node("ND",13,8);
 
         OA = new Node("OA",14,6);
         OB = new Node("OB",14,7);
@@ -369,6 +371,14 @@ public class Graph {
     public Node getSecNode(int node){
         return nodeList[node];
     }
+    public int getNodeListNumber(Node node) {
+        for (int i=0; i < nodeList.length; i++) {
+            if (nodeList[i].equals(node)){
+                return i;
+            }
+        }
+        return -1;
+    }
     public Color getNodeColor(int node){
         return nodeList[node].getColor();
     }
@@ -440,7 +450,7 @@ public class Graph {
             return Math.abs(dx - dy);
         }
         else {
-            return Math.abs(Math.max(dx,dy));
+            return Math.max(Math.abs(dx),Math.abs(dy));
         }
     }
 
@@ -457,4 +467,11 @@ public class Graph {
         return centroidCoordinates;
     }
 
+    public static double straightLineDistance(Node node1, Node node2) {
+        return Math.sqrt(Math.pow(node2.getX() - node1.getX(),2) + Math.pow(node2.getY() - node1.getY(),2));
+    }
+
+    public Node getAIDestinationNode() {
+            return AA;
+    }
 }
