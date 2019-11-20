@@ -221,7 +221,9 @@ public class Graph {
                 PA, PB,
                 QA};
 
-
+        for(int i=0; i<nodeList.length;i++){
+            nodeList[i].setIndex(i);
+        }
 
     }
 
@@ -358,6 +360,10 @@ public class Graph {
         }
     }
 
+
+    public int getBoardSize(){return nodeList.length;}
+
+    public int getNodeIndex(int i){return nodeList[i].getIndex();}
 
     public String getNodeLabel(int node){
         return nodeList[node].getLabel();

@@ -4,11 +4,13 @@ import java.awt.*;
 public class Node {
 
     private String label;
+    private int index;
     private int X, Y;       //coordinates of the node in the board
     private Node upRight, upLeft, right, left, dRight, dLeft; // connections with other nodes
     private Color color;
     private Node[] adjacentNeigh = {upRight, upLeft, right, left, dRight, dLeft};
     private boolean occupied = false;
+    private int score = -1;
 
     private boolean isUpperTriangle, isMiddle; //if the Node is located in the upper triangle of the board or in the center
 
@@ -40,6 +42,9 @@ public class Node {
         else
             return this.color;
     }
+
+    public void setIndex(int index){this.index = index;}
+    public int getIndex(){return this.index;}
 
     public String getLabel(){return this.label;}
 
@@ -191,8 +196,12 @@ public class Node {
         return neigh[i];
     }
 
+
     public void setOccupy(){
         occupied = true;
     }
+
+    public void setScore(int score){this.score = score;}
+    public int getScore(){return this.score;}
 
 }

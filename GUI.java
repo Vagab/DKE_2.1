@@ -31,6 +31,8 @@ public class GUI extends JComponent {
         MousePressListener var1 = new MousePressListener();
         this.addMouseListener(var1);
 
+        AIChoosesNode();
+
     }
 
 
@@ -115,7 +117,7 @@ public class GUI extends JComponent {
     }
 
 
-    public void clickedForNode(int var1, int var2) {
+    public void clickedForNode(int var1, int var2) {    //player choosing node
 
         for(int i=0; i<81; i++){
 
@@ -143,28 +145,46 @@ public class GUI extends JComponent {
                 " SelectNode = " + board.getNodeLabel(this.selectedNode) + " is FirstMove = " + this.firstMove);
     }
 
+    public void AIChoosesNode(){
+
+        for(int i=0; i<board.getBoardSize(); i++){  //tries to make a move
+            if(player1 && board.getNodeColor(i).equals(Color.BLUE)){
+                setMove(i);
+
+
+                ArrayList<Node> popChoices = board.popularChoice(board.getSecNode(i)); //gets popular choices of i
+               // Node[] possibleChoices = popChoices.toArray();    //TO DO
+               // setMove();
+
+            }
+            else if(!player1){break;}   //if not its turn anymore, break
+        }
+
+    }
+
     public void setMove(int chosenNode) {
         higlight(board.getSecNode(chosenNode));
         this.previousSelectedNode = this.selectedNode;
         this.selectedNode = chosenNode;
 
         ArrayList<Node> stopBugs = board.popularChoice(nodeList[previousSelectedNode]);
-        boolean allgood = false;
+        boolean allgood = false;    //gets popular choices ?
         for(int i=0; i<stopBugs.size(); i++){
             if(stopBugs.get(i)==nodeList[selectedNode]){
                 allgood = true;
             }
         }
-        if(allgood==false){
+        if(allgood==false){ //removes a bug?
             removeOneHighlight(nodeList[previousSelectedNode]);
         }
 
         higlight(board.getSecNode(chosenNode));
 
-        if (previousSelectedNode == selectedNode) {
+        if (previousSelectedNode == selectedNode) { //removes highlight from chosen node
             removehighlight(nodeList[previousSelectedNode], nodeList[selectedNode]);
         }
 
+        //makes the move for either player
         if (((nodeList[previousSelectedNode].getColor().equals(Color.BLUE) && player1)
                 || (nodeList[previousSelectedNode].getColor().equals(Color.RED) && !player1)
 
@@ -172,11 +192,11 @@ public class GUI extends JComponent {
             this.firstMove = false;
 
 
-
+            //condition for moving a pawn only to yellow nodes
             if (selectedNode != previousSelectedNode && !nodeList[previousSelectedNode].getColor().equals(Color.YELLOW)
                     && nodeList[selectedNode].getColor().equals(Color.YELLOW)
             ) {
-
+                //changes colors
                 nodeList[selectedNode].setColor(nodeList[previousSelectedNode].getColor());
                 removehighlight(nodeList[previousSelectedNode], nodeList[selectedNode]);
                 nodeList[previousSelectedNode].setColor(Color.WHITE);
