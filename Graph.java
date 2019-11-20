@@ -396,6 +396,14 @@ public class Graph {
         }
         return oG;
     }
+    public static ArrayList<Node> popularAIChoice(Node n){
+        oG.clear();
+        Node[] availableNodes = n.adjNAI(); //Gets adjacent nodes from node n
+        for(int i = 0; i < availableNodes.length; i++){ // Goes through all neighbour nodes of n
+            choose(availableNodes[i], i);
+        }
+        return oG;
+    }
 
     public static void choose(Node n, int i){
         Node[] av = n.adjN();

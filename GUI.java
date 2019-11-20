@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class GUI extends JComponent {
@@ -85,6 +86,8 @@ public class GUI extends JComponent {
             }
         }
 
+        if(player1 && !firstMove) AIChoosesNode();
+
     }
 
     public boolean isWinningCondition() {
@@ -146,16 +149,21 @@ public class GUI extends JComponent {
     }
 
     public void AIChoosesNode(){
+        Random rand = new Random();
 
         for(int i=0; i<board.getBoardSize(); i++){  //tries to make a move
             if(player1 && board.getNodeColor(i).equals(Color.BLUE)){
                 setMove(i);
 
 
-                ArrayList<Node> popChoices = board.popularChoice(board.getSecNode(i)); //gets popular choices of i
-               // Node[] possibleChoices = popChoices.toArray();    //TO DO
-               // setMove();
-
+                ArrayList<Node> popChoices = board.popularAIChoice(board.getSecNode(i)); //gets popular choices of i
+                Object[] objChoices = popChoices.toArray();
+                Node[] possibleChoices = new Node[objChoices.length];
+                for (int j = 0; j < objChoices.length; j++) {
+                    possibleChoices[j] = (Node) objChoices[j];
+                }
+               setMove(possibleChoices[rand.nextInt(3)].getIndex());
+//               setMove(1);
             }
             else if(!player1){break;}   //if not its turn anymore, break
         }

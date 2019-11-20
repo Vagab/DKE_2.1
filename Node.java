@@ -181,9 +181,20 @@ public class Node {
     public Node[] adjN(){
         Node[] neigh =  {upRight, upLeft, right, left, dRight, dLeft};
         for(int i=0; i<neigh.length; i++){
-            if(neigh[i]==null){
-                neigh[i]=new Node("null", -1, -1);
-            }
+//            if(neigh[i]==null){
+//                neigh[i]=new Node("null", -1, -1);
+//            }
+        }
+        return neigh;
+
+    }
+
+    public Node[] adjNAI(){
+        Node[] neigh =  {right, left, dRight, dLeft};
+        for(int i=0; i<neigh.length; i++){
+//            if(neigh[i]==null){
+//                neigh[i]=new Node("null", -1, -1);
+//            }
         }
         return neigh;
 
