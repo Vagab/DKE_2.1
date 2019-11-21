@@ -40,11 +40,11 @@ public class Graph {
         testNode(nodeList[80]); //test adjacent nodes
 //        testNodeColor(IE);      //test the color of a node by printing it
 //        testNode(CA);
-        System.out.println(stepDistance(QA,AA));
-        System.out.println(stepDistance(AA,QA));
+//        System.out.println(stepDistance(QA,AA));
+//        System.out.println(stepDistance(AA,QA));
 //        Node[] nodes1 = {AA,BA,BB,CA,CB,CC};
 //        System.out.println(Arrays.toString(centroid(nodes1)));
-//        System.out.println(straightLineDistance(AA,PB));//TODO
+        System.out.println(straightLineDistance(IE,QA));
     }
 
     public Graph(){
@@ -454,7 +454,7 @@ public class Graph {
         }
     }
 
-    public static double[] centroid(Node[] nodes) {
+    public static double[] centroid(ArrayList<Node> nodes) {
         double x = 0;
         double y = 0;
         double[] centroidCoordinates = new double[2];
@@ -462,13 +462,32 @@ public class Graph {
             x += node.getX();
             y += node.getY();
         }
-        centroidCoordinates[0] = x/nodes.length;
-        centroidCoordinates[1] = y/nodes.length;
+        centroidCoordinates[0] = x/nodes.size();
+        centroidCoordinates[1] = y/nodes.size();
         return centroidCoordinates;
     }
 
+//    public static double centroidNodeDistance(ArrayList<Node> nodes, Node node) {
+//        double[] centroidCoordinates = centroid(nodes);
+//        Node centroidNode =
+//        straightLineDistance()
+//    }
+
     public static double straightLineDistance(Node node1, Node node2) {
-        return Math.sqrt(Math.pow(node2.getX() - node1.getX(),2) + Math.pow(node2.getY() - node1.getY(),2));
+        int dx = node2.getX() - node1.getX(); //Steps in the downward direction
+        int dy = node2.getY() - node1.getY(); //Steps in the sideway direction
+        double x = 0;
+        double y = 0;
+        if (Math.signum(dx) != Math.signum(dy)) {
+            x = 0.5 * Math.abs(dx);
+            y = Math.sqrt(3)/2.0 * Math.abs(dx) + Math.abs(dy);
+            return Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        }
+        else {
+            x = 0.5 * (Math.abs(dx - dy) - Math.abs(dy));
+            y = Math.sqrt(3)/2.0 * Math.abs(dx);
+            return Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        }
     }
 
     public Node getAIDestinationNode() {

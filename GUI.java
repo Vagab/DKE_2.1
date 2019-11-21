@@ -98,40 +98,97 @@ public class GUI extends JComponent {
 
     }
 
-    public void AI1() {
-        if (!player1) {
-            Node destinationNode = board.getAIDestinationNode();
-            ArrayList<Node> AIArmy = new ArrayList<>();
-            //Get red AI nodes
+    public ArrayList<Node> getArmy(Color color) {
+        ArrayList<Node> army = new ArrayList<>();
             for (Node node : nodeList) {
                 if (node.getColor().equals(Color.RED)) {
-                    AIArmy.add(node);
+                    army.add(node);
                 }
             }
-            System.out.println(AIArmy);
-            Node maxAdvanceNode = null;
-            int smallestDistanceToDestination = 100;
-            for (Node node : AIArmy) {
-                ArrayList<Node> tr = board.popularChoice(node);
-                System.out.println("             " + node.getLabel());
-//                for (Node check : tr) {
-//                    if (!check.getLabel().equals("null")) {
-//                        System.out.println(check.getLabel());
+            return army;
+    }
+
+
+//    public void AI1() { //Testing distance to destination heuristic, works
+//        if (!player1) {
+//            Node destinationNode = board.getAIDestinationNode();
+//            ArrayList<Node> AIArmy = getArmy(Color.RED);
+//            Node maxAdvanceNode = null;
+//            Node selectedNode = null;
+//            int smallestDistanceToDestination = 100;
+//            for (Node node : AIArmy) {
+//                ArrayList<Node> tr = board.popularChoice(node);
+//                for (Node move : tr) {
+//                    if (!move.getLabel().equals("null")) {
+//                        if (board.stepDistance(move, destinationNode) < smallestDistanceToDestination) {
+//                            maxAdvanceNode = move;
+//                            smallestDistanceToDestination = board.stepDistance(move, destinationNode);
+//                            selectedNode = node;
+//                        }
 //                    }
 //                }
-                for (Node move : tr) {
-//                    System.out.println(board.stepDistance(move, destinationNode));
-                    if (!move.getLabel().equals("null")) {
-                        if (board.stepDistance(move, destinationNode) < smallestDistanceToDestination) {
-                            maxAdvanceNode = move;
-                        }
-                    }
-                }
-            }
-            System.out.println(maxAdvanceNode.getLabel());
-            setMove(board.getNodeListNumber(maxAdvanceNode));
-        }
-    }
+//            }
+////            setAIMove(selectedNode, maxAdvanceNode);
+//        }
+//    }
+
+
+//    public void AI2() { //Testing max advance heuristic, works
+//        if (!player1) {
+//            Node destinationNode = board.getAIDestinationNode();
+//            ArrayList<Node> AIArmy = new ArrayList<>();
+//            //Get red AI nodes
+//            for (Node node : nodeList) {
+//                if (node.getColor().equals(Color.RED)) {
+//                    AIArmy.add(node);
+//                }
+//            }
+//            Node maxAdvanceNode = null;
+//            Node selectedNode = null;
+//            int largestJump = 0;
+//            for (Node node : AIArmy) {
+//                ArrayList<Node> tr = board.popularChoice(node);
+//                System.out.println("             " + node.getLabel());
+//                for (Node move : tr) {
+//                    if (!move.getLabel().equals("null")) {
+//                        if (board.stepDistance(node, move) > largestJump) {
+//                            maxAdvanceNode = move;
+//                            largestJump = board.stepDistance(node, move);
+//                            selectedNode = node;
+//                        }
+//                    }
+//                }
+//            }
+//            setAIMove(selectedNode, maxAdvanceNode);
+//        }
+//    }
+
+//    public Node[] depth1search(Color color) {
+//        Node destinationNode = board.getAIDestinationNode();
+//        ArrayList<Node> AIArmy = new ArrayList<>();
+//            for (Node node : nodeList) {
+//                if (node.getColor().equals(color)) {
+//                    AIArmy.add(node);
+//                }
+//            }
+//            Node maxAdvanceNode = null;
+//            Node selectedNode = null;
+//            int smallestDistanceToDestination = 100;
+//            for (Node node : AIArmy) {
+//                ArrayList<Node> tr = board.popularChoice(node);
+//                System.out.println("             " + node.getLabel());
+//                for (Node move : tr) {
+//                    if (!move.getLabel().equals("null")) {
+//                        if (board.stepDistance(move, destinationNode) < smallestDistanceToDestination) {
+//                            maxAdvanceNode = move;
+//                            smallestDistanceToDestination = board.stepDistance(move, destinationNode);
+//                            selectedNode = node;
+//                        }
+//                    }
+//                }
+//            }
+//            setAIMove(selectedNode, maxAdvanceNode);
+//    }
 
     public void clickedForNode(int var1, int var2) {
         for(int i=0; i<81; i++){
@@ -145,6 +202,22 @@ public class GUI extends JComponent {
 
         System.out.println("PreviousSelectedNode: " + board.getNodeLabel(this.previousSelectedNode) +
                 " SelectNode = " + board.getNodeLabel(this.selectedNode) + " is FirstMove = " + this.firstMove);
+    }
+
+    public void setAIMove(Node selectedNode, Node terminalNode) {
+        terminalNode.setColor(selectedNode.getColor());
+        selectedNode.setColor(Color.WHITE);
+        if (isWinningCondition()) { // /!\
+            if (player1) {
+                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
+                        "PLAYER 1 HAS WON", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
+                        "PLAYER 2 HAS WON", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+        player1 = true;
+        repaint();
     }
 
     public void setMove(int chosenNode) {
@@ -212,13 +285,6 @@ public class GUI extends JComponent {
                 tr.get(i).setColor(Color.YELLOW);
             }
         }
-//        else if (!player1 && n.getColor() == Color.RED) {
-//            ArrayList<Node> tr = board.popularChoice(n);
-//            for (int i = 0; i < tr.size(); i++) {
-//                tr.get(i).setColor(Color.YELLOW);
-//            }
-//        }
-
 
     }
 
@@ -261,7 +327,7 @@ public class GUI extends JComponent {
             int var2 = var1.getX();
             int var3 = var1.getY();
             GUI.this.clickedForNode(var2, var3);
-            AI1();
+//            AI1();
         }
 
         public void mouseEntered(MouseEvent var1) {
