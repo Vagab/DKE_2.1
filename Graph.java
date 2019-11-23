@@ -37,14 +37,25 @@ public class Graph {
         makeNodes();
         makeNodeList();
         connectEdges();
-        testNode(nodeList[80]); //test adjacent nodes
+//        testNode(nodeList[80]); //test adjacent nodes
 //        testNodeColor(IE);      //test the color of a node by printing it
 //        testNode(CA);
 //        System.out.println(stepDistance(QA,AA));
 //        System.out.println(stepDistance(AA,QA));
-//        Node[] nodes1 = {AA,BA,BB,CA,CB,CC};
-//        System.out.println(Arrays.toString(centroid(nodes1)));
-        System.out.println(straightLineDistance(IE,QA));
+        ArrayList<Node> nodes1 = new ArrayList<>();
+        nodes1.add(AA);
+        nodes1.add(BA);
+        nodes1.add(BB);
+        nodes1.add(CA);
+        nodes1.add(CB);
+        nodes1.add(CC);
+//        nodes1.add(IE);
+//        nodes1.add(QA);
+        System.out.println(Arrays.toString(centroid(nodes1)));
+//        System.out.println(straightLineDistance(AA,QA));
+//        System.out.println(distanceToMiddleLine(AA));
+//        System.out.println(centroidNodeDistance(nodes1,QA));
+        System.out.println("The radius of your army is: " + radius(nodes1));
     }
 
     public Graph(){
@@ -467,11 +478,45 @@ public class Graph {
         return centroidCoordinates;
     }
 
-//    public static double centroidNodeDistance(ArrayList<Node> nodes, Node node) {
-//        double[] centroidCoordinates = centroid(nodes);
-//        Node centroidNode =
-//        straightLineDistance()
-//    }
+    public static double distanceToMiddleLine(Node node) {
+        Node referenceNode = AA;
+        int dx = node.getX() - referenceNode.getX();
+        int dy = node.getY() - referenceNode.getY();
+        double x = 0;
+        if (Math.signum(dx) != Math.signum(dy)) {
+            return  0.5 * Math.abs(dx);
+        }
+        else {
+            return  Math.abs(0.5 * (Math.abs(dx - dy) - Math.abs(dy)));
+        }
+    }
+    public static double centroidNodeDistance(ArrayList<Node> nodes, Node destinationNode) {
+        double[] centroidCoordinates = centroid(nodes);
+        double dx = destinationNode.getX() - centroidCoordinates[0];
+        double dy = destinationNode.getY() - centroidCoordinates[1];
+        double x = 0;
+        double y = 0;
+        if (Math.signum(dx) != Math.signum(dy)) {
+            x = 0.5 * Math.abs(dx);
+            y = Math.sqrt(3)/2.0 * Math.abs(dx) + Math.abs(dy);
+            return Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        }
+        else {
+            x = 0.5 * (Math.abs(dx - dy) - Math.abs(dy));
+            y = Math.sqrt(3)/2.0 * Math.abs(dx);
+            return Math.sqrt(Math.pow(x,2) + Math.pow(y,2));
+        }
+    }
+
+    public static double radius(ArrayList<Node> nodes) {
+        double armyRadius = 0;
+        for (Node node : nodes) {
+            if (centroidNodeDistance(nodes,node) > armyRadius) {
+                armyRadius = centroidNodeDistance(nodes,node);
+            }
+        }
+        return armyRadius;
+    }
 
     public static double straightLineDistance(Node node1, Node node2) {
         int dx = node2.getX() - node1.getX(); //Steps in the downward direction

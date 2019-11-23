@@ -108,87 +108,75 @@ public class GUI extends JComponent {
             return army;
     }
 
+    public double evaluationFunction(double distanceFromMiddleWeight, double distanceToGoalWeight, double radiusWeight, ArrayList<Node> army) {
+        double evaluationValue = 0;
+        Node destinationNode = board.getAIDestinationNode(); //Is just to test the red AI
 
-//    public void AI1() { //Testing distance to destination heuristic, works
-//        if (!player1) {
-//            Node destinationNode = board.getAIDestinationNode();
-//            ArrayList<Node> AIArmy = getArmy(Color.RED);
-//            Node maxAdvanceNode = null;
-//            Node selectedNode = null;
-//            int smallestDistanceToDestination = 100;
-//            for (Node node : AIArmy) {
-//                ArrayList<Node> tr = board.popularChoice(node);
-//                for (Node move : tr) {
-//                    if (!move.getLabel().equals("null")) {
-//                        if (board.stepDistance(move, destinationNode) < smallestDistanceToDestination) {
-//                            maxAdvanceNode = move;
-//                            smallestDistanceToDestination = board.stepDistance(move, destinationNode);
-//                            selectedNode = node;
-//                        }
-//                    }
-//                }
-//            }
-////            setAIMove(selectedNode, maxAdvanceNode);
+        //Calculate distance to goal by treating the army as 1 single node by using its centroid
+        double distanceToGoal = board.centroidNodeDistance(army,destinationNode);
+
+        //Calculate distances towards goal (in steps)
+//        double distanceToGoal = 0;
+//        for (Node node : army) {
+//            distanceToGoal += board.stepDistance(node, destinationNode);
 //        }
-//    }
+        //Calculate distance from piece from middle line
+        double distanceFromMiddle = 0;
+        for (Node node : army) {
+            distanceFromMiddle += board.distanceToMiddleLine(node);
+        }
+        //Pieces stay within a smallest possible radius
+        double radius = board.radius(army);
+
+        evaluationValue = -distanceToGoalWeight * distanceToGoal - distanceFromMiddleWeight * distanceFromMiddle - radiusWeight * radius;
+        System.out.println("The evaluation value is: " + evaluationValue);
+        return evaluationValue;
+    }
+
+    //This is a kind of greedy search algorithm, it looks through all possible moves of the AI army and selects the one with the highest evaluation function
+    public void AIEvaluationTest() {
+        if (!player1) {
+            ArrayList<ArrayList<Node>> armyStates = stateGenerator();
+            ArrayList<Node> bestMove = new ArrayList<>();
+            double evaluationValue = -10000;
+            for (ArrayList<Node> armyState : armyStates) {
+                if (evaluationFunction(.2,1,0.5,armyState) > evaluationValue) {
+                    evaluationValue = evaluationFunction(.2,1,0.5,armyState );
+                    bestMove = armyState;
+                }
+            }
+            System.out.println("The highest evaluationValue is: " + evaluationValue);
+            setAIMove(getArmy(Color.RED), bestMove);
+        }
+    }
 
 
-//    public void AI2() { //Testing max advance heuristic, works
-//        if (!player1) {
-//            Node destinationNode = board.getAIDestinationNode();
-//            ArrayList<Node> AIArmy = new ArrayList<>();
-//            //Get red AI nodes
-//            for (Node node : nodeList) {
-//                if (node.getColor().equals(Color.RED)) {
-//                    AIArmy.add(node);
-//                }
-//            }
-//            Node maxAdvanceNode = null;
-//            Node selectedNode = null;
-//            int largestJump = 0;
-//            for (Node node : AIArmy) {
-//                ArrayList<Node> tr = board.popularChoice(node);
-//                System.out.println("             " + node.getLabel());
-//                for (Node move : tr) {
-//                    if (!move.getLabel().equals("null")) {
-//                        if (board.stepDistance(node, move) > largestJump) {
-//                            maxAdvanceNode = move;
-//                            largestJump = board.stepDistance(node, move);
-//                            selectedNode = node;
-//                        }
-//                    }
-//                }
-//            }
-//            setAIMove(selectedNode, maxAdvanceNode);
-//        }
-//    }
+    public ArrayList<ArrayList<Node>> stateGenerator() {
+        ArrayList<Node> AIArmy = getArmy(Color.RED);
+        ArrayList<ArrayList<Node>> armyStates = new ArrayList<>();
+        for (Node node : AIArmy) {
+            ArrayList<Node> tr = board.popularChoice(node);
+            for (Node move : tr) {
+                if (!move.getLabel().equals("null")) {
+                    ArrayList<Node> armyState = (ArrayList<Node>) AIArmy.clone();
+                    armyState.remove(node);
+                    armyState.add(move);
+                    armyStates.add(armyState);
+//                    System.out.println(armyToString(armyState));
+                }
+            }
+        }
+        return armyStates;
+    }
 
-//    public Node[] depth1search(Color color) {
-//        Node destinationNode = board.getAIDestinationNode();
-//        ArrayList<Node> AIArmy = new ArrayList<>();
-//            for (Node node : nodeList) {
-//                if (node.getColor().equals(color)) {
-//                    AIArmy.add(node);
-//                }
-//            }
-//            Node maxAdvanceNode = null;
-//            Node selectedNode = null;
-//            int smallestDistanceToDestination = 100;
-//            for (Node node : AIArmy) {
-//                ArrayList<Node> tr = board.popularChoice(node);
-//                System.out.println("             " + node.getLabel());
-//                for (Node move : tr) {
-//                    if (!move.getLabel().equals("null")) {
-//                        if (board.stepDistance(move, destinationNode) < smallestDistanceToDestination) {
-//                            maxAdvanceNode = move;
-//                            smallestDistanceToDestination = board.stepDistance(move, destinationNode);
-//                            selectedNode = node;
-//                        }
-//                    }
-//                }
-//            }
-//            setAIMove(selectedNode, maxAdvanceNode);
-//    }
+
+    public String armyToString(ArrayList<Node> army) {
+        String output = "The army is: ";
+        for (Node node : army) {
+            output += node.getLabel() +" ";
+        }
+        return output;
+    }
 
     public void clickedForNode(int var1, int var2) {
         for(int i=0; i<81; i++){
@@ -207,6 +195,27 @@ public class GUI extends JComponent {
     public void setAIMove(Node selectedNode, Node terminalNode) {
         terminalNode.setColor(selectedNode.getColor());
         selectedNode.setColor(Color.WHITE);
+        if (isWinningCondition()) { // /!\
+            if (player1) {
+                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
+                        "PLAYER 1 HAS WON", JOptionPane.WARNING_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
+                        "PLAYER 2 HAS WON", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+        player1 = true;
+        repaint();
+    }
+
+    public void setAIMove(ArrayList<Node> previousArmy, ArrayList<Node> newArmy) {
+        Color color = previousArmy.get(0).getColor();
+        for (Node node : previousArmy) {
+            node.setColor(Color.WHITE);
+        }
+        for (Node node : newArmy) {
+            node.setColor(color);
+        }
         if (isWinningCondition()) { // /!\
             if (player1) {
                 JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
@@ -327,7 +336,7 @@ public class GUI extends JComponent {
             int var2 = var1.getX();
             int var3 = var1.getY();
             GUI.this.clickedForNode(var2, var3);
-//            AI1();
+            AIEvaluationTest();
         }
 
         public void mouseEntered(MouseEvent var1) {
