@@ -15,12 +15,18 @@ public class XLSReader {
 
     File file;
     HSSFWorkbook workbook;
+    String currentSheet;
 
 
     public XLSReader(String path){
         file = new File(path);
+        try{
+            setSheet("Sheet1");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
+    
     private void setWorkbook(){
         try {
             workbook = new HSSFWorkbook(new FileInputStream(file));
@@ -31,9 +37,21 @@ public class XLSReader {
         }
     }
 
+    public void setSheet(String sheetName) throws IOException {
+        setWorkbook();
+        currentSheet = sheetName;
+        try {
+            workbook.getSheet(currentSheet).getRow(0);
+        } catch(NullPointerException e) {
+            workbook.createSheet(currentSheet);
+            workbook.write(new FileOutputStream(file));
+            workbook.close();
+        }
+    }
+
     public double[] getRowValues(int row) throws IOException {
         setWorkbook();
-        HSSFSheet sheetOne = workbook.getSheet("Sheet1");
+        HSSFSheet sheetOne = workbook.getSheet(currentSheet);
         HSSFRow thisRow = sheetOne.getRow(row);
         List<Double> valueList = new ArrayList<>();
         for(int i = 0; i<thisRow.getHeight(); i++){
@@ -52,9 +70,21 @@ public class XLSReader {
         return values;
     }
 
-    public void addRowValues(double[] values) throws FileNotFoundException, IOException {
+    public double getCellValue(int row, int col) throws IOException {
         setWorkbook();
-        HSSFSheet sheetOne = workbook.getSheet("Sheet1");
+        HSSFSheet sheetOne = workbook.getSheet(currentSheet);
+        HSSFRow thisRow = sheetOne.getRow(row);
+        HSSFCell cell = thisRow.getCell(col);
+        double value = cell.getNumericCellValue();
+        workbook.close();
+        return value;
+    }
+
+
+
+    public void addRowValues(double[] values) throws IOException {
+        setWorkbook();
+        HSSFSheet sheetOne = workbook.getSheet(currentSheet);
         HSSFRow thisRow = sheetOne.createRow(sheetOne.getLastRowNum()+1);
         for(int i = 0; i < values.length; ++i){
             HSSFCell cell = thisRow.createCell(i);
@@ -67,7 +97,7 @@ public class XLSReader {
 
     public void changeRowValues(double[] values, int row) throws IOException {
         setWorkbook();
-        HSSFSheet sheetOne = workbook.getSheet("Sheet1");
+        HSSFSheet sheetOne = workbook.getSheet(currentSheet);
         HSSFRow thisRow = sheetOne.getRow(row);
         for(int i = 0; i<values.length; i++) {
             HSSFCell cell = thisRow.createCell(i);
@@ -77,33 +107,42 @@ public class XLSReader {
         workbook.close();
     }
 
-    public static void main(String[] args){
-        XLSReader reader = new XLSReader("Test.xls");
-        double[] testValues = new double[3];
-        testValues[0] = 0.0;
-        testValues[1] = 21;
-        testValues[2] = 2.5;
+    public void addCellValue(double value, int row, int col) throws IOException {
+        setWorkbook();
+        HSSFSheet sheetOne = workbook.getSheet(currentSheet);
+        HSSFRow thisRow;
         try {
-            //reader.addRowValues(testValues);
-            reader.changeRowValues(testValues, 2);
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            thisRow = sheetOne.getRow(row);
+            thisRow.getFirstCellNum();
+        } catch(NullPointerException e) {
+            thisRow = sheetOne.createRow(row);
+        }
+        HSSFCell cell = thisRow.createCell(col);
+        cell.setCellValue(value);
+        workbook.write(new FileOutputStream(file));
+        workbook.close();
+    }
+
+    public void deleteCellValue(int row, int col) throws IOException {
+        setWorkbook();
+        HSSFSheet sheetOne = workbook.getSheet(currentSheet);
+        HSSFRow thisrow = sheetOne.getRow(row);
+        thisrow.createCell(col);
+        workbook.write(new FileOutputStream(file));
+        workbook.close();
+    }
+
+    public static void main(String[] args) {
+        try {
+
+            XLSReader reader = new XLSReader("Test.xls");
+            double[] testValues = new double[3];
+            testValues[0] = 0.0;
+            testValues[1] = 21;
+            testValues[2] = 2.5;
+            reader.addCellValue(1, 2, 3);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
-        //reader.getRowValues(1);
-        //reader.getRowValues(2);
-        
-        
-        //HSSFWorkbook workbook = new HSSFWorkbook();
-        //HSSFSheet sheet = workbook.createSheet("First Sheet");
-        //HSSFRow row = sheet.createRow(0);
-        //HSSFCell cell = row.createCell(0);
-        //cell.setCellValue(0.12);
-        //workbook.write(new FileOutputStream(new File("Test.xls")));
-        //workbook.close();
     }
 }
