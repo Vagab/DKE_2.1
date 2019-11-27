@@ -1,0 +1,11 @@
+<dependency>
+    <groupID>org.apache.poi</groupID>
+    <artifactID>poi</artifactID>
+    <version>4.1.1</version>
+</dependency>
+
+<dependency>
+    <groupID>org.apache.poi</groupID>
+    <artifactID>poi-ooxml</artifactID>
+    <version>4.1.1</version>
+</dependency>
