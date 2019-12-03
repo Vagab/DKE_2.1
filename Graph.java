@@ -102,103 +102,103 @@ public class Graph {
 
     private static void makeNodes(){
 
-        AA = new Node("AA",0,0);
+        AA = new Node("AA",0,0, 0);
 
-        BA = new Node("BA",1,0);
-        BB = new Node("BB",1,1);
+        BA = new Node("BA",1,0, 1);
+        BB = new Node("BB",1,1, 1);
 
-        CA = new Node("CA",2,0);
-        CB = new Node("CB",2,1);
-        CC = new Node("CC",2,2);
+        CA = new Node("CA",2,0,2);
+        CB = new Node("CB",2,1,2);
+        CC = new Node("CC",2,2,2);
 
-        DA = new Node("DA",3,0);
-        DB = new Node("DB",3,1);
-        DC = new Node("DC",3,2);
-        DD = new Node("DD",3,3);
+        DA = new Node("DA",3,0,3);
+        DB = new Node("DB",3,1,4);
+        DC = new Node("DC",3,2,4);
+        DD = new Node("DD",3,3,3);
 
-        EA = new Node("EA",4,0);
-        EB = new Node("EB",4,1);
-        EC = new Node("EC",4,2);
-        ED = new Node("ED",4,3);
-        EE = new Node("EE",4,4);
+        EA = new Node("EA",4,0,3);
+        EB = new Node("EB",4,1,4);
+        EC = new Node("EC",4,2,5);
+        ED = new Node("ED",4,3,4);
+        EE = new Node("EE",4,4,3);
 
-        FA = new Node("FA",5,0);
-        FB = new Node("FB",5,1);
-        FC = new Node("FC",5,2);
-        FD = new Node("FD",5,3);
-        FE = new Node("FE",5,4);
-        FF = new Node("FF",5,5);
+        FA = new Node("FA",5,0,3);
+        FB = new Node("FB",5,1,4);
+        FC = new Node("FC",5,2,6);
+        FD = new Node("FD",5,3,6);
+        FE = new Node("FE",5,4,4);
+        FF = new Node("FF",5,5,3);
 
-        GA = new Node("GA",6,0);
-        GB = new Node("GB",6,1);
-        GC = new Node("GC",6,2);
-        GD = new Node("GD",6,3);
-        GE = new Node("GE",6,4);
-        GF = new Node("GF",6,5);
-        GG = new Node("GG",6,6);
+        GA = new Node("GA",6,0,3);
+        GB = new Node("GB",6,1,6);
+        GC = new Node("GC",6,2,7);
+        GD = new Node("GD",6,3,8);
+        GE = new Node("GE",6,4,7);
+        GF = new Node("GF",6,5,6);
+        GG = new Node("GG",6,6,3);
 
-        HA = new Node("HA",7,0);
-        HB = new Node("HB",7,1);
-        HC = new Node("HC",7,2);
-        HD = new Node("HD",7,3);
-        HE = new Node("HE",7,4);
-        HF = new Node("HF",7,5);
-        HG = new Node("HG",7,6);
-        HH = new Node("HH",7,7);
+        HA = new Node("HA",7,0,2);
+        HB = new Node("HB",7,1,4);
+        HC = new Node("HC",7,2,8);
+        HD = new Node("HD",7,3,9);
+        HE = new Node("HE",7,4,9);
+        HF = new Node("HF",7,5,8);
+        HG = new Node("HG",7,6,4);
+        HH = new Node("HH",7,7,2);
 
-        IA = new Node("IA",8,0);
-        IB = new Node("IB",8,1);
-        IC = new Node("IC",8,2);
-        ID = new Node("ID",8,3);
-        IE = new Node("IE",8,4);
-        IF = new Node("IF",8,5);
-        IG = new Node("IG",8,6);
-        IH = new Node("IH",8,7);
-        II = new Node("II",8,8);
+        IA = new Node("IA",8,0,1);
+        IB = new Node("IB",8,1,5);
+        IC = new Node("IC",8,2,9);
+        ID = new Node("ID",8,3,10);
+        IE = new Node("IE",8,4,11);
+        IF = new Node("IF",8,5,10);
+        IG = new Node("IG",8,6,9);
+        IH = new Node("IH",8,7,5);
+        II = new Node("II",8,8,1);
 
-        JA = new Node("JA",9,0);
-        JB = new Node("JB",9,1);
-        JC = new Node("JC",9,2);
-        JD = new Node("JD",9,3);
-        JE = new Node("JE",9,4);
-        JF = new Node("JF",9,5);
-        JG = new Node("JG",9,6);
-        JH = new Node("JH",9,7);
+        JA = new Node("JA",9,0,6);
+        JB = new Node("JB",9,1,8);
+        JC = new Node("JC",9,2,10);
+        JD = new Node("JD",9,3,12);
+        JE = new Node("JE",9,4,12);
+        JF = new Node("JF",9,5,10);
+        JG = new Node("JG",9,6,8);
+        JH = new Node("JH",9,7,6);
 
-        KA = new Node("KA",10,0);
-        KB = new Node("KB",10,1);
-        KC = new Node("KC",10,2);
-        KD = new Node("KD",10,3);
-        KE = new Node("KE",10,4);
-        KF = new Node("KF",10,5);
-        KG = new Node("KG",10,6);
+        KA = new Node("KA",10,0,7);
+        KB = new Node("KB",10,1,9);
+        KC = new Node("KC",10,2,13);
+        KD = new Node("KD",10,3,14);
+        KE = new Node("KE",10,4,13);
+        KF = new Node("KF",10,5,9);
+        KG = new Node("KG",10,6,7);
 
-        LA = new Node("LA",11,0);
-        LB = new Node("LB",11,1);
-        LC = new Node("LC",11,2);
-        LD = new Node("LD",11,3);
-        LE = new Node("LE",11,4);
-        LF = new Node("LF",11,5);
+        LA = new Node("LA",11,0,8);
+        LB = new Node("LB",11,1,14);
+        LC = new Node("LC",11,2,15);
+        LD = new Node("LD",11,3,15);
+        LE = new Node("LE",11,4,14);
+        LF = new Node("LF",11,5,8);
 
-        MA = new Node("MA",12,0);
-        MB = new Node("MB",12,1);
-        MC = new Node("MC",12,2);
-        MD = new Node("MD",12,3);
-        ME = new Node("ME",12,4);
+        MA = new Node("MA",12,0,15);
+        MB = new Node("MB",12,1,17);
+        MC = new Node("MC",12,2,18);
+        MD = new Node("MD",12,3,17);
+        ME = new Node("ME",12,4,15);
 
-        NA = new Node("NA",13,0);
-        NB = new Node("NB",13,1);
-        NC = new Node("NB",13,2);
-        ND = new Node("NB",13,3);
+        NA = new Node("NA",13,0,18);
+        NB = new Node("NB",13,1,20);
+        NC = new Node("NB",13,2,20);
+        ND = new Node("NB",13,3,18);
 
-        OA = new Node("OA",14,0);
-        OB = new Node("OB",14,1);
-        OC = new Node("OC",14,2);
+        OA = new Node("OA",14,0,21);
+        OB = new Node("OB",14,1,25);
+        OC = new Node("OC",14,2,21);
 
-        PA = new Node("PA",15,0);
-        PB = new Node("PB",15,1);
+        PA = new Node("PA",15,0,25);
+        PB = new Node("PB",15,1,25);
 
-        QA = new Node("QA",16,0);
+        QA = new Node("QA",16,0,22);
     }
 
     private static void makeNodeList(){

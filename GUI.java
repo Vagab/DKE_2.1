@@ -2,6 +2,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import java.util.Random;
+
 
 
 public class GUI extends JComponent {
@@ -22,6 +24,7 @@ public class GUI extends JComponent {
     int nrsP;
 
     boolean player1 = true;
+    Random rand;
 
     public GUI() {
 
@@ -31,6 +34,7 @@ public class GUI extends JComponent {
         MousePressListener var1 = new MousePressListener();
         this.addMouseListener(var1);
 
+        rand = new Random(); //for random element in AIChoosesNode
         AIChoosesNode();
 
     }
@@ -85,13 +89,15 @@ public class GUI extends JComponent {
             }
         }
 
+       if(player1 && !firstMove){ AIChoosesNode();}
+
     }
 
     public boolean isWinningCondition() {
 
 
         if (player1) {       //checking for blue
-            for (int i = 80; i > 71; i--) {
+            for (int i = 80; i > 75; i--) {
                 if (!board.getNodeColor(i).equals(Color.BLUE))
                     return false;
             }
@@ -103,7 +109,7 @@ public class GUI extends JComponent {
 
 
         else { //checking for red
-            for (int i = 0; i <= 9; i++) {
+            for (int i = 0; i < 6; i++) {
                 if (!board.getNodeColor(i).equals(Color.RED))
                     return false;
             }
@@ -153,8 +159,53 @@ public class GUI extends JComponent {
 
 
                 ArrayList<Node> popChoices = board.popularChoice(board.getSecNode(i)); //gets popular choices of i
-               // Node[] possibleChoices = popChoices.toArray();    //TO DO
-               // setMove();
+
+                System.out.println("PopChoices size: " + popChoices.size());
+
+                Node[] possibleChoice = new Node[popChoices.size()];
+
+                int index = 0;
+                for(int j=0; j<popChoices.size(); j++){ //convert ArrayList<Node> to Node[]
+                    if(popChoices.get(j).getLabel().equals("null")
+                            //forbids to make moves up
+                            || popChoices.get(j).getdRight().getLabel().equals(board.getSecNode(i).getLabel())
+                            || popChoices.get(j).getdLeft().getLabel().equals(board.getSecNode(i).getLabel())) {System.out.println("VALUEISNULL: "+popChoices.get(j).getLabel());}
+                    else {
+                        possibleChoice[index] = popChoices.get(j);
+                        System.out.println("possibleChoice: " + possibleChoice[index]);
+                        index++;
+                    }
+                }
+
+                Node[] finalPossibleChoice = new Node[index];//copies array with correct size
+                for(int k=0; k<index; k++){finalPossibleChoice[k]=possibleChoice[k];}
+
+
+                if(index>0){//display elements
+                    System.out.print("INDEX = " + index);
+                    for(int k=0;k<finalPossibleChoice.length;k++){System.out.println(finalPossibleChoice[k].getLabel());}
+
+
+                    int n;
+                    Node max = new Node("max", -1, -1,-1);
+
+                    for(int ind=0; ind<finalPossibleChoice.length;ind++){
+                        if(finalPossibleChoice[ind].getScore()>max.getScore()){
+                            max = finalPossibleChoice[ind];
+                        }
+                    }
+
+
+
+                   // setMove(finalPossibleChoice[n].getIndex());//sets the next move
+                    if(board.getSecNode(i).getScore()!=max.getScore()) {
+                        setMove(max.getIndex());
+                        break;
+                    }
+                    else{
+                        setMove(i);
+                    }
+                }
 
             }
             else if(!player1){break;}   //if not its turn anymore, break

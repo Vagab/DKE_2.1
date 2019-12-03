@@ -16,10 +16,11 @@ public class Node {
 
 
 
-    public Node(String label, int X, int Y){
+    public Node(String label, int X, int Y, int score){
         this.label = label;
         this.X = X;
         this.Y = Y;
+        this.score = score;
 
         if(this.X<=7){this.isUpperTriangle = true;}    //
         else if(this.X==8){this.isMiddle = true;}
@@ -53,32 +54,32 @@ public class Node {
     public int getY(){return this.Y;}
 
     public Node getUpRight(){
-        if(this.upRight == null){return new Node("null", -1,-1);}
+        if(this.upRight == null){return new Node("null", -1,-1,-1);}
         else
             return this.upRight; }
 
     public Node getUpLeft(){
-        if(this.upLeft == null){return new Node("null", -1,-1);}
+        if(this.upLeft == null){return new Node("null", -1,-1,-1);}
         else
             return this.upLeft; }
 
     public Node getRight(){
-        if(this.right == null){return new Node("null", -1,-1);}
+        if(this.right == null){return new Node("null", -1,-1,-1);}
         else
             return this.right; }
 
     public Node getLeft(){
-        if(this.left == null){return new Node("null", -1,-1);}
+        if(this.left == null){return new Node("null", -1,-1,-1);}
         else
             return this.left; }
 
     public Node getdRight(){
-        if(this.dRight == null){return new Node("null", -1,-1);}
+        if(this.dRight == null){return new Node("null", -1,-1,-1);}
         else
             return this.dRight;}
 
     public Node getdLeft(){
-        if(this.dLeft == null){return new Node("null", -1,-1);}
+        if(this.dLeft == null){return new Node("null", -1,-1,-1);}
         else
             return this.dLeft;}
 
@@ -182,7 +183,8 @@ public class Node {
         Node[] neigh =  {upRight, upLeft, right, left, dRight, dLeft};
         for(int i=0; i<neigh.length; i++){
             if(neigh[i]==null){
-                neigh[i]=new Node("null", -1, -1);
+                neigh[i]=new Node("null", -1, -1,-1);
+                //neigh[i].setOccupy();
             }
         }
         return neigh;
@@ -191,7 +193,7 @@ public class Node {
     public Node getAdj(int i){
         Node[] neigh =  {upRight, upLeft, right, left, dRight, dLeft};
         if(neigh[i]==null){
-            return new Node("null", -1, -1);
+            return new Node("null", -1, -1,-1);
         }
         return neigh[i];
     }
