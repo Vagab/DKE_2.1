@@ -36,9 +36,9 @@ public class Graph {
         makeNodes();
         makeNodeList();
         connectEdges();
-        testNode(nodeList[50]); //test adjacent nodes
-        testNodeColor(IE);      //test the color of a node by printing it
-        testNode(CA);
+        //testNode(nodeList[50]); //test adjacent nodes
+        //testNodeColor(IE);      //test the color of a node by printing it
+        //testNode(CA);
     }
 
     public Graph(){
@@ -108,7 +108,7 @@ public class Graph {
         BB = new Node("BB",1,1, 1);
 
         CA = new Node("CA",2,0,2);
-        CB = new Node("CB",2,1,2);
+        CB = new Node("CB",2,1,3);
         CC = new Node("CC",2,2,2);
 
         DA = new Node("DA",3,0,3);
@@ -125,7 +125,7 @@ public class Graph {
         FA = new Node("FA",5,0,3);
         FB = new Node("FB",5,1,4);
         FC = new Node("FC",5,2,6);
-        FD = new Node("FD",5,3,6);
+        FD = new Node("FD",5,3,7);
         FE = new Node("FE",5,4,4);
         FF = new Node("FF",5,5,3);
 
@@ -245,118 +245,17 @@ public class Graph {
                 nodeList[80-i].setColor(Color.RED);
             }
         }
-        else if(n==6){
-            //PLAYER 1 AND 4
-            for(int i = 0; i < 10; i++){
-                nodeList[i].setColor(Color.BLUE);
-                nodeList[120-i].setColor(Color.RED);
-            }
 
-            //START PLAYER 2 and 6//
-            for(int j=0;j<4;j++) {
-                nodeList[10 + j].setColor(Color.GREEN);
-                nodeList[19 + j].setColor(Color.GRAY);
-            }
+    }
 
-            for(int j=0;j<3;j++) {
-                nodeList[23 + j].setColor(Color.GREEN);
-                nodeList[32 + j].setColor(Color.GRAY);
-            }
-
-            for(int j=0;j<2;j++) {
-                nodeList[35 + j].setColor(Color.GREEN);
-                nodeList[44 + j].setColor(Color.GRAY);
-            }
-
-            nodeList[46].setColor(Color.GREEN);
-            nodeList[55].setColor(Color.GRAY);
-            //END PLAYER 2 and 6//
-
-            //START PLAYER 3 and 5//
-            for(int k=0; k < 4; k++) {
-                nodeList[98 + k].setColor(Color.BLACK);
-                nodeList[107 + k].setColor(Color.ORANGE);
-            }
-
-            for(int k=0; k < 3; k++) {
-                nodeList[86 + k].setColor(Color.BLACK);
-                nodeList[95 + k].setColor(Color.ORANGE);
-            }
-
-            for(int k=0; k < 2; k++) {
-                nodeList[75 + k].setColor(Color.BLACK);
-                nodeList[84 + k].setColor(Color.ORANGE);
-            }
-
-            nodeList[65].setColor(Color.BLACK);
-            nodeList[74].setColor(Color.ORANGE);
+    public static void initializePositions(int[] blue, int[] red){
+        for(int i=0; i<nodeList.length;i++){    //reset the board, don't use please it's dangerous
+            nodeList[i].setColor(Color.WHITE);
         }
-        //END PLAYER 3 and 5//
-        else if(n==4){
 
-            //START PLAYER 3 and 5//
-            for(int k=0; k < 4; k++) {
-                nodeList[98 + k].setColor(Color.BLACK);
-                nodeList[107 + k].setColor(Color.ORANGE);
-            }
-
-            for(int k=0; k < 3; k++) {
-                nodeList[86 + k].setColor(Color.BLACK);
-                nodeList[95 + k].setColor(Color.ORANGE);
-            }
-
-            for(int k=0; k < 2; k++) {
-                nodeList[75 + k].setColor(Color.BLACK);
-                nodeList[84 + k].setColor(Color.ORANGE);
-            }
-
-            nodeList[65].setColor(Color.BLACK);
-            nodeList[74].setColor(Color.ORANGE);
-            //END PLAYER 3 and 5//
-
-            //START PLAYER 2 and 6//
-            for(int j=0;j<4;j++) {
-                nodeList[10 + j].setColor(Color.GREEN);
-                nodeList[19 + j].setColor(Color.GRAY);
-            }
-
-            for(int j=0;j<3;j++) {
-                nodeList[23 + j].setColor(Color.GREEN);
-                nodeList[32 + j].setColor(Color.GRAY);
-            }
-
-            for(int j=0;j<2;j++) {
-                nodeList[35 + j].setColor(Color.GREEN);
-                nodeList[44 + j].setColor(Color.GRAY);
-            }
-
-            nodeList[46].setColor(Color.GREEN);
-            nodeList[55].setColor(Color.GRAY);
-            //END PLAYER 2 and 6//
-
-        }
-        else{
-            //PLAYER 1
-            for(int i = 0; i < 10; i++){
-                nodeList[i].setColor(Color.BLUE);
-            }
-            for(int k=0; k < 4; k++) {
-                nodeList[98 + k].setColor(Color.BLACK);
-                nodeList[107 + k].setColor(Color.ORANGE);
-            }
-
-            for(int k=0; k < 3; k++) {
-                nodeList[86 + k].setColor(Color.BLACK);
-                nodeList[95 + k].setColor(Color.ORANGE);
-            }
-
-            for(int k=0; k < 2; k++) {
-                nodeList[75 + k].setColor(Color.BLACK);
-                nodeList[84 + k].setColor(Color.ORANGE);
-            }
-
-            nodeList[65].setColor(Color.BLACK);
-            nodeList[74].setColor(Color.ORANGE);
+        for(int i=0;i<blue.length;i++){ //sets the positions
+            nodeList[blue[i]].setColor(Color.BLUE);
+            nodeList[red[i]].setColor(Color.RED);
         }
     }
 
