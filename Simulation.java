@@ -50,7 +50,7 @@ public class Simulation {
     public void sortNodes(Node[] arr) {
         for (int i = 1; i < arr.length; i++) {
             for (int j = i; j > 0; j--) {
-                if (arr[j].getScore() > arr[j - 1].getScore()) {
+                if (arr[j].getScore() < arr[j - 1].getScore()) {
                     double temp = arr[j];
                     arr[j] = arr[j - 1];
                     arr[j - 1] = temp;
