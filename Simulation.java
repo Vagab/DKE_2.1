@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
+import java.lang.*;
 
 public class Simulation {
 
@@ -13,6 +14,7 @@ public class Simulation {
     private int turnsCount = 1;
     private int maxPlays;
     private Node firstPlay;
+    private double[] probs = normD(nodeList.size());
 
     private Node lastAIPlayed;
     private Node previousAIPlayed;
@@ -29,6 +31,32 @@ public class Simulation {
         this.maxPlays = maxPlays;
         nodeList = boardSim.getNodes();
         rand = new Random();
+        sort(probs);
+        transform(probs);
+    }
+
+    public void sort(double[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = i; j > 0; j--) {
+                if (arr[j] > arr[j - 1]) {
+                    double temp = arr[j];
+                    arr[j] = arr[j - 1];
+                    arr[j - 1] = temp;
+                }
+            }
+        }
+    }
+
+    public void sortNodes(Node[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = i; j > 0; j--) {
+                if (arr[j].getScore() > arr[j - 1].getScore()) {
+                    double temp = arr[j];
+                    arr[j] = arr[j - 1];
+                    arr[j - 1] = temp;
+                }
+            }
+        }
     }
 
     public Node startSimulation(){
@@ -48,7 +76,7 @@ public class Simulation {
     }
 
     private int getRandomChoice(){
-        return rand.nextInt(6);
+        return NormalDistribution.monteCarlo(probs);
     }
 
     private void AIChoosesNode(){
@@ -63,6 +91,7 @@ public class Simulation {
         else{color = Color.RED;}
 
         Node[] AIPOS = new Node[6]; //6 is the amount of pawns
+        sort(nodeList);
         int iter = 0;
         for(int i=0; i<nodeList.length; i++){
             if(boardSim.getNodeColor(i).equals(color)){
