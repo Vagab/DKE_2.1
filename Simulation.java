@@ -17,18 +17,23 @@ public class Simulation {
     private Node lastAIPlayed;
     private Node previousAIPlayed;
 
+    private double[] probs;
+
+
+
     private boolean player1 = true;
     Random rand;
 
     private int totalScoreBlue = 0;
 
 
-    public Simulation(int[] blue, int[] red, int maxPlays){
+    public Simulation(int[] blue, int[] red, int maxPlays, double[] probs){
         boardSim = new GraphSimulation();
         boardSim.initializePositions(blue, red);    //sets the starting positions for the simulation
         this.maxPlays = maxPlays;
         nodeList = boardSim.getNodes();
         rand = new Random();
+        this.probs = probs;
     }
 
     public Node startSimulation(){
@@ -43,12 +48,26 @@ public class Simulation {
         }
         return this.firstPlay;
     }
+
+    public void sortNodes(Node[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = i; j > 0; j--) {
+                if (arr[j].getScore() < arr[j - 1].getScore()) {
+                    Node temp = arr[j];
+                    arr[j] = arr[j - 1];
+                    arr[j - 1] = temp;
+                }
+            }
+        }
+    }
+
     public int getScoreResult(){
         return this.totalScoreBlue;
     }
 
     private int getRandomChoice(){
-        return rand.nextInt(6);
+//        return rand.nextInt(6);
+        return NormalDistribution.monteCarlo(probs, rand);
     }
 
     private void AIChoosesNode(){
@@ -70,6 +89,7 @@ public class Simulation {
                 iter++;
             }
         }
+        sortNodes(AIPOS);
 
         int i = AIPOS[getRandomChoice()].getIndex(); //Chooses a node randomly
 

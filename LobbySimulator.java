@@ -8,10 +8,17 @@ public class LobbySimulator {
 
     private int[] blue, red;
 
+    private double[] probs;
+
 
     public LobbySimulator(int[] blue, int[] red){
         this.blue = blue;
         this.red = red;
+        this.probs = NormalDistribution.normD(this.blue.length);
+        sort(this.probs);
+        NormalDistribution.transform(this.probs);
+
+
     }
 
 
@@ -25,12 +32,26 @@ public class LobbySimulator {
             return false;
     }
 
+    public void sort(double[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = i; j > 0; j--) {
+                if (arr[j] > arr[j - 1]) {
+                    double temp = arr[j];
+                    arr[j] = arr[j - 1];
+                    arr[j - 1] = temp;
+                }
+            }
+        }
+    }
+
+
     public void launch(){
 
         int maxScore = 0;
 
         for(int i=0; i<totalSimulations; i++){
-            Simulation simulation = new Simulation(blue, red, playLimit);
+
+            Simulation simulation = new Simulation(blue, red, playLimit, this.probs);
             Node candidate = simulation.startSimulation();
             int score = simulation.getScoreResult();
 
