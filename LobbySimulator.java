@@ -1,17 +1,21 @@
 public class LobbySimulator {
 
     private Node bestCandidate;
-    private int playLimit = 20;
-    private int totalSimulations = 10000;
+    private int playLimit = 100;
+    private int totalSimulations = 5000;
     int totalScore;
     private int countSimulations = 0;
 
     private int[] blue, red;
+    private double[] probs;
 
 
     public LobbySimulator(int[] blue, int[] red){
         this.blue = blue;
         this.red = red;
+        this.probs = NormalDistribution.normD(this.blue.length);
+        NormalDistribution.sort(this.probs);
+        NormalDistribution.transform(this.probs);
     }
 
 
@@ -30,7 +34,7 @@ public class LobbySimulator {
         int maxScore = 0;
 
         for(int i=0; i<totalSimulations; i++){
-            Simulation simulation = new Simulation(blue, red, playLimit);
+            Simulation simulation = new Simulation(blue, red, playLimit, probs);
             Node candidate = simulation.startSimulation();
             int score = simulation.getScoreResult();
 

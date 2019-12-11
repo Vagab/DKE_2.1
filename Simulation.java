@@ -13,6 +13,7 @@ public class Simulation {
     private int turnsCount = 1;
     private int maxPlays;
     private Node firstPlay;
+    private double[] probs;
 
     private Node lastAIPlayed;
     private Node previousAIPlayed;
@@ -23,13 +24,27 @@ public class Simulation {
     private int totalScoreBlue = 0;
 
 
-    public Simulation(int[] blue, int[] red, int maxPlays){
+    public Simulation(int[] blue, int[] red, int maxPlays, double[] probs){
         boardSim = new GraphSimulation();
         boardSim.initializePositions(blue, red);    //sets the starting positions for the simulation
         this.maxPlays = maxPlays;
         nodeList = boardSim.getNodes();
         rand = new Random();
+        this.probs = probs;
     }
+
+    public void sortNodes(Node[] arr) {
+        for (int i = 1; i < arr.length; i++) {
+            for (int j = i; j > 0; j--) {
+                if (arr[j].getScore() < arr[j - 1].getScore()) {
+                    Node temp = arr[j];
+                    arr[j] = arr[j - 1];
+                    arr[j - 1] = temp;
+                }
+            }
+        }
+    }
+
 
     public Node startSimulation(){
         this.AIChoosesNode();
@@ -44,11 +59,12 @@ public class Simulation {
         return this.firstPlay;
     }
     public int getScoreResult(){
-        return this.totalScoreBlue;
+        return (int)this.totalScoreBlue / 6;
     }
 
     private int getRandomChoice(){
-        return rand.nextInt(6);
+//        return rand.nextInt(6);
+        return NormalDistribution.monteCarlo(probs, rand);
     }
 
     private void AIChoosesNode(){
@@ -70,8 +86,16 @@ public class Simulation {
                 iter++;
             }
         }
-
+        sortNodes(AIPOS);
+//        for (int i = 0; i < AIPOS.length; i++) {
+//            System.out.println(i + ": " + AIPOS[i].getScore());
+//        }
+//        System.out.println();
+//        for(double d:probs) {
+//            System.out.println("probs: " + d);
+//        }
         int i = AIPOS[getRandomChoice()].getIndex(); //Chooses a node randomly
+//        int i = getRandomChoice();
 
         //tries to make a move
 
