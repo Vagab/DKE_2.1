@@ -16,7 +16,7 @@ public class Simulation {
 
     private Node lastAIPlayed;
     private Node previousAIPlayed;
-
+    private int numberOfPawns;
     private double[] probs;
 
 
@@ -34,6 +34,7 @@ public class Simulation {
         nodeList = boardSim.getNodes();
         rand = new Random();
         this.probs = probs;
+        this.numberOfPawns = blue.length;
     }
 
     public Node startSimulation(){
@@ -52,7 +53,7 @@ public class Simulation {
     public void sortNodes(Node[] arr) {
         for (int i = 1; i < arr.length; i++) {
             for (int j = i; j > 0; j--) {
-                if (arr[j].getScore() < arr[j - 1].getScore()) {
+                if (arr[j].getScore() > arr[j - 1].getScore()) {
                     Node temp = arr[j];
                     arr[j] = arr[j - 1];
                     arr[j - 1] = temp;
@@ -81,7 +82,7 @@ public class Simulation {
         if(player1){color = Color.BLUE;}
         else{color = Color.RED;}
 
-        Node[] AIPOS = new Node[6]; //6 is the amount of pawns
+        Node[] AIPOS = new Node[numberOfPawns];
         int iter = 0;
         for(int i=0; i<nodeList.length; i++){
             if(boardSim.getNodeColor(i).equals(color)){
@@ -89,7 +90,13 @@ public class Simulation {
                 iter++;
             }
         }
+//        for(Node n : AIPOS) {
+//            System.out.println(n.getScore());
+//        }
         sortNodes(AIPOS);
+//        for(Node n : AIPOS) {
+//            System.out.println(n.getScore());
+//        }
 
         int i = AIPOS[getRandomChoice()].getIndex(); //Chooses a node randomly
 
@@ -266,7 +273,7 @@ public class Simulation {
     public boolean isWinningCondition() {
 
         if (player1) {       //checking for blue
-            for (int i = 80; i > 75; i--) {
+            for (int i = 80; i > 80 - numberOfPawns; i--) {
                 if (!boardSim.getNodeColor(i).equals(Color.BLUE))
                     return false;
             }
@@ -274,7 +281,7 @@ public class Simulation {
         }
 
         else { //checking for red
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < numberOfPawns; i++) {
                 if (!boardSim.getNodeColor(i).equals(Color.RED))
                     return false;
             }

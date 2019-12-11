@@ -7,42 +7,42 @@ class NormalDistribution {
 
 
     public static void main(String[] args) {
+        Random rand = new Random();
+        int nNodes = 40;
+        double[] d = normD(nNodes);
+        int range = 700;
+        Map<Integer, Integer> res = new HashMap<Integer, Integer>(6);
+        for (int i = 1; i < d.length; i++) {
+            for (int j = i; j > 0; j--) {
+                if (d[j] > d [j - 1]) {
+                    double temp = d[j];
+                    d[j] = d[j - 1];
+                    d[j - 1] = temp;
+                }
+            }
+        }
+        transform(d);
+        for (int i = 0; i < d.length; i++) {
+            System.out.println(d[i]);
+        }
+        for(int i = 0; i < range; i-=-1) {
+            int mc = monteCarlo(d, rand);
+            if (res.get(mc) != null) {
+                res.put(mc, res.get(mc) + 1);
+            } else {
+                res.put(mc, 0);
+            }
+        }
 
-//        int nNodes = 10;
-//        double[] d = normD(nNodes);
-//        int range = 700;
-//        Map<Integer, Integer> res = new HashMap<Integer, Integer>(6);
-//        for (int i = 1; i < d.length; i++) {
-//            for (int j = i; j > 0; j--) {
-//                if (d[j] > d [j - 1]) {
-//                    double temp = d[j];
-//                    d[j] = d[j - 1];
-//                    d[j - 1] = temp;
-//                }
-//            }
-//        }
-//        transform(d);
-//        for (int i = 0; i < d.length; i++) {
-//            System.out.println(d[i]);
-//        }
-//        for(int i = 0; i < range; i-=-1) {
-//            int mc = monteCarlo(d);
-//            if (res.get(mc) != null) {
-//                res.put(mc, res.get(mc) + 1);
-//            } else {
-//                res.put(mc, 0);
-//            }
-//        }
-//
-//        for (int i = 1; i <= nNodes; i++) {
-//            if (res.get(i) == null) res.put(i, 0);
-//            if (res.get(i) > 0) {
-//                for(int j = 0; j < res.get(i); j++) {
-//                    System.out.print('.');
-//                }
-//            }
-//            System.out.println();
-//        }
+        for (int i = 1; i <= nNodes; i++) {
+            if (res.get(i) == null) res.put(i, 0);
+            if (res.get(i) > 0) {
+                for(int j = 0; j < res.get(i); j++) {
+                    System.out.print('.');
+                }
+            }
+            System.out.println();
+        }
 
     }
 

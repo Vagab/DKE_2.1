@@ -360,7 +360,7 @@ public class GUI extends JComponent {
         return bluePos;
     }
     public int[] getRedPositions(){
-        int[] redPos = new int[6]; //amount of blue pawns
+        int[] redPos = new int[6]; //amount of red pawns
         int iter = 0;
         for(int i=0; i<nodeList.length; i++){
             if(board.getNodeColor(i).equals(Color.RED)){

@@ -279,14 +279,14 @@ public class GraphOscar {
 
     private static void initializeStartingPositions(int n){
         if(n==2){
-            for(int i = 0; i < 10; i++){
+            for(int i = 0; i < 6; i++){
                 nodeList[i].setColor(Color.BLUE);
                 nodeList[120-i].setColor(Color.RED);
             }
         }
         else if(n==6){
             //PLAYER 1 AND 4
-            for(int i = 0; i < 10; i++){
+            for(int i = 0; i < 6; i++){
                 nodeList[i].setColor(Color.BLUE);
                 nodeList[120-i].setColor(Color.RED);
             }
@@ -376,7 +376,7 @@ public class GraphOscar {
     }
         else{
             //PLAYER 1
-            for(int i = 0; i < 10; i++){
+            for(int i = 0; i < 6; i++){
                 nodeList[i].setColor(Color.BLUE);
             }
             for(int k=0; k < 4; k++) {
@@ -450,7 +450,7 @@ public class GraphOscar {
             if(y[i].getLabel()==null){
                 //Do nothing
             }
-            if(y[i].isOccupied() && (i+m)!=5){ //The (i+m)!=5 statement is to make sure that the piece doesn't jump back to its original position
+            if(y[i].isOccupied() && (i+m)!=9){ //The (i+m)!=5 statement is to make sure that the piece doesn't jump back to its original position
                 if(y[i].getAdj(i).getLabel()==null){
                     //Do nothing
                 }
