@@ -35,6 +35,9 @@ public class Node {
         else
             return this.color;
     }
+    public String toString(){
+        return label; 
+    }
 
     public String getLabel(){return this.label;}
 

@@ -232,7 +232,7 @@ public class GUI6players extends JComponent {
     }
 
     public void setMove(int chosenNode) {
-        higlight(board.getSecNode(chosenNode));
+        highlight(board.getSecNode(chosenNode));
         this.previousSelectedNode = this.selectedNode;
         this.selectedNode = chosenNode;
 
@@ -247,7 +247,7 @@ public class GUI6players extends JComponent {
             removeOneHighlight(nodeList[previousSelectedNode]);
         }
 
-        higlight(board.getSecNode(chosenNode));
+        highlight(board.getSecNode(chosenNode));
 
         if (previousSelectedNode == selectedNode) {
             removehighlight(nodeList[previousSelectedNode], nodeList[selectedNode]);
@@ -339,7 +339,7 @@ public class GUI6players extends JComponent {
         repaint();
     }
 
-    public void higlight(Node n) {
+    public void highlight(Node n) {
         if (currentPlayer == 1 && n.getColor() == Color.BLUE) {
             ArrayList<Node> tr = board.popularChoice(n);
             for (int i = 0; i < tr.size(); i++) {

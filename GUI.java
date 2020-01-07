@@ -15,8 +15,8 @@ public class GUI extends JComponent {
 //    ArrayList<Color> colorsOfPlayers = new ArrayList<Color>();
     Node[] nodeList;
     int selectedNode, previousSelectedNode = -1;
-    public static boolean firstMove = false;
-    static long start = System.nanoTime();
+    public boolean firstMove = false;
+    long start = System.nanoTime();
     int currentPlayer = 1;
     int turnsCount = 1;
 //    int nrsP;
@@ -99,29 +99,10 @@ public class GUI extends JComponent {
 
     }
 
-//    public boolean isWinningCondition(Color color) {
-//        if (color.equals(Color.RED)) {
-//            for (int i = 0; i <= 5; i++) {
-//                if (!board.getNodeColor(i).equals(Color.RED))
-//                    return false;
-//            }
-//            return true;
-//        }
-//        else if (color.equals(Color.BLUE)) {
-//            for (int i = 80; i >= 75; i--) {
-//                if (!board.getNodeColor(i).equals(Color.BLUE))
-//                    return false;
-//            }
-//            return true;
-//        }
-//        return false;
-//    }
-
-
     public double evaluationFunction(double distanceFromMiddleWeight, double distanceToGoalWeight, double radiusWeight,double maxAdvanceWeight, Graph graph, Color color) {
         double evaluationValue = 0;
         Node destinationNode;
-        ArrayList<Node> army = graph.getArmy(color);
+        ArrayList<Node> army = graph.getNodeArmy(color);
         if (color.equals(Color.RED)){
             destinationNode = graph.getRedAIDestinationNode(); //Is just to test the red AI
         }
@@ -151,12 +132,12 @@ public class GUI extends JComponent {
     }
 
     public double maxValue(Graph graph,int cutOff) {
-        ArrayList<ArrayList<Node>> armyStates = stateGenerator(Color.RED,graph);
-        ArrayList<Node> minArmy = graph.getArmy(Color.BLUE);
+        ArrayList<ArrayList<Integer>> armyStates = stateGenerator(Color.RED,graph);
+        ArrayList<Integer> minArmy = graph.getArmy(Color.BLUE);
         double evaluationValue = -1000000000;
         if (depth < cutOff) {
             depth++;
-            for (ArrayList<Node> armyState : armyStates) {
+            for (ArrayList<Integer> armyState : armyStates) {
                 evaluationValue = Math.max(evaluationValue, minValue(new Graph(armyState, minArmy),cutOff));
 //                System.out.println(evaluationValue);
             }
@@ -168,12 +149,12 @@ public class GUI extends JComponent {
     }
 
     public double minValue(Graph graph,int cutOff) {
-        ArrayList<ArrayList<Node>> armyStates = stateGenerator(Color.BLUE,graph);
-        ArrayList<Node> maxArmy = graph.getArmy(Color.RED);
+        ArrayList<ArrayList<Integer>> armyStates = stateGenerator(Color.BLUE,graph);
+        ArrayList<Integer> maxArmy = graph.getArmy(Color.RED);
         double evaluationValue = 1000000000;
         if (depth < cutOff) {
             depth++;
-            for (ArrayList<Node> armyState : armyStates) {
+            for (ArrayList<Integer> armyState : armyStates) {
                 evaluationValue = Math.min(evaluationValue, maxValue(new Graph(maxArmy, armyState),cutOff));
                 System.out.println("At depth " + depth + " the evaluation value is: " + evaluationValue);
                 System.out.println("The maxvalue thing is: " + maxValue(new Graph(maxArmy, armyState),cutOff));
@@ -191,27 +172,28 @@ public class GUI extends JComponent {
 //        System.out.println(bestValue);
     }
 
-    public ArrayList<ArrayList<Node>> stateGenerator(Color color, Graph graph) {
-        ArrayList<Node> AIArmy = graph.getArmy(color); // |Army_1| times
-        ArrayList<ArrayList<Node>> armyStates = new ArrayList<>();
-        for (Node node : AIArmy) { // |Army_1| times
-            ArrayList<Node> tr = graph.popularChoice(node); //|Army_1|*6^(|Army_1+Army_2-1|) times
+    public ArrayList<ArrayList<Integer>> stateGenerator(Color color, Graph graph) {
+        ArrayList<Integer> AIArmy = graph.getArmy(color); // |Army_1| times
+        ArrayList<ArrayList<Integer>> armyStates = new ArrayList<>();
+        for (Integer node : AIArmy) { // |Army_1| times
+            ArrayList<Node> tr = graph.popularChoice(graph.getSecNode(node)); //|Army_1|*6^(|Army_1+Army_2-1|) times
+            System.out.println(tr);
             for (Node move : tr) {
                 if (!move.getLabel().equals("null")) {
-                    ArrayList<Node> armyState = (ArrayList<Node>) AIArmy.clone();
+                    ArrayList<Integer> armyState = (ArrayList<Integer>) AIArmy.clone();
                     armyState.remove(node);
-                    armyState.add(move);
+                    armyState.add(graph.getNodeIndex(move));
                     armyStates.add(armyState);
-                    System.out.println(armyToString(armyState) + color.toString());
+                    //System.out.println(armyToString(armyState) + color.toString());
                 }
             }
         }
         return armyStates;
     }
 
-    public int maxAdvanceOfAllPieces(ArrayList<Node> army,Node destinationNode) {
+    public int maxAdvanceOfAllPieces(ArrayList<Node> army, Node destinationNode) {
         int maxAdvance = 0;
-        System.out.println(armyToString(army));
+        //System.out.println(armyToString(army));
         for (Node node : army) {
             ArrayList<Node> tr = board.popularChoice(node);// has to change to graph
             int maxNodeAdvance = 0;
@@ -293,7 +275,7 @@ public class GUI extends JComponent {
     }
 
     public void setMove(int chosenNode) {
-        higlight(board.getSecNode(chosenNode));
+        highlight(board.getSecNode(chosenNode));
         this.previousSelectedNode = this.selectedNode;
         this.selectedNode = chosenNode;
 
@@ -308,7 +290,7 @@ public class GUI extends JComponent {
             removeOneHighlight(nodeList[previousSelectedNode]);
         }
 
-        higlight(board.getSecNode(chosenNode));
+        highlight(board.getSecNode(chosenNode));
 
         if (previousSelectedNode == selectedNode) {
             removehighlight(nodeList[previousSelectedNode], nodeList[selectedNode]);
@@ -350,7 +332,7 @@ public class GUI extends JComponent {
 
     }
 
-    public void higlight(Node n) {
+    public void highlight(Node n) {
         if (player1 && n.getColor() == Color.BLUE) {
             ArrayList<Node> tr = board.popularChoice(n);
             for (int i = 0; i < tr.size(); i++) {
@@ -400,7 +382,7 @@ public class GUI extends JComponent {
             int var3 = var1.getY();
             GUI.this.clickedForNode(var2, var3);
             if (!player1) {
-                miniMax(3);
+                miniMax(1);
                 player1 = true;
             }
         }
