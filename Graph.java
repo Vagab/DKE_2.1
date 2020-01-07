@@ -397,16 +397,21 @@ public class Graph {
         oG.clear();
         Node[] availableNodes = n.adjN(); // Gets adjacent nodes from node n
         for (int i = 0; i < availableNodes.length; i++) { // Goes through all neighbour nodes of n
-            Node[] av = n.adjN();
-            if (!n.isOccupied()) { // if node n is not occupied, it is added to the list of available spots
-                oG.add(n);
-            } else if (!av[i].isOccupied()) {
-                oG.add(av[i]); // if node n is occupied, we check whether the node which lies in the
-                               // i-direction is available
-                isItGucci(av[i], i);
-            }
+            choose(availableNodes[i], i);
         }
         return oG;
+    }
+
+    public void choose(Node n, int i){
+        Node[] av = n.adjN();
+        if(!n.isOccupied()){ //if node n is not occupied, it is added to the list of available spots
+            oG.add(n);
+        }
+        else if(!av[i].isOccupied()){
+            oG.add(av[i]); //if node n is occupied, we check whether the node which lies in the i-direction is available
+            isItGucci(av[i], i);
+        }
+
     }
 
     public void isItGucci(Node n, int m) {
