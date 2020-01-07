@@ -7,10 +7,10 @@ import javax.swing.event.ChangeListener;
 public class CCheckers {
 
     private static JFrame frame;
-    private static GUI6players disp;
+    private static GUI disp;
 
 
-    CCheckers(int n) {
+    CCheckers() {
 
 
         frame = new JFrame("Chinese Checkers");
@@ -19,7 +19,7 @@ public class CCheckers {
         frame.setSize(1200, 1000);
 
         //our GUI + physics
-        disp = new GUI6players(n);
+        disp = new GUI();
 
        /*
        @    We set a GridLayout to display our sliders at the right location on the left of the screen
@@ -28,14 +28,6 @@ public class CCheckers {
         disp.setLayout(new GridLayout(0, 10));
 
         //ads the GUI to the frame
-        frame.setContentPane(disp);
-        frame.setVisible(true);
-    }
-
-    public static void changeScene(){
-        disp.setLayout(new GridLayout(0, 10));
-
-        //adds the GUI to the frame
         frame.setContentPane(disp);
         frame.setVisible(true);
     }
