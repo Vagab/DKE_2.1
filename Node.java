@@ -15,11 +15,13 @@ public class Node {
         this.label = label;
         this.X = X;
         this.Y = Y;
-        for (Node node : adjacentNeigh) {
-            node = new Node("null", -1,-1);
+        if(!label.equals("null")){
+            for (Node node : adjacentNeigh) {
+                node = new Node("null", -1,-1);
+            }
         }
     }
-    
+
 
     public void setColor(Color color){
         if(color.equals(Color.BLUE)|| color.equals(Color.RED)|| color.equals(Color.GRAY)|| color.equals(Color.ORANGE)
