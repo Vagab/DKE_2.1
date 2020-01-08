@@ -11,13 +11,15 @@ public class Node {
     private boolean occupied = false;
 
 
-
-
     public Node(String label, int X, int Y){
         this.label = label;
         this.X = X;
         this.Y = Y;
+        for (Node node : adjacentNeigh) {
+            node = new Node("null", -1,-1);
+        }
     }
+    
 
     public void setColor(Color color){
         if(color.equals(Color.BLUE)|| color.equals(Color.RED)|| color.equals(Color.GRAY)|| color.equals(Color.ORANGE)
@@ -46,36 +48,28 @@ public class Node {
     public int getY(){return this.Y;}
 
     public Node getUpRight(){
-        if(this.upRight == null){return new Node("null", -1,-1);}
-        else
-            return this.upRight; }
+        return this.upRight;
+    }
 
     public Node getUpLeft(){
-        if(this.upLeft == null){return new Node("null", -1,-1);}
-        else
-            return this.upLeft; }
+        return this.upLeft; 
+    }
 
     public Node getRight(){
-        if(this.right == null){return new Node("null", -1,-1);}
-        else
-            return this.right; }
+        return this.right; 
+        }
 
     public Node getLeft(){
-        if(this.left == null){return new Node("null", -1,-1);}
-        else
-            return this.left; }
+        return this.left; 
+    }
 
     public Node getdRight(){
-        if(this.dRight == null){return new Node("null", -1,-1);}
-        else
-            return this.dRight;}
+        return this.dRight;
+    }
 
     public Node getdLeft(){
-        if(this.dLeft == null){return new Node("null", -1,-1);}
-        else
-            return this.dLeft;}
-
-
+        return this.dLeft;
+    }
 
     public void addEdge(Node toConnect){
 
@@ -144,25 +138,14 @@ public class Node {
     }
 
     public Node[] adjN(){
-        Node[] neigh =  {upRight, upLeft, right, left, dRight, dLeft};
-        for(int i=0; i<neigh.length; i++){
-            if(neigh[i]==null){
-                neigh[i]=new Node("null", -1, -1);
-            }
-        }
-        return neigh;
-
+        return this.adjacentNeigh;
     }
     public Node getAdj(int i){
-        Node[] neigh =  {upRight, upLeft, right, left, dRight, dLeft};
-        if(neigh[i]==null){
-            return new Node("null", -1, -1);
-        }
-        return neigh[i];
+        return this.adjacentNeigh[i];
     }
 
     public void setOccupy(Boolean occupy){
-        occupied = occupy;
+        this.occupied = occupy;
     }
 
 }
