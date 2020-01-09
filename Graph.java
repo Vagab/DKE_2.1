@@ -38,20 +38,20 @@ public class Graph {
         this.initializeStartingPositions(2);
     }
 
-    public Graph(ArrayList<Integer> armyRed, ArrayList<Integer> armyBlue) {
+    public Graph(ArrayList<Integer> army1, ArrayList<Integer> army2, Color army1Color, Color army2Color) {
         this.numPly = 2;
         this.makeNodes();
         this.makeNodeList();
         this.connectEdges();
-        this.customGraphInitializer(armyRed, armyBlue);
+        this.customGraphInitializer(army1, army2, army1Color, army2Color);
     }
 
-    public void customGraphInitializer(ArrayList<Integer> armyRed, ArrayList<Integer> armyBlue) {
-        for (Integer node : armyRed) {
-            getSecNode(node).setColor(Color.RED);
+    public void customGraphInitializer(ArrayList<Integer> army1, ArrayList<Integer> army2, Color army1Color, Color army2Color) {
+        for (Integer node : army1) {
+            getSecNode(node).setColor(army1Color);
         }
-        for (Integer node : armyBlue) {
-            getSecNode(node).setColor(Color.BLUE);
+        for (Integer node : army2) {
+            getSecNode(node).setColor(army2Color);
         }
     }
 
@@ -397,7 +397,9 @@ public class Graph {
         oG.clear();
         Node[] availableNodes = n.adjN(); // Gets adjacent nodes from node n
         for (int i = 0; i < availableNodes.length; i++) { // Goes through all neighbour nodes of n
-            choose(availableNodes[i], i);
+            if(!availableNodes[i].getLabel().equals("null")){
+                choose(availableNodes[i], i);
+            }
         }
         return oG;
     }
@@ -407,7 +409,7 @@ public class Graph {
         if(!n.isOccupied()){ //if node n is not occupied, it is added to the list of available spots
             oG.add(n);
         }
-        else if(!av[i].isOccupied()){
+        else if(!av[i].isOccupied()&&!av[i].getLabel().equals("null")){
             oG.add(av[i]); //if node n is occupied, we check whether the node which lies in the i-direction is available
             isItGucci(av[i], i);
         }
@@ -417,20 +419,15 @@ public class Graph {
     public void isItGucci(Node n, int m) {
         Node[] y = n.adjN(); // gets neighbours of node n
         for (int i = 0; i < y.length; i++) {
-            if (y[i].getLabel() == null) {
-                // Do nothing
-            }
-            if (y[i].isOccupied() && (i + m) != 5) { // The (i+m)!=5 statement is to make sure that the piece doesn't
+            if (!y[i].getLabel().equals("null") &&
+                y[i].isOccupied() && (i + m) != 5 && // The (i+m)!=5 statement is to make sure that the piece doesn't
                                                      // jump back to its original position
-                if (y[i].getAdj(i).getLabel() == null) {
-                    // Do nothing
-                }
-                if (!y[i].getAdj(i).isOccupied()) { //
-                    if (!oG.contains(y[i].getAdj(i))) {
-                        oG.add(y[i].getAdj(i));
-                        isItGucci(y[i].getAdj(i), i);
-                    }
-                }
+                !y[i].getAdj(i).isOccupied() &&
+                !y[i].getAdj(i).getLabel().equals("null") &&
+                !oG.contains(y[i].getAdj(i))) {
+
+                oG.add(y[i].getAdj(i));
+                isItGucci(y[i].getAdj(i), i);
             }
         }
     }
@@ -483,7 +480,7 @@ public class Graph {
         double y = 0;
         if (Math.signum(dx) != Math.signum(dy)) {
             x = 0.5 * Math.abs(dx);
-            y = Math.sqrt(3) / 2.0 * Math.abs(dx) + Math.abs(dy);
+            y = Math.sqrt(3) / 2.0 * Math.abs(dx); //Removed '+ Math.abs(dy)'
             return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
         } else {
             x = 0.5 * (Math.abs(dx - dy) - Math.abs(dy));

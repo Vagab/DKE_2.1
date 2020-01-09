@@ -7,7 +7,6 @@ public class Node {
     private int X, Y;       //coordinates of the node in the board
     private Node upRight, upLeft, right, left, dRight, dLeft; // connections with other nodes
     private Color color;
-    private Node[] adjacentNeigh = {upRight, upLeft, right, left, dRight, dLeft};
     private boolean occupied = false;
 
 
@@ -16,12 +15,14 @@ public class Node {
         this.X = X;
         this.Y = Y;
         if(!label.equals("null")){
-            for (Node node : adjacentNeigh) {
-                node = new Node("null", -1,-1);
-            }
+            upRight = new Node("null", -1, -1);
+            upLeft = new Node("null", -1, -1);
+            right = new Node("null", -1, -1);
+            left = new Node("null", -1, -1);
+            dRight = new Node("null", -1, -1);
+            dLeft = new Node("null", -1, -1);
         }
     }
-
 
     public void setColor(Color color){
         if(color.equals(Color.BLUE)|| color.equals(Color.RED)|| color.equals(Color.GRAY)|| color.equals(Color.ORANGE)
@@ -140,10 +141,11 @@ public class Node {
     }
 
     public Node[] adjN(){
-        return this.adjacentNeigh;
+        return new Node[]{upRight, upLeft, right, left, dRight, dLeft};
     }
     public Node getAdj(int i){
-        return this.adjacentNeigh[i];
+        Node[] neigh = new Node[]{upRight, upLeft, right, left, dRight, dLeft};
+        return neigh[i];
     }
 
     public void setOccupy(Boolean occupy){
