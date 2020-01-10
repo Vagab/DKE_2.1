@@ -36,9 +36,19 @@ public class GraphOscar {
         makeNodes();
         makeNodeList();
         connectEdges();
-        testNode(nodeList[50]); //test adjacent nodes
-        testNodeColor(EG);      //test the color of a node by printing it
-        testNode(GE);
+        ArrayList<Node> nodes = new ArrayList<>();
+        nodes.add(QA);
+        nodes.add(PA);
+        nodes.add(PB);
+//        System.out.println(straightLineDistance(AA,J1));
+        for (Node node : nodeList) {
+            System.out.println(straightLineDistance(AA,node));
+        }
+
+
+
+//        System.out.println(centroidNodeDistance(nodes,MC));
+//        System.out.println(centroidNodeDistance(nodes,ME));
     }
 
     public GraphOscar(int n){
@@ -49,55 +59,44 @@ public class GraphOscar {
         initializeStartingPositions(n);
     }
 
-    public static void testNode(Node node){
-        /*
-         *   Provides the adjacent nodes
-         *   Useful to check connections
-         */
-        if(node.getLabel() == null){System.out.println("This is not a valid node.");}
-        else{
-
-            if(!node.getUpRight().getLabel().equals("null")){
-                System.out.println("The upRight node of " + node.getLabel() + " is " + node.getUpRight().getLabel());
-            }
-            else{System.out.println("There is no upRight node for " + node.getLabel());}
-
-            if(!node.getRight().getLabel().equals("null")){
-                System.out.println("The Right node of " + node.getLabel() + " is " + node.getRight().getLabel());
-            }
-            else{System.out.println("There is no Right node for " + node.getLabel());}
-
-            if(!node.getdRight().getLabel().equals("null")){
-                System.out.println("The dRight node of " + node.getLabel() + " is " + node.getdRight().getLabel());
-            }
-            else{System.out.println("There is no dRight node for " + node.getLabel());}
-
-            if(!node.getdLeft().getLabel().equals("null")){
-                System.out.println("The dLeft node of " + node.getLabel() + " is " + node.getdLeft().getLabel());
-            }
-            else{System.out.println("There is no dLeft node for " + node.getLabel());}
-
-            if(!node.getLeft().getLabel().equals("null")){
-                System.out.println("The Left node of " + node.getLabel() + " is " + node.getLeft().getLabel());
-            }
-            else{System.out.println("There is no Left node for " + node.getLabel());}
-
-            if(!node.getUpLeft().getLabel().equals("null")){
-                System.out.println("The UpLeft node of " + node.getLabel() + " is " + node.getUpLeft().getLabel());
-            }
-            else{System.out.println("There is no UpLeft node for " + node.getLabel());}
-
-        }
-
+    public GraphOscar(int n, ArrayList<Integer> army1, ArrayList<Integer> army2,
+                 ArrayList<Integer> army3, ArrayList<Integer> army4,
+                 ArrayList<Integer> army5, ArrayList<Integer> army6,
+                 Color army1Color, Color army2Color,
+                 Color army3Color, Color army4Color,
+                 Color army5Color, Color army6Color) {
+        this.numPly = n;
+        this.makeNodes();
+        this.makeNodeList();
+        this.connectEdges();
+        this.customGraphInitializer(army1, army2, army3, army4, army5, army6,
+                army1Color, army2Color, army3Color, army4Color, army5Color, army6Color);
     }
 
-    public static void testNodeColor(Node node){
-
-        System.out.println("-------------------------");
-        System.out.println(node.getColor());
-        System.out.println("-------------------------");
-
-
+    public void customGraphInitializer(ArrayList<Integer> army1, ArrayList<Integer> army2,
+                                       ArrayList<Integer> army3, ArrayList<Integer> army4,
+                                       ArrayList<Integer> army5, ArrayList<Integer> army6,
+                                       Color army1Color, Color army2Color,
+                                       Color army3Color, Color army4Color,
+                                       Color army5Color, Color army6Color) {
+        for (Integer node : army1) {
+            getSecNode(node).setColor(army1Color);
+        }
+        for (Integer node : army2) {
+            getSecNode(node).setColor(army2Color);
+        }
+        for (Integer node : army3) {
+            getSecNode(node).setColor(army3Color);
+        }
+        for (Integer node : army4) {
+            getSecNode(node).setColor(army4Color);
+        }
+        for (Integer node : army5) {
+            getSecNode(node).setColor(army5Color);
+        }
+        for (Integer node : army6) {
+            getSecNode(node).setColor(army6Color);
+        }
     }
 
     private static void makeNodes(){
@@ -418,6 +417,14 @@ public class GraphOscar {
     public Node[] getNodes(){
         return this.nodeList;
     }
+    public int getNodeIndex(Node node){
+        for(int i = 0; i < nodeList.length; i++){
+            if(nodeList[i].equals(node)){
+                return i;
+            }
+        }
+        return -1;
+    }
 
     //Oscar
 
@@ -464,10 +471,127 @@ public class GraphOscar {
         }
     }
 
-    public static void display(){
-        for (int i=0; i<oG.size();i++ ) {
-            System.out.println("possible move "+oG.get(i).getLabel());
+    public static int stepDistance(Node node1, Node node2) {
+        int dx = node2.getX() - node1.getX();
+        int dy = node2.getY() - node1.getY();
+        if (Math.signum(dx) != Math.signum(dy)) {
+            return Math.abs(dx - dy);
+        } else {
+            return Math.max(Math.abs(dx), Math.abs(dy));
         }
+    }
+
+    public static double[] centroid(ArrayList<Node> nodes) {
+        double x = 0;
+        double y = 0;
+        double[] centroidCoordinates = new double[2];
+        for (Node node : nodes) {
+            x += node.getX();
+            y += node.getY();
+        }
+        centroidCoordinates[0] = x / nodes.size();
+        centroidCoordinates[1] = y / nodes.size();
+        return centroidCoordinates;
+    }
+
+    public static double distanceToMiddleLine(Node node, Color colorAI) {
+        Node referenceNode = AA;
+        int dx = node.getX() - referenceNode.getX();
+        int dy = node.getY() - referenceNode.getY();
+        if (Math.signum(dx) != Math.signum(dy)) {
+            return 0.5 * Math.abs(dx);
+        } else {
+            return Math.abs(0.5 * (Math.abs(dx - dy) - Math.abs(dy)));
+        }
+    }
+
+    public static double centroidNodeDistance(ArrayList<Node> nodes, Node destinationNode) {
+        double[] centroidCoordinates = centroid(nodes);
+        double dx = destinationNode.getX() - centroidCoordinates[0];
+        double dy = destinationNode.getY() - centroidCoordinates[1];
+        double x = 0;
+        double y = 0;
+        if (Math.signum(dx) != Math.signum(dy)) {
+            x = 0.5 * Math.abs(dx) + Math.abs(dy);
+            y = Math.sqrt(3) / 2.0 * Math.abs(dx);
+            return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        }
+        else {
+            x =  Math.abs(0.5*dx - dy);
+            y = Math.sqrt(3) / 2.0 * Math.abs(dx);
+            return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        }
+    }
+
+    public static double radius(ArrayList<Node> nodes) {
+        double armyRadius = 0;
+        for (Node node : nodes) {
+            if (centroidNodeDistance(nodes, node) > armyRadius) {
+                armyRadius = centroidNodeDistance(nodes, node);
+            }
+        }
+        return armyRadius;
+    }
+
+    public static double straightLineDistance(Node node1, Node node2) {
+        int dx = node2.getX() - node1.getX(); // Steps in the downward direction
+        int dy = node2.getY() - node1.getY(); // Steps in the sideway direction
+        double x = 0;
+        double y = 0;
+        if (Math.signum(dx) != Math.signum(dy)) {
+            x = 0.5 * Math.abs(dx) + Math.abs(dy);
+            y = Math.sqrt(3) / 2.0 * Math.abs(dx);
+            return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        }
+        else {
+            x =  Math.abs(0.5*dx - dy);
+            y = Math.sqrt(3) / 2.0 * Math.abs(dx);
+            return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
+        }
+    }
+
+    public Node getRedAIDestinationNode() {
+        return AA;
+    }
+
+    public Node getBlueAIDestinationNode() {
+        return QA;
+    }
+
+    public Node getBlackAIDestinationNode() {
+        return M4;
+    }
+
+    public Node getGreyAIDestinationNode() {
+        return EI;
+    }
+
+    public Node getGreenAIDestinationNode() {
+        return E4;
+    }
+
+    public Node getOrangeAIDestinationNode() {
+        return MI;
+    }
+
+    public ArrayList<Integer> getArmy(Color color) {
+        ArrayList<Integer> army = new ArrayList<>();
+        for (Node node : nodeList) {
+            if (node.getColor().equals(color)) {
+                army.add(getNodeIndex(node));
+            }
+        }
+        return army;
+    }
+
+    public ArrayList<Node> getNodeArmy(Color color) {
+        ArrayList<Node> army = new ArrayList<>();
+        for (Node node : nodeList) {
+            if (node.getColor().equals(color)) {
+                army.add(node);
+            }
+        }
+        return army;
     }
 
 }

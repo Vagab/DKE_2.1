@@ -8,10 +8,9 @@ public class Graph {
      *
      */
     public Node[] nodeList;
-    public Color lightBlue = new Color(0, 0, 182, 155);
     public int numPly; // Number of players
 
-    private static Node
+    private Node
                             AA,
                           BA, BB,
                         CA, CB, CC,
@@ -53,66 +52,6 @@ public class Graph {
         for (Integer node : army2) {
             getSecNode(node).setColor(army2Color);
         }
-    }
-
-    public void testNode(Node node) {
-        /*
-         * Provides the adjacent nodes Useful to check connections
-         */
-        if (node.getLabel() == null) {
-            System.out.println("This is not a valid node.");
-        } else {
-
-            if (!node.getUpRight().getLabel().equals("null")) {
-                System.out.println("The upRight node of " + node.getLabel() + " is " + node.getUpRight().getLabel());
-            } else {
-                System.out.println("There is no upRight node for " + node.getLabel());
-            }
-
-            if (!node.getRight().getLabel().equals("null")) {
-                System.out.println("The Right node of " + node.getLabel() + " is " + node.getRight().getLabel());
-            } else {
-                System.out.println("There is no Right node for " + node.getLabel());
-            }
-
-            if (!node.getdRight().getLabel().equals("null")) {
-                System.out.println("The dRight node of " + node.getLabel() + " is " + node.getdRight().getLabel());
-            } else {
-                System.out.println("There is no dRight node for " + node.getLabel());
-            }
-
-            if (!node.getdLeft().getLabel().equals("null")) {
-                System.out.println("The dLeft node of " + node.getLabel() + " is " + node.getdLeft().getLabel());
-            } else {
-                System.out.println("There is no dLeft node for " + node.getLabel());
-            }
-
-            if (!node.getLeft().getLabel().equals("null")) {
-                System.out.println("The Left node of " + node.getLabel() + " is " + node.getLeft().getLabel());
-            } else {
-                System.out.println("There is no Left node for " + node.getLabel());
-            }
-
-            if (!node.getUpLeft().getLabel().equals("null")) {
-                System.out.println("The UpLeft node of " + node.getLabel() + " is " + node.getUpLeft().getLabel());
-            } else {
-                System.out.println("There is no UpLeft node for " + node.getLabel());
-            }
-
-        }
-
-    }
-
-    public void testNodeColor(Node node) {
-
-        if (node.getColor().equals(Color.BLUE)) {
-            System.out.println("The color of the node " + node.getLabel() + " is BLUE");
-        } else if (node.getColor().equals(Color.RED)) {
-            System.out.println("The color of the node " + node.getLabel() + " is RED");
-        } else {
-            System.out.println("The color of the node " + node.getLabel() + " is WHITE");
-        }
-
     }
 
     private void makeNodes() {
@@ -432,12 +371,6 @@ public class Graph {
         }
     }
 
-    public void display() {
-        for (int i = 0; i < oG.size(); i++) {
-            System.out.println("possible move " + oG.get(i).getLabel());
-        }
-    }
-
     public int stepDistance(Node node1, Node node2) {
         int dx = node2.getX() - node1.getX();
         int dy = node2.getY() - node1.getY();
@@ -479,11 +412,12 @@ public class Graph {
         double x = 0;
         double y = 0;
         if (Math.signum(dx) != Math.signum(dy)) {
-            x = 0.5 * Math.abs(dx);
-            y = Math.sqrt(3) / 2.0 * Math.abs(dx); //Removed '+ Math.abs(dy)'
+            x = 0.5 * Math.abs(dx) + Math.abs(dy);
+            y = Math.sqrt(3) / 2.0 * Math.abs(dx);
             return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        } else {
-            x = 0.5 * (Math.abs(dx - dy) - Math.abs(dy));
+        }
+        else {
+            x =  Math.abs(0.5*dx - dy);
             y = Math.sqrt(3) / 2.0 * Math.abs(dx);
             return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
         }
@@ -505,17 +439,16 @@ public class Graph {
         double x = 0;
         double y = 0;
         if (Math.signum(dx) != Math.signum(dy)) {
-            x = 0.5 * Math.abs(dx);
-            y = Math.sqrt(3) / 2.0 * Math.abs(dx) + Math.abs(dy);
+            x = 0.5 * Math.abs(dx) + Math.abs(dy);
+            y = Math.sqrt(3) / 2.0 * Math.abs(dx);
             return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        } else {
-            x = 0.5 * (Math.abs(dx - dy) - Math.abs(dy));
+        }
+        else {
+            x =  Math.abs(0.5*dx - dy);
             y = Math.sqrt(3) / 2.0 * Math.abs(dx);
             return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
         }
     }
-
-    // public static int maxAdvance()
 
     public Node getRedAIDestinationNode() {
         return AA;

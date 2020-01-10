@@ -87,7 +87,7 @@ public class GUI extends JComponent {
 
     public boolean redGoalCheck(Graph graph) {
         for (int i = 0; i <= 5; i++) {
-            if (!board.getNodeColor(i).equals(Color.RED))
+            if (!graph.getNodeColor(i).equals(Color.RED))
                 return false;
         }
         return true;
@@ -103,9 +103,12 @@ public class GUI extends JComponent {
         }
 
     }
-
-    public double evaluationFunction(double distanceFromMiddleWeight, double distanceToGoalWeight, double radiusWeight,double maxAdvanceWeight, Graph graph, Color colorAI) {
+//double distanceFromMiddleWeight, double distanceToGoalWeight, double radiusWeight
+    public double evaluationFunction(double[] weights, Graph graph, Color colorAI) {
         double evaluationValue = 0;
+        double distanceFromMiddleWeight = weights[0];
+        double distanceToGoalWeight = weights[1];
+        double radiusWeight = weights[2];
         ArrayList<Node> redArmy = graph.getNodeArmy(Color.RED);
         ArrayList<Node> blueArmy = graph.getNodeArmy(Color.BLUE);
 
@@ -114,9 +117,9 @@ public class GUI extends JComponent {
                 return 1000;
             }
 
-            if (blueGoalCheck(graph)) {
-                return -1000;
-            }
+//            if (blueGoalCheck(graph)) {
+//                return -1000;
+//            }
         }
 
         if (colorAI.equals(Color.BLUE)) {
@@ -124,9 +127,9 @@ public class GUI extends JComponent {
                 return 1000;
             }
 
-            if (redGoalCheck(graph)) {
-                return -1000;
-            }
+//            if (redGoalCheck(graph)) {
+//                return -1000;
+//            }
         }
 
         Node destinationNodeRed = graph.getRedAIDestinationNode();
@@ -154,16 +157,17 @@ public class GUI extends JComponent {
         evaluationValue = -distanceToGoalWeight * (distanceToGoalRed - distanceToGoalBlue)
                 - distanceFromMiddleWeight * (distanceFromMiddleRed - distanceFromMiddleBlue)
                 - radiusWeight * (radiusRed - radiusBlue);
-//        System.out.println("The evaluation value is: " + evaluationValue);
         if (colorAI.equals(Color.RED)) {
+//            System.out.println("The evaluation value is: " + evaluationValue + " for red. " + armyToString(graph.getArmy(Color.RED)));
             return evaluationValue;
         }
         else { // If color is blue
+//            System.out.println("The evaluation value is: " + -evaluationValue + " for blue. " + armyToString(graph.getArmy(Color.BLUE)));
             return -evaluationValue; // math checks out
         }
     }
 
-    public double maxValue(Graph graph,int cutOff, int depth, double alpha, double beta, Color color) {
+    public double maxValue(Graph graph,int cutOff, int depth, double alpha, double beta, Color color, double[] weights) {
         ArrayList<ArrayList<Integer>> armyStates = new ArrayList<>();
         ArrayList<Integer> minArmy = new ArrayList<>();
         Color colorOpponent = Color.BLACK;
@@ -181,18 +185,14 @@ public class GUI extends JComponent {
         if (depth < cutOff) {
             depth++;
             for (ArrayList<Integer> armyState : armyStates) {
-                if (color.equals(Color.BLUE)) {
-                    System.out.println("At depth " + depth + " " + armyToString(armyState) + " " + evaluationFunction(.5,8,1,0, new Graph(armyState, minArmy, color, colorOpponent), color));
-                }
-                if (evaluationFunction(.5,8,1,0, new Graph(armyState, minArmy, color, colorOpponent), color) == 1000) {
+                if (evaluationFunction(weights, new Graph(armyState, minArmy, color, colorOpponent), color) == 1000) {
                     if (depth == 1) {
                         bestMove = armyState;
-                        System.out.println("Triggered");
                     }
                     return 1000;
                 }
                 double evaluationValuePrevious = evaluationValue;
-                evaluationValue = Math.max(evaluationValue, minValue(new Graph(armyState, minArmy, color, colorOpponent),cutOff, depth, alpha, beta, color));
+                evaluationValue = Math.max(evaluationValue, minValue(new Graph(armyState, minArmy, color, colorOpponent),cutOff, depth, alpha, beta, color, weights));
                 if (evaluationValuePrevious != evaluationValue && depth == 1) {
                     bestMove = armyState;
                 }
@@ -204,11 +204,11 @@ public class GUI extends JComponent {
             return evaluationValue;
         }
         else {
-            return evaluationFunction(.5,8,1,0, graph, color);
+            return evaluationFunction(weights, graph, color);
         }
     }
 
-    public double minValue(Graph graph, int cutOff, int depth, double alpha, double beta, Color color) {
+    public double minValue(Graph graph, int cutOff, int depth, double alpha, double beta, Color color, double[] weights) {
         ArrayList<ArrayList<Integer>> armyStates = new ArrayList<>();
         ArrayList<Integer> maxArmy = new ArrayList<>();
         Color colorOpponent = Color.BLACK;
@@ -226,13 +226,10 @@ public class GUI extends JComponent {
         if (depth < cutOff) {
             depth++;
             for (ArrayList<Integer> armyState : armyStates) {
-                if (color.equals(Color.BLUE)) {
-                    System.out.println("At depth " + depth + " " + armyToString(armyState));
-                }
-                if (evaluationFunction(.5,8,1,0, new Graph(maxArmy, armyState, color, colorOpponent),color) == -1000) {
+                if (evaluationFunction(weights, new Graph(maxArmy, armyState, color, colorOpponent),color) == -1000) {
                     return -1000;
                 }
-                evaluationValue = Math.min(evaluationValue, maxValue(new Graph(maxArmy, armyState, color, colorOpponent), cutOff, depth, alpha, beta, color));
+                evaluationValue = Math.min(evaluationValue, maxValue(new Graph(maxArmy, armyState, color, colorOpponent), cutOff, depth, alpha, beta, color, weights));
                 if (evaluationValue <= alpha) {
                     return evaluationValue;
                 }
@@ -241,17 +238,33 @@ public class GUI extends JComponent {
             return evaluationValue;
         }
         else {
-            return evaluationFunction(.5,8,1,0, graph, color);
+            return evaluationFunction(weights, graph, color);
         }
     }
 
-    public void miniMax(int cutOff, Color colorAI) {
+    public void miniMax(int cutOff, Color colorAI, double[] weights) {
         bestMove.clear();
-        double bestValue = maxValue(board,cutOff,0,-1000000000,1000000000, colorAI);
-        System.out.println("The best encountered value is: " + bestValue);
+        double bestValue = maxValue(board,cutOff,0,-1000000000,1000000000, colorAI, weights); // bestValue is the target function approximation
+        System.out.println("The best encountered value is: " + bestValue + " for: " + colorAI.toString());
         System.out.println("The best move is: " + armyToString(bestMove));
         setAIMove(board.getNodeArmy(colorAI), integerToNode(bestMove));
     }
+
+
+
+    // Weight tuning
+
+//    public void weightTuning() {
+//        // Initializing weights
+//        double[] weights = {0.5, 8, 1};
+//        for () {
+//            while (!(blueGoalCheck(board) || redGoalCheck(board))) { // Play 1 game
+//                miniMax(3, Color.BLUE, weights);
+//                miniMax(3, Color.RED, weights);
+//            }
+//
+//        }
+//    }
 
     public ArrayList<Node> integerToNode(ArrayList<Integer> army) {
         ArrayList<Node> nodeArmy = new ArrayList<>();
@@ -272,7 +285,6 @@ public class GUI extends JComponent {
                     armyState.remove(node);
                     armyState.add(graph.getNodeIndex(move));
                     armyStates.add(armyState);
-//                    System.out.println(armyToString(armyState) + color.toString());
                 }
             }
         }
@@ -287,13 +299,6 @@ public class GUI extends JComponent {
         return output;
     }
 
-    public String nodeArmyToString(ArrayList<Node> army) {
-        String output = "The army is: ";
-        for (Node node : army) {
-            output += node.toString() +" ";
-        }
-        return output;
-    }
 
     public void clickedForNode(int var1, int var2) {
         for(int i=0; i<81; i++){
@@ -435,20 +440,32 @@ public class GUI extends JComponent {
         }
 
         public void mouseClicked(MouseEvent var1) {
+            int move = 0;
             int var2 = var1.getX();
             int var3 = var1.getY();
             GUI.this.clickedForNode(var2, var3);
-            while (!isWinningCondition()) {
-                miniMax(3, Color.BLUE);
-                miniMax(2, Color.RED);
-                if (blueGoalCheck(board) || redGoalCheck(board));
+            double[] weights = {0.5, 10.0, 1.0};
+            while (!(blueGoalCheck(board) || redGoalCheck(board))) { // Play 1 game
+                move++;
+                System.out.println(move);
+                miniMax(1, Color.BLUE, weights);
+                miniMax(1, Color.RED, weights);
             }
+            if (blueGoalCheck(board)) {
+                System.out.println("The blue player has won");
+            }
+            else {
+                System.out.println("The red player has won");
+            }
+//            miniMax(3, Color.BLUE, weights);
+//            miniMax(3, Color.RED, weights);
 
-            miniMax(3, Color.BLUE);
-            if (!player1) {
-                miniMax(1, Color.RED);
-                player1 = true;
-            }
+
+
+//            if (!player1) {
+//                miniMax(3, Color.RED, weights);
+//                player1 = true;
+//            }
         }
 
         public void mouseEntered(MouseEvent var1) {

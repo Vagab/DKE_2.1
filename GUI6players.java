@@ -10,6 +10,8 @@ public class GUI6players extends JComponent {
     int interval = 45;
     int diameter = 40;
 
+    private ArrayList<Integer> bestMove = new ArrayList<>();
+
 
     GraphOscar board;
     ArrayList<Color> colorsOfPlayers = new ArrayList<Color>();
