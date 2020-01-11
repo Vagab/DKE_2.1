@@ -19,8 +19,6 @@ public class Simulation {
     private int numberOfPawns;
     private double[] probs;
 
-
-
     private boolean player1 = true;
     Random rand;
 
@@ -37,7 +35,12 @@ public class Simulation {
         this.numberOfPawns = blue.length;
     }
 
-    public Node startSimulation(){
+    public int getNodeNumber(Node node){
+        return node.getIndex();
+    }
+
+
+    public int startSimulation(){
         this.AIChoosesNode();
 
 
@@ -47,19 +50,19 @@ public class Simulation {
                 totalScoreBlue += boardSim.getSecNode(i).getScore();
             }
         }
-        return this.firstPlay;
-    }
 
-    public void sortNodes(Node[] arr) {
-        for (int i = 1; i < arr.length; i++) {
-            for (int j = i; j > 0; j--) {
-                if (arr[j].getScore() > arr[j - 1].getScore()) {
-                    Node temp = arr[j];
-                    arr[j] = arr[j - 1];
-                    arr[j - 1] = temp;
-                }
+        try{
+            if(this.firstPlay.getIndex() / this.firstPlay.getIndex() == 1){
+                return this.firstPlay.getIndex();
             }
+            else
+                return 0;
+        } catch (Exception e) {
+            return 0;
         }
+
+
+        //return this.firstPlay.getIndex();
     }
 
     public int getScoreResult(){
@@ -67,8 +70,8 @@ public class Simulation {
     }
 
     private int getRandomChoice(){
-//        return rand.nextInt(6);
-        return NormalDistribution.monteCarlo(probs, rand);
+        return rand.nextInt(6);
+       // return NormalDistribution.monteCarlo(probs, rand);
     }
 
     private void AIChoosesNode(){
@@ -82,7 +85,7 @@ public class Simulation {
         if(player1){color = Color.BLUE;}
         else{color = Color.RED;}
 
-        Node[] AIPOS = new Node[numberOfPawns];
+        Node[] AIPOS = new Node[6]; //6 is the amount of pawns
         int iter = 0;
         for(int i=0; i<nodeList.length; i++){
             if(boardSim.getNodeColor(i).equals(color)){
@@ -90,13 +93,6 @@ public class Simulation {
                 iter++;
             }
         }
-//        for(Node n : AIPOS) {
-//            System.out.println(n.getScore());
-//        }
-        sortNodes(AIPOS);
-//        for(Node n : AIPOS) {
-//            System.out.println(n.getScore());
-//        }
 
         int i = AIPOS[getRandomChoice()].getIndex(); //Chooses a node randomly
 
@@ -273,7 +269,7 @@ public class Simulation {
     public boolean isWinningCondition() {
 
         if (player1) {       //checking for blue
-            for (int i = 80; i > 80 - numberOfPawns; i--) {
+            for (int i = 80; i > 75; i--) {
                 if (!boardSim.getNodeColor(i).equals(Color.BLUE))
                     return false;
             }
@@ -281,7 +277,7 @@ public class Simulation {
         }
 
         else { //checking for red
-            for (int i = 0; i < numberOfPawns; i++) {
+            for (int i = 0; i < 6; i++) {
                 if (!boardSim.getNodeColor(i).equals(Color.RED))
                     return false;
             }

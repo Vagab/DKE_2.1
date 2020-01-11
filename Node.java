@@ -23,17 +23,7 @@ public class Node {
         this.Y = Y;
         this.score = score;
 
-        if(this.X<=6){this.isUpperTriangle = true;}    //
-        else if(this.X==8){this.isMiddle = true;}
-        else{ this.isUpperTriangle = false;}
-    }
-
-    public Node(String label, int X, int Y){
-        this.label = label;
-        this.X = X;
-        this.Y = Y;
-
-        if(this.X<=6){this.isUpperTriangle = true;}    //
+        if(this.X<=7){this.isUpperTriangle = true;}    //
         else if(this.X==8){this.isMiddle = true;}
         else{ this.isUpperTriangle = false;}
     }

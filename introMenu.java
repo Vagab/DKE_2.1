@@ -8,7 +8,7 @@ import java.util.Scanner;
 public class introMenu {
 
     private static JFrame frame;
-    private static GUI disp;
+    private GUI disp;
     private static String guide = "Chinese Checkers is a game in which players race each other to see who can fill their destination triangle with colored pegs first. \n While the game is neither Chinese nor Checkers, it's a fun tactical game invented in Germany but based on an American game called Halma.\n You can play the game with two to six players.";
 
 
@@ -72,7 +72,7 @@ public class introMenu {
     }
 
 
-    public static void changeScene(){
+    public void changeScene(){
         // disp = new DisplayEarth(true, 2000);
         disp.setLayout(new GridLayout(0, 10));
 

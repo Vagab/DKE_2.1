@@ -92,7 +92,7 @@ public class GUI extends JComponent {
             }
         }
 
-       if(player1 && !firstMove){ AIChoosesNode();}
+        if(player1 && !firstMove){ AIChoosesNode();}
 
     }
 
@@ -128,28 +128,28 @@ public class GUI extends JComponent {
 
     public void clickedForNode(int var1, int var2) {    //player choosing node
 
-    if(!player1) {
-        for (int i = 0; i < 81; i++) {
+        if(!player1) {
+            for (int i = 0; i < 81; i++) {
 
-            if (i <= 44) {
-                if (var1 >= board.getNodeYCoords(i) * 60 + 700 - board.getNodeXCoords(i) * 30
-                        && var1 <= board.getNodeYCoords(i) * 60 + 700 - board.getNodeXCoords(i) * 30 + 40
-                        && var2 >= board.getNodeXCoords(i) * 40 + 100
-                        && var2 <= board.getNodeXCoords(i) * 40 + 100 + 40) {
-                    setMove(i);
+                if (i <= 44) {
+                    if (var1 >= board.getNodeYCoords(i) * 60 + 700 - board.getNodeXCoords(i) * 30
+                            && var1 <= board.getNodeYCoords(i) * 60 + 700 - board.getNodeXCoords(i) * 30 + 40
+                            && var2 >= board.getNodeXCoords(i) * 40 + 100
+                            && var2 <= board.getNodeXCoords(i) * 40 + 100 + 40) {
+                        setMove(i);
+                    }
+                } else {
+                    if (var1 >= board.getNodeYCoords(i) * 60 + 700 - (16 - board.getNodeXCoords(i)) * 30
+                            && var1 <= board.getNodeYCoords(i) * 60 + 700 - (16 - board.getNodeXCoords(i)) * 30 + 40
+                            && var2 >= board.getNodeXCoords(i) * 40 + 100
+                            && var2 <= board.getNodeXCoords(i) * 40 + 100 + 40) {
+                        setMove(i);
+                    }
                 }
-            } else {
-                if (var1 >= board.getNodeYCoords(i) * 60 + 700 - (16 - board.getNodeXCoords(i)) * 30
-                        && var1 <= board.getNodeYCoords(i) * 60 + 700 - (16 - board.getNodeXCoords(i)) * 30 + 40
-                        && var2 >= board.getNodeXCoords(i) * 40 + 100
-                        && var2 <= board.getNodeXCoords(i) * 40 + 100 + 40) {
-                    setMove(i);
-                }
+
+
             }
-
-
         }
-    }
         System.out.println("PreviousSelectedNode: " + board.getNodeLabel(this.previousSelectedNode) +
                 " SelectNode = " + board.getNodeLabel(this.selectedNode) + " is FirstMove = " + this.firstMove);
     }
@@ -159,7 +159,11 @@ public class GUI extends JComponent {
         for(int i=0; i<board.getBoardSize(); i++){  //tries to make a move
             if(player1 && board.getNodeColor(i).equals(Color.BLUE)){
 
-                simulator = new LobbySimulator(this.getBluePositions(), this.getRedPositions());
+                int depthSimulation;
+                if(this.turnsCount<=20){depthSimulation = 10;}
+                else{depthSimulation = 4;}
+
+                simulator = new LobbySimulator(this.getBluePositions(), this.getRedPositions(), depthSimulation);
                 simulator.launch();
 
                 boolean done = false;
@@ -169,12 +173,12 @@ public class GUI extends JComponent {
 
                 int iNode = simulator.getBestCandidate();
                 //int iNode = i;
-               // if(board.getNodeColor(iNode).equals(Color.BLUE)){System.out.println("good");}
+                // if(board.getNodeColor(iNode).equals(Color.BLUE)){System.out.println("good");}
                 //System.out.println("Simulator returns " + board.getSecNode(simulator.getBestCandidate()).getLabel());
                 //System.out.println("AI Chooses " + board.getSecNode(iNode).getLabel());
 
 
-               // previousSelectedNode = iNode;
+                // previousSelectedNode = iNode;
                 setMove(iNode);
 
 
@@ -190,7 +194,7 @@ public class GUI extends JComponent {
                             //forbids to make moves up
                             || popChoices.get(j).getdRight().getLabel().equals(board.getSecNode(iNode).getLabel())
                             || popChoices.get(j).getdLeft().getLabel().equals(board.getSecNode(iNode).getLabel())) {
-                      }
+                    }
                     else {
                         possibleChoice[index] = popChoices.get(j);
                         index++;
@@ -360,7 +364,7 @@ public class GUI extends JComponent {
         return bluePos;
     }
     public int[] getRedPositions(){
-        int[] redPos = new int[6]; //amount of red pawns
+        int[] redPos = new int[6]; //amount of blue pawns
         int iter = 0;
         for(int i=0; i<nodeList.length; i++){
             if(board.getNodeColor(i).equals(Color.RED)){
