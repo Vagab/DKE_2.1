@@ -6,8 +6,8 @@ import javax.swing.event.ChangeListener;
 
 public class CCheckers {
 
-    private static JFrame frame;
-    private static GUI disp;
+    private JFrame frame;
+    private GUI disp;
 
 
     CCheckers() {
@@ -32,7 +32,7 @@ public class CCheckers {
         frame.setVisible(true);
     }
 
-    public static void changeScene(){
+    public void changeScene(){
         disp.setLayout(new GridLayout(0, 10));
 
         //adds the GUI to the frame

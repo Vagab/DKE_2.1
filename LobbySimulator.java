@@ -1,21 +1,28 @@
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LobbySimulator {
 
     private Node bestCandidate;
-    private int playLimit = 10;
-    private int totalSimulations = 1000;
+    private int playLimit;
+    private int totalSimulations = 100000;
     int totalScore;
     private int countSimulations = 0;
 
     private int[] blue, red;
 
+    private int[] simulationsFirstNodeResults;
+    private int mostCommonFirstNodeResult;
+
     private double[] probs;
 
 
-    public LobbySimulator(int[] blue, int[] red){
+
+    public LobbySimulator(int[] blue, int[] red, int playLimit){
+        this.playLimit = playLimit; //sets the depth of the tree according to the progression of the game
         this.blue = blue;
         this.red = red;
+
         this.probs = NormalDistribution.normD(this.blue.length);
         for(double el : probs) {
             System.out.println(el);
@@ -35,7 +42,10 @@ public class LobbySimulator {
 
 
     public int getBestCandidate(){
-        return this.bestCandidate.getIndex();
+
+        return this.mostCommonFirstNodeResult;
+
+        //return this.bestCandidate.getIndex(); //if convert Node to Index
     }
 
     public boolean isDone(){
@@ -56,54 +66,80 @@ public class LobbySimulator {
         }
     }
 
-
     public void launch(){
 
         int maxScore = 0;
+        simulationsFirstNodeResults = new int[totalSimulations];
 
         for(int i=0; i<totalSimulations; i++){
-
+            //System.out.print(i + " ");
             Simulation simulation = new Simulation(blue, red, playLimit, this.probs);
-            Node candidate = simulation.startSimulation();
+            //Node candidate = simulation.startSimulation();
+            int candidate = simulation.startSimulation();
             int score = simulation.getScoreResult();
 
-            if(score>maxScore){
+           /* if(score>maxScore){   //Use this to get the best first node of the best simulation
                 this.bestCandidate = candidate;
                 maxScore = score;
-            }
+            }*/
+
+           simulationsFirstNodeResults[i] = candidate;
+
+
         this.countSimulations = i+1;
         }
 
+        mostCommonFirstNodeResult = getMostCommon(simulationsFirstNodeResults);
+
 
     }
+
+    public int getMostCommon(int[] arr){
+
+        int n = arr.length;
+
+        Map<Integer, Integer> hp =
+                new HashMap<Integer, Integer>();
+
+        for(int i = 0; i < n; i++)
+        {
+            int key = arr[i];
+            if(hp.containsKey(key))
+            {
+                int freq = hp.get(key);
+                freq++;
+                hp.put(key, freq);
+            }
+            else
+            {
+                hp.put(key, 1);
+            }
+        }
+
+        // find max frequency.
+        int max_count = 0;
+        int res = -1;
+
+        for(Map.Entry<Integer, Integer> val : hp.entrySet())
+        {
+            if (max_count < val.getValue())
+            {
+                res = val.getKey();
+                max_count = val.getValue();
+            }
+        }
+
+        return res;
+    }
+
 
     public static void main(String[] args){
         int[] blue = new int[]{0,1,2,3,4,5};
         int[] red = new int[]{80,79,78,77,76,75};
 
-        LobbySimulator test = new LobbySimulator(blue, red);
-        int range = 400;
-        Map<Integer, Integer> res = new HashMap<Integer, Integer>(blue.length);
-        for(int i = 0; i < range; i++) {
-            test.launch();
-            System.out.println(i);
-            if (res.get(test.getBestCandidate()) != null) {
-                res.put(test.getBestCandidate(), res.get(test.getBestCandidate()) + 1);
-            } else {
-                res.put(test.getBestCandidate(), 0);
-            }
-//            System.out.println("Best candidate is: " + test.getBestCandidate());
-        }
-        for (int i = 0; i < blue.length; i++) {
-            if (res.get(i) == null) res.put(i, 0);
-            if (res.get(i) > 0) {
-                System.out.print(i + ": " );
-                for(int j = 0; j < res.get(i); j++) {
-                    System.out.print('.');
-                }
-            }
-            System.out.println();
-        }
+        LobbySimulator test = new LobbySimulator(blue, red, 4);
+        test.launch();
+        System.out.println("Best candidate is: " + test.getBestCandidate());
 
     }
 
