@@ -1,6 +1,8 @@
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 
+//TODO: implement pruning
 public class AIHeuristics implements AI {
 
     private double radiusWeight;
@@ -12,8 +14,13 @@ public class AIHeuristics implements AI {
     private ArrayList<Node> oldArmy;
     private ArrayList<Node> newArmy;
 
+    private double bestValue;
+    private double[] bestFeatures;
+
 
     public AIHeuristics(double distanceFromMiddleWeight, double distanceToGoalWeight, double radiusWeight, Color colorAI) {
+        this.bestValue = 0;
+        this.bestFeatures = new double[3];
         this.distanceFromMiddleWeight = distanceFromMiddleWeight;
         this.distanceToGoalWeight = distanceToGoalWeight;
         this.radiusWeight = radiusWeight;
@@ -50,30 +57,25 @@ public class AIHeuristics implements AI {
         return returnArray;
     }
 
-    public double evaluationFunction(Graph graph) {
-        double evaluationValue = 0;
+    private boolean blueGoalCheck(Graph graph) {
+        for (int i = 80; i >= 75; i--) {
+            if (!graph.getNodeColor(i).equals(Color.BLUE))
+                return false;
+        }
+        return true;
+    }
+
+    private boolean redGoalCheck(Graph graph) {
+        for (int i = 0; i <= 5; i++) {
+            if (!graph.getNodeColor(i).equals(Color.RED))
+                return false;
+        }
+        return true;
+    }
+
+    public double[] featureCalculator(Graph graph) {
         ArrayList<Node> redArmy = graph.getNodeArmy(Color.RED);
         ArrayList<Node> blueArmy = graph.getNodeArmy(Color.BLUE);
-
-        if (colorAI.equals(Color.RED)) {
-            if (redGoalCheck(graph)) {
-                return 1000;
-            }
-
-//            if (blueGoalCheck(graph)) {
-//                return -1000;
-//            }
-        }
-
-        if (colorAI.equals(Color.BLUE)) {
-            if (blueGoalCheck(graph)) {
-                return 1000;
-            }
-
-//            if (redGoalCheck(graph)) {
-//                return -1000;
-//            }
-        }
 
         Node destinationNodeRed = graph.getRedAIDestinationNode();
         Node destinationNodeBlue = graph.getBlueAIDestinationNode();
@@ -96,34 +98,46 @@ public class AIHeuristics implements AI {
         double radiusRed = graph.radius(redArmy);
         double radiusBlue = graph.radius(blueArmy);
 
-        //Evaluation function
-        evaluationValue = -distanceToGoalWeight * (distanceToGoalRed - distanceToGoalBlue)
-                - distanceFromMiddleWeight * (distanceFromMiddleRed - distanceFromMiddleBlue)
-                - radiusWeight * (radiusRed - radiusBlue);
+        //Heuristics/features
+        double feature1 = distanceFromMiddleRed - distanceFromMiddleBlue;
+        double feature2 = distanceToGoalRed - distanceToGoalBlue;
+        double feature3 = radiusRed - radiusBlue;
+
+        double[] featureScoresVector = {feature1, feature2, feature3};
+        return featureScoresVector;
+    }
+
+    public double evaluationFunction(Graph graph) {
+        double evaluationValue = 0;
+        double[] evaluationVector = new double[4];
+        //Calculate features
+        double[] featureScoresVector = featureCalculator(graph);
         if (colorAI.equals(Color.RED)) {
-//            System.out.println("The evaluation value is: " + evaluationValue + " for red. " + armyToString(graph.getArmy(Color.RED)));
+            if (redGoalCheck(graph)) {
+                return 1000;
+            }
+            if (blueGoalCheck(graph)) {
+                return -1000;
+            }
+        }
+        if (colorAI.equals(Color.BLUE)) {
+            if (blueGoalCheck(graph)) {
+                return 1000;
+            }
+            if (redGoalCheck(graph)) {
+                return -1000;
+            }
+        }
+        //Evaluation function
+        evaluationValue = - distanceFromMiddleWeight * featureScoresVector[0]
+                - distanceToGoalWeight * featureScoresVector[1]
+                - radiusWeight * featureScoresVector[2];
+        if (colorAI.equals(Color.RED)) {
             return evaluationValue;
         }
         else { // If color is blue
-//            System.out.println("The evaluation value is: " + -evaluationValue + " for blue. " + armyToString(graph.getArmy(Color.BLUE)));
-            return -evaluationValue; // math checks out
+            return -evaluationValue;
         }
-    }
-
-    private boolean blueGoalCheck(Graph graph) {
-        for (int i = 80; i >= 75; i--) {
-            if (!graph.getNodeColor(i).equals(Color.BLUE))
-                return false;
-        }
-        return true;
-    }
-
-    private boolean redGoalCheck(Graph graph) {
-        for (int i = 0; i <= 5; i++) {
-            if (!graph.getNodeColor(i).equals(Color.RED))
-                return false;
-        }
-        return true;
     }
 
     private double maxValue(Graph graph,int cutOff, int depth, double alpha, double beta) {
@@ -144,16 +158,20 @@ public class AIHeuristics implements AI {
         if (depth < cutOff) {
             depth++;
             for (ArrayList<Integer> armyState : armyStates) {
-                if (evaluationFunction(new Graph(armyState, minArmy, colorAI, colorOpponent)) == 1000) {
+                Graph graphChild = new Graph(armyState, minArmy, colorAI, colorOpponent);
+                System.out.println("Depth: " + depth);
+                System.out.println(armyToString(armyState,graphChild) + " is being evaluated.");
+                if (evaluationFunction(graphChild) == 1000) {
                     if (depth == 1) {
                         bestMove = armyState;
                     }
-                    return 1000;
+                    return evaluationFunction(graphChild);
                 }
                 double evaluationValuePrevious = evaluationValue;
-                evaluationValue = Math.max(evaluationValue, minValue(new Graph(armyState, minArmy, colorAI, colorOpponent),cutOff, depth, alpha, beta));
+                evaluationValue = Math.max(evaluationValue, minValue(graphChild,cutOff, depth, alpha, beta));
+                System.out.println("Evaluation value at maxValue: " + evaluationValue);
                 if (evaluationValuePrevious != evaluationValue && depth == 1) {
-                    bestMove = armyState;
+                        bestMove = armyState;
                 }
                 if (evaluationValue >= beta) {
                     return evaluationValue;
@@ -163,6 +181,7 @@ public class AIHeuristics implements AI {
             return evaluationValue;
         }
         else {
+            System.out.println("cutoff at depth: " + depth);
             return evaluationFunction(graph);
         }
     }
@@ -185,10 +204,18 @@ public class AIHeuristics implements AI {
         if (depth < cutOff) {
             depth++;
             for (ArrayList<Integer> armyState : armyStates) {
-                if (evaluationFunction(new Graph(maxArmy, armyState, colorAI, colorOpponent)) == -1000) {
-                    return -1000;
+                Graph graphChild = new Graph(maxArmy,armyState, colorAI, colorOpponent);
+                System.out.println("Depth: " + depth);
+                System.out.println(armyToString(armyState,graphChild) + " is being evaluated.");
+                if (evaluationFunction(graphChild) == -1000) {
+                    return evaluationFunction(graphChild);
                 }
-                evaluationValue = Math.min(evaluationValue, maxValue(new Graph(maxArmy, armyState, colorAI, colorOpponent), cutOff, depth, alpha, beta));
+                double evaluationValuePrevious = evaluationValue;
+                evaluationValue = Math.min(evaluationValue, maxValue(graphChild, cutOff, depth, alpha, beta));
+                System.out.println("Evaluation value at minValue: " + evaluationValue);
+                if (evaluationValuePrevious != evaluationValue && depth == 1) {
+                        bestMove = armyState;
+                }
                 if (evaluationValue <= alpha) {
                     return evaluationValue;
                 }
@@ -197,17 +224,23 @@ public class AIHeuristics implements AI {
             return evaluationValue;
         }
         else {
+            System.out.println("cutoff");
+//            System.out.println(graph);
+//            System.out.println("Evaluation value is " +  evaluationFunction(graph));
             return evaluationFunction(graph);
         }
     }
 
     private void miniMax(int cutOff, Graph board) {
         bestMove.clear();
-        double bestValue = maxValue(board,cutOff,0,-1000000000,1000000000); // bestValue is the target function approximation
-        System.out.println("The best encountered value is: " + bestValue + " for: " + colorAI.toString());
+        bestValue = maxValue(board,cutOff,0,-1000000000,1000000000); // bestValue is the target function approximation
         System.out.println("The best move is: " + armyToString(bestMove, board));
         oldArmy = board.getNodeArmy(colorAI); 
         newArmy = integerToNode(bestMove, board);
+    }
+
+    public double getBestValue() {
+        return bestValue;
     }
 
     private ArrayList<Node> integerToNode(ArrayList<Integer> army, Graph board) {

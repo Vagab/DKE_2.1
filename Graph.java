@@ -395,32 +395,20 @@ public class Graph {
     }
 
     public double distanceToMiddleLine(Node node) {
+        //Blue Red
         Node referenceNode = AA;
         int dx = node.getX() - referenceNode.getX();
         int dy = node.getY() - referenceNode.getY();
-        if (Math.signum(dx) != Math.signum(dy)) {
-            return 0.5 * Math.abs(dx);
-        } else {
-            return Math.abs(0.5 * (Math.abs(dx - dy) - Math.abs(dy)));
-        }
+        return Math.abs(0.5*dx - dy);
     }
 
     public double centroidNodeDistance(ArrayList<Node> nodes, Node destinationNode) {
         double[] centroidCoordinates = centroid(nodes);
         double dx = destinationNode.getX() - centroidCoordinates[0];
         double dy = destinationNode.getY() - centroidCoordinates[1];
-        double x = 0;
-        double y = 0;
-        if (Math.signum(dx) != Math.signum(dy)) {
-            x = 0.5 * Math.abs(dx) + Math.abs(dy);
-            y = Math.sqrt(3) / 2.0 * Math.abs(dx);
-            return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        }
-        else {
-            x =  Math.abs(0.5*dx - dy);
-            y = Math.sqrt(3) / 2.0 * Math.abs(dx);
-            return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        }
+        double x = Math.abs(0.5*dx - dy);
+        double y = Math.sqrt(3) / 2.0 * Math.abs(dx);
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
     public double radius(ArrayList<Node> nodes) {
@@ -436,18 +424,9 @@ public class Graph {
     public double straightLineDistance(Node node1, Node node2) {
         int dx = node2.getX() - node1.getX(); // Steps in the downward direction
         int dy = node2.getY() - node1.getY(); // Steps in the sideway direction
-        double x = 0;
-        double y = 0;
-        if (Math.signum(dx) != Math.signum(dy)) {
-            x = 0.5 * Math.abs(dx) + Math.abs(dy);
-            y = Math.sqrt(3) / 2.0 * Math.abs(dx);
-            return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        }
-        else {
-            x =  Math.abs(0.5*dx - dy);
-            y = Math.sqrt(3) / 2.0 * Math.abs(dx);
-            return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-        }
+        double x = Math.abs(0.5*dx - dy);
+        double y = Math.sqrt(3) / 2.0 * Math.abs(dx);
+        return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
     }
 
     public Node getRedAIDestinationNode() {
@@ -476,6 +455,19 @@ public class Graph {
             }
         }
         return army;
+    }
+
+    public String toString() {
+        String output = "";
+        output += "The red army is at: ";
+        for (Node node : getNodeArmy(Color.RED)){
+            output += node + " ";
+        }
+        output += "\n The blue army is at: ";
+        for (Node node : getNodeArmy(Color.BLUE)){
+            output += node + " ";
+        }
+        return output;
     }
 
 }

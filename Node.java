@@ -14,14 +14,14 @@ public class Node {
         this.label = label;
         this.X = X;
         this.Y = Y;
-        if(!label.equals("null")){
-            upRight = new Node("null", -1, -1);
-            upLeft = new Node("null", -1, -1);
-            right = new Node("null", -1, -1);
-            left = new Node("null", -1, -1);
-            dRight = new Node("null", -1, -1);
-            dLeft = new Node("null", -1, -1);
-        }
+//        if(!label.equals("null")){
+//            upRight = new Node("null", -1, -1);
+//            upLeft = new Node("null", -1, -1);
+//            right = new Node("null", -1, -1);
+//            left = new Node("null", -1, -1);
+//            dRight = new Node("null", -1, -1);
+//            dLeft = new Node("null", -1, -1);
+//        }
     }
 
     public void setColor(Color color){
@@ -50,29 +50,6 @@ public class Node {
 
     public int getY(){return this.Y;}
 
-    public Node getUpRight(){
-        return this.upRight;
-    }
-
-    public Node getUpLeft(){
-        return this.upLeft; 
-    }
-
-    public Node getRight(){
-        return this.right; 
-        }
-
-    public Node getLeft(){
-        return this.left; 
-    }
-
-    public Node getdRight(){
-        return this.dRight;
-    }
-
-    public Node getdLeft(){
-        return this.dLeft;
-    }
 
     public void addEdge(Node toConnect){
 
@@ -141,10 +118,20 @@ public class Node {
     }
 
     public Node[] adjN(){
-        return new Node[]{upRight, upLeft, right, left, dRight, dLeft};
+        Node[] neigh =  {upRight, upLeft, right, left, dRight, dLeft};
+        for(int i=0; i<neigh.length; i++){
+            if(neigh[i]==null){
+                neigh[i]=new Node("null", -1, -1);
+            }
+        }
+        return neigh;
     }
+
     public Node getAdj(int i){
-        Node[] neigh = new Node[]{upRight, upLeft, right, left, dRight, dLeft};
+        Node[] neigh =  {upRight, upLeft, right, left, dRight, dLeft};
+        if(neigh[i]==null){
+            return new Node("null", -1, -1);
+        }
         return neigh[i];
     }
 

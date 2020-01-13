@@ -1,32 +1,36 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.lang.reflect.Array;
+import java.awt.geom.Ellipse2D;
+import java.awt.geom.Path2D;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GUI extends JComponent {
 
     //Jel
-    int interval = 35;
-    int diameter = 30;
+    private int diameter = 30;
+    private double interval = diameter*2.0/Math.sqrt(3);
+    private double offset = diameter/2.0;
+    private double xOffset = 700;
+    private double yOffset = 100;
 
     
-    //double[] weights = {0.5, 10.0, 1.0};
-    AI aiPlayer = new AIHeuristics(0.5, 10.0, 1.0, Color.BLUE);
-    AI aiPlayer2 = new AIHeuristics(0.5, 10.0, 1.0, Color.RED);
+//    double[] weights = {0.5, 10.0, 1.0};
+    AIHeuristics aiPlayer = new AIHeuristics(0.5, 10.0, 1.0, Color.BLUE);
+    AIHeuristics aiPlayer2 = new AIHeuristics(0.5, 10.0, 1.0, Color.RED);
 
-    private ArrayList<Integer> bestMove = new ArrayList<>();
+    private ArrayList<Double> miniMaxScoresVector = new ArrayList<>();
+    private ArrayList<double[]> featureScoresMatrix = new ArrayList<>();
 
 
     Graph board;
-//    ArrayList<Color> colorsOfPlayers = new ArrayList<Color>();
     Node[] nodeList;
     int selectedNode, previousSelectedNode = -1;
     public boolean firstMove = false;
     long start = System.nanoTime();
     int currentPlayer = 1;
     int turnsCount = 1;
-//    int nrsP;
 
     boolean player1 = true;
 
@@ -49,6 +53,9 @@ public class GUI extends JComponent {
         if (timeElapsed % 1000000000 == 0)
             repaint();
 
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_STROKE_CONTROL, RenderingHints.VALUE_STROKE_PURE);
+
         GradientPaint gp1 = new GradientPaint(50, 1, Color.blue, 20, 20, Color.lightGray, true);
         GradientPaint gp2 = new GradientPaint(100, 100, Color.green, 5, 5, Color.lightGray, true);
         GradientPaint gp3 = new GradientPaint(45, 45, Color.yellow, 70, 70, Color.orange, true);
@@ -63,6 +70,19 @@ public class GUI extends JComponent {
             g2.drawString("It is Player's Red turn", 1000, 100);
         }
 
+        double yTop = board.getNodeXCoords(0) * Math.sqrt(3)/2.0 * interval + yOffset - offset;
+        double yRef = board.getNodeXCoords(80) * Math.sqrt(3)/2.0 * interval + yOffset + diameter + offset;
+        double diameterCircle = yRef - yTop;
+        double xRef = board.getNodeYCoords(0) * interval + xOffset - board.getNodeXCoords(0) * interval/2.0 + diameter/2.0;
+        double xLeft = xRef - diameterCircle/2.0;
+
+        Ellipse2D.Double bigCircle = new Ellipse2D.Double(xLeft, yTop, diameterCircle, diameterCircle);
+        g2.setPaint(Color.pink);
+        g2.fill(bigCircle);
+        g2.setPaint(new Color(255,102,102));
+        g2.fill(triangle(board.getSecNode(3),0));
+        g2.setPaint(new Color(51,204,255));
+        g2.fill(triangle(board.getSecNode(75),1));
 
         g2.setPaint((Color.BLACK));
         g2.drawString("Turns count: " + turnsCount, 1000, 120);
@@ -73,14 +93,49 @@ public class GUI extends JComponent {
 
         g2.setPaint(Color.WHITE);
 
-        for(int i=0; i<nodeList.length; i++){
+        for (int i = 0; i < nodeList.length; i++) {
             g2.setPaint(board.getNodeColor(i));
-            g2.fillOval(board.getNodeYCoords(i) * interval + 700 - board.getNodeXCoords(i) * interval/2, (int) (board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + 100), diameter, diameter);
-            g2.setPaint(Color.ORANGE);
-            g2.drawString(board.getNodeLabel(i), board.getNodeYCoords(i) * interval + 715 - board.getNodeXCoords(i) * interval/2, (int) (board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + 120));
+            Ellipse2D.Double circle = new Ellipse2D.Double(board.getNodeYCoords(i) * interval + xOffset - board.getNodeXCoords(i) * interval/2.0, board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + yOffset, diameter, diameter);
+            g2.fill(circle);
+            if (!board.getNodeColor(i).equals(Color.WHITE)) {
+                g2.setPaint(Color.WHITE);
+                g2.draw(new Ellipse2D.Double(board.getNodeYCoords(i) * interval + xOffset - board.getNodeXCoords(i) * interval/2.0, board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + yOffset, diameter, diameter));
+            }
+//            g2.setPaint(Color.ORANGE);
+//            g2.drawString(board.getNodeLabel(i), board.getNodeYCoords(i) * interval + 715 - board.getNodeXCoords(i) * interval/2, (int) (board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + 120));
         }
 
     }
+
+    private Path2D triangle(Node node, int a) {
+        double startX = node.getY() * interval + xOffset - node.getX() * interval/2.0 + diameter/2.0*(1-1/Math.tan(30/180.0*Math.PI));
+        double startY = node.getX()  * Math.sqrt(3)/2.0 * interval + yOffset + diameter;
+        double deltaX = 2*interval/2.0 + diameter/2.0*1/Math.tan(30/180.0*Math.PI);
+        double deltaY = 3.5*diameter;
+        double[] xUp = {startX,startX + deltaX, startX + 2*deltaX};
+        double[] yUp = {startY,startY-deltaY,startY};
+        double[] xDown = {startX, startX + 2*deltaX,startX + deltaX};
+        double[] yDown = {startY-diameter, startY-diameter,startY-diameter+deltaY};
+
+        Path2D path = new Path2D.Double();
+
+        if (a == 0) { //a == 0 for the upward pointing triangles
+            path.moveTo(xUp[0], yUp[0]);
+            for(int i = 1; i < xUp.length; ++i) {
+                path.lineTo(xUp[i], yUp[i]);
+            }
+            path.closePath();
+        }
+        else if (a == 1) {
+            path.moveTo(xDown[0], yDown[0]);
+            for(int i = 1; i < xDown.length; ++i) {
+                path.lineTo(xDown[i], yDown[i]);
+            }
+            path.closePath();
+        }
+        return path;
+    }
+
 
     public boolean blueGoalCheck(Graph graph) {
         for (int i = 80; i >= 75; i--) {
@@ -109,47 +164,6 @@ public class GUI extends JComponent {
 
     }
 
-
-
-
-    // Weight tuning
-
-//    public void weightTuning() {
-//        // Initializing weights
-//        double[] weights = {0.5, 8, 1};
-//        for () {
-//            while (!(blueGoalCheck(board) || redGoalCheck(board))) { // Play 1 game
-//                miniMax(3, Color.BLUE, weights);
-//                miniMax(3, Color.RED, weights);
-//            }
-//
-//        }
-//    }
-
-    public ArrayList<Node> integerToNode(ArrayList<Integer> army) {
-        ArrayList<Node> nodeArmy = new ArrayList<>();
-        for (int i : army) {
-            nodeArmy.add(board.getSecNode(i));
-        }
-        return nodeArmy;
-    }
-
-    public ArrayList<ArrayList<Integer>> stateGenerator(Color color, Graph graph) {
-        ArrayList<Integer> AIArmy = graph.getArmy(color); // |Army_1| times
-        ArrayList<ArrayList<Integer>> armyStates = new ArrayList<>();
-        for (Integer node : AIArmy) { // |Army_1| times
-            ArrayList<Node> tr = graph.popularChoice(graph.getSecNode(node)); //|Army_1|*6^(|Army_1+Army_2-1|) times
-            for (Node move : tr) {
-                if (!move.getLabel().equals("null")) {
-                    ArrayList<Integer> armyState = (ArrayList<Integer>) AIArmy.clone();
-                    armyState.remove(node);
-                    armyState.add(graph.getNodeIndex(move));
-                    armyStates.add(armyState);
-                }
-            }
-        }
-        return armyStates;
-    }
 
     public void clickedForNode(int var1, int var2) {
         for(int i=0; i<81; i++){
@@ -263,7 +277,6 @@ public class GUI extends JComponent {
             }
         }
 
-        ArrayList<Node> te = board.popularChoice(m);
         for (int i = 0; i < tr.size(); i++) {
 
             tr.get(i).setColor(Color.WHITE);
@@ -293,27 +306,11 @@ public class GUI extends JComponent {
             int var2 = var1.getX();
             int var3 = var1.getY();
             GUI.this.clickedForNode(var2, var3);
-            while (!(blueGoalCheck(board) || redGoalCheck(board))) { // Play 1 game
-                move++;
-                //System.out.println(move);
-                setAIMove(aiPlayer.performMove(board));
+            if (!player1) {
                 setAIMove(aiPlayer2.performMove(board));
+                player1 = true;
             }
-            if (blueGoalCheck(board)) {
-                System.out.println("The blue player has won");
-            }
-            else {
-                System.out.println("The red player has won");
-            }
-//            miniMax(3, Color.BLUE, weights);
-//            miniMax(3, Color.RED, weights);
 
-
-
-//            if (!player1) {
-//                miniMax(3, Color.RED, weights);
-//                player1 = true;
-//            }
         }
 
         public void mouseEntered(MouseEvent var1) {
@@ -323,6 +320,7 @@ public class GUI extends JComponent {
         }
 
     }
+
 
 
 }

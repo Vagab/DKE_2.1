@@ -49,10 +49,35 @@ public class introMenu {
         final JButton start1v1 = new JButton("2 Players");
         start1v1.addActionListener(e -> {
             frame.setVisible(false);
-            new CCheckers();
+            new CCheckers(2);
         });
 
+
+        final JButton start1v2 = new JButton("3 Players");
+        start1v2.addActionListener(e -> {
+            frame.setVisible(false);
+            new CCheckers(3);
+        });
+
+
+        final JButton start4v4 = new JButton("4 Players");
+        start4v4.addActionListener(e -> {
+            frame.setVisible(false);
+            new CCheckers(4);
+        });
+
+
+        final JButton start6players = new JButton("6 Players");
+        start6players.addActionListener(e -> {
+            frame.setVisible(false);
+            new CCheckers(6);
+        });
+
+
         control_panel.add(start1v1);
+        control_panel.add(start1v2);
+        control_panel.add(start4v4);
+        control_panel.add(start6players);
 
         final JButton help = new JButton("Help");
         help.addActionListener(new ActionListener() {
