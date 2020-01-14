@@ -51,7 +51,7 @@ public class Simulation {
             }
         }
 
-        try{
+       /* try{
             if(this.firstPlay.getIndex() / this.firstPlay.getIndex() == 1){
                 return this.firstPlay.getIndex();
             }
@@ -59,10 +59,10 @@ public class Simulation {
                 return 0;
         } catch (Exception e) {
             return 0;
-        }
+        }*/
 
 
-        //return this.firstPlay.getIndex();
+        return this.firstPlay.getIndex();
     }
 
     public int getScoreResult(){
@@ -70,7 +70,7 @@ public class Simulation {
     }
 
     private int getRandomChoice(){
-        return rand.nextInt(9);
+        return rand.nextInt(10);
        // return NormalDistribution.monteCarlo(probs, rand);
     }
 
@@ -147,7 +147,10 @@ public class Simulation {
                         if (boardSim.getSecNode(i).getScore() != max.getScore()) {
                             previousAIPlayed = boardSim.getSecNode(i); //put the previous location of the played node
                             lastAIPlayed = max; //last node played by the AI
-                            if(turnsCount==1 | turnsCount==0){firstPlay = previousAIPlayed;}    //sets the first played Node
+                            if(turnsCount==1){
+                                firstPlay = previousAIPlayed;
+                                firstPlay.setIndex(previousAIPlayed.getIndex());
+                            }    //sets the first played Node
                             setMove(max.getIndex());
                         } else {
                             setMove(i);

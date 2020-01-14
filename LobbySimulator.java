@@ -6,7 +6,7 @@ public class LobbySimulator {
 
     private Node bestCandidate;
     private int playLimit;
-    private int totalSimulations = 10000;
+    private int totalSimulations = 1000;
     int totalScore;
     private int countSimulations = 0;
 
