@@ -75,7 +75,7 @@ class NormalDistribution {
         double[] domain = {-n/2, n/2};
         double[] probs = new double[n];
         double mean = 0;
-        double st = 3;
+        double st = 7.5;
         double norm = 0;
         double power = 0;
         double step = 0.000001;

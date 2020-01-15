@@ -180,7 +180,7 @@ public class GUI extends JComponent {
 
 
         if (player1) {       //checking for blue
-            for (int i = 120; i > 109; i--) {
+            for (int i = 120; i > 110; i--) {
                 if (!board.getNodeColor(i).equals(Color.BLUE))
                     return false;
             }
@@ -192,7 +192,7 @@ public class GUI extends JComponent {
 
 
         else { //checking for red
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i <= 9; i++) {
                 if (!board.getNodeColor(i).equals(Color.RED))
                     return false;
             }
@@ -230,7 +230,7 @@ public class GUI extends JComponent {
 
             }*/
 
-            for(int i=0; i<120; i++){
+            for(int i=0; i<121; i++){
                 if (var1 >= board.getNodeYCoords(i) * interval + 700 - board.getNodeXCoords(i) * interval/2
                         && var1 <= board.getNodeYCoords(i) * interval + 700 - board.getNodeXCoords(i) * interval/2 + diameter
                         && var2 >= board.getNodeXCoords(i) * (int)(Math.sqrt(3)/2.0 * interval) + 100
@@ -263,6 +263,7 @@ public class GUI extends JComponent {
                 System.out.println("Finished!");
 
                 int iNode = simulator.getBestCandidate();
+                int destinationNode = simulator.getBestDestination();
                 //int iNode = i;
                 // if(board.getNodeColor(iNode).equals(Color.BLUE)){System.out.println("good");}
                 //System.out.println("Simulator returns " + board.getSecNode(simulator.getBestCandidate()).getLabel());
@@ -315,7 +316,8 @@ public class GUI extends JComponent {
                     if(board.getSecNode(iNode).getScore()!=max.getScore()) {
                         System.out.println("AI move is " + max.getLabel() + " " + max.getIndex());
                         //previousSelectedNode = max.getIndex();
-                        setMove(max.getIndex());
+                        //setMove(max.getIndex());
+                        setMove(destinationNode);
                         break;
                     }
                     else{

@@ -22,6 +22,8 @@ public class Simulation {
     private boolean player1 = true;
     Random rand;
 
+    private Node destinationNode;
+
     private int totalScoreBlue = 0;
 
 
@@ -61,17 +63,32 @@ public class Simulation {
             return 0;
         }*/
 
+       if (this.firstPlay == null) { return -1;}
+       else {
 
-        return this.firstPlay.getIndex();
+           //System.out.println("Index of First Play is: " + this.firstPlay.getIndex());
+           return this.firstPlay.getIndex();
+       }
     }
 
     public int getScoreResult(){
         return this.totalScoreBlue;
     }
 
+    public int getFirstNodeDestination(){
+
+        if (this.destinationNode == null) { return -1;}
+        else {
+
+            //System.out.println("Index of Destination is: " + this.destinationNode.getIndex());
+            return this.destinationNode.getIndex();
+        }
+
+    }
+
     private int getRandomChoice(){
-        return rand.nextInt(10);
-       // return NormalDistribution.monteCarlo(probs, rand);
+       // return rand.nextInt(10);
+        return NormalDistribution.monteCarlo(probs, rand);
     }
 
     private void AIChoosesNode(){
@@ -150,6 +167,7 @@ public class Simulation {
                             if(turnsCount==1){
                                 firstPlay = previousAIPlayed;
                                 firstPlay.setIndex(previousAIPlayed.getIndex());
+                                this.destinationNode = max; //sets the destination of the first moved node
                             }    //sets the first played Node
                             setMove(max.getIndex());
                         } else {

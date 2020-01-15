@@ -13,7 +13,9 @@ public class LobbySimulator {
     private int[] blue, red;
 
     private int[] simulationsFirstNodeResults;
+    private int[] simulationsDestinationResults;
     private int mostCommonFirstNodeResult;
+    private int mostCommonDestinationResult;
 
     private double[] probs;
 
@@ -52,6 +54,10 @@ public class LobbySimulator {
         //return this.bestCandidate.getIndex(); //if convert Node to Index
     }
 
+    public int getBestDestination(){
+        return this.mostCommonDestinationResult;
+    }
+
 
     public boolean isDone(){
         if(this.countSimulations>=totalSimulations){return true;}
@@ -62,7 +68,7 @@ public class LobbySimulator {
     public void sort(double[] arr) {
         for (int i = 1; i < arr.length; i++) {
             for (int j = i; j > 0; j--) {
-                if (arr[j] < arr[j - 1]) {
+                if (arr[j] > arr[j - 1]) {
                     double temp = arr[j];
                     arr[j] = arr[j - 1];
                     arr[j - 1] = temp;
@@ -75,6 +81,7 @@ public class LobbySimulator {
 
         int nbImprovedSimulations = 0;
         simulationsFirstNodeResults = new int[totalSimulations];
+        simulationsDestinationResults = new int[totalSimulations];
 
         for(int i=0; i<totalSimulations; i++){
             //System.out.print(i + " ");
@@ -82,6 +89,7 @@ public class LobbySimulator {
             //Node candidate = simulation.startSimulation();
             int candidate = simulation.startSimulation();
             int score = simulation.getScoreResult();
+            int destinationNode = simulation.getFirstNodeDestination();
 
            /* if(score>maxScore){   //Use this to get the best first node of the best simulation
                 this.bestCandidate = candidate;
@@ -89,6 +97,7 @@ public class LobbySimulator {
             }*/
 
            simulationsFirstNodeResults[i] = candidate;
+           simulationsDestinationResults[i] = destinationNode;
 
            /* if(score >= this.bestPreviousScore) {
                 simulationsFirstNodeResults[nbImprovedSimulations] = candidate;
@@ -100,17 +109,16 @@ public class LobbySimulator {
         this.countSimulations = i+1;
         }
 
-
-        int[] finalNodeResults = new int[nbImprovedSimulations];
-
-       /* //Resize the array
-        for(int j=0; j<nbImprovedSimulations; j++){
-            finalNodeResults[j] = simulationsFirstNodeResults[j];
-        }*/
-
-
         //finalNodeResults
-        mostCommonFirstNodeResult = getMostCommon(simulationsFirstNodeResults);
+        this.mostCommonFirstNodeResult = getMostCommon(simulationsFirstNodeResults);
+
+        for(int i=0;i<simulationsDestinationResults.length;i++){
+            if(simulationsFirstNodeResults[i]!=mostCommonFirstNodeResult){
+                simulationsDestinationResults[i] = -1;
+            }
+        }
+
+        this.mostCommonDestinationResult = getMostCommon(simulationsDestinationResults);
 
 
     }
@@ -125,15 +133,14 @@ public class LobbySimulator {
         for(int i = 0; i < n; i++)
         {
             int key = arr[i];
-            if(hp.containsKey(key))
-            {
-                int freq = hp.get(key);
-                freq++;
-                hp.put(key, freq);
-            }
-            else
-            {
-                hp.put(key, 1);
+            if(key!=-1) {
+                if (hp.containsKey(key)) {
+                    int freq = hp.get(key);
+                    freq++;
+                    hp.put(key, freq);
+                } else {
+                    hp.put(key, 1);
+                }
             }
         }
 
