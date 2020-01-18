@@ -42,10 +42,10 @@ public class GUI extends JComponent {
     private Random rand;
     private LobbySimulator simulator;
     private int bestPreviousScore = -1;
-
+//0.11817334978149338, 0.7117125414209313, 0.6066114194523499
     public GUI() {
-        heuristicPlayer1 = new AIHeuristics(4.238135670152917, 9.235806405932005, 1.2875548005727477, Color.BLUE);
-        heuristicPlayer2 = new AIHeuristics(4.238135670152917, 9.235806405932005, 1.2875548005727477, Color.RED);
+        heuristicPlayer1 = new AIHeuristics(.0759158953972422, .8968531011056472, .42463784024472084, Color.BLUE);
+        heuristicPlayer2 = new AIHeuristics(.1231, .9847, .1231, Color.RED);
         MCMCPlayer1 = new AIMCMC(Color.BLUE,turnsCount);
         MCMCPlayer2 = new AIMCMC(Color.RED,turnsCount);
 
@@ -205,40 +205,21 @@ public class GUI extends JComponent {
         Color color = nodes[0].getColor();
         nodes[0].setColor(Color.WHITE);
         nodes[1].setColor(color);
-        if (isWinningCondition()) { // /!\
-            if (player1) {
-                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
-                        "PLAYER 1 HAS WON", JOptionPane.WARNING_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
-                        "PLAYER 2 HAS WON", JOptionPane.WARNING_MESSAGE);
-            }
-        }
+//        if (isWinningCondition()) { // /!\
+//            if (player1) {
+//                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
+//                        "PLAYER 1 HAS WON", JOptionPane.WARNING_MESSAGE);
+//            } else {
+//                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
+//                        "PLAYER 2 HAS WON", JOptionPane.WARNING_MESSAGE);
+//            }
+//        }
         if(player1){player1=false;}
         else{player1 = true;}
         turnsCount++;
         repaint();
     }
 
-    public void setAIMove(int departureNode, int destinationNode) {
-        Color color = board.getSecNode(departureNode).getColor();
-        board.getSecNode(departureNode).setColor(Color.WHITE);
-        board.getSecNode(destinationNode).setColor(color);
-        if (isWinningCondition()) { // /!\
-            if (player1) {
-                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
-                        "PLAYER 1 HAS WON", JOptionPane.WARNING_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
-                        "PLAYER 2 HAS WON", JOptionPane.WARNING_MESSAGE);
-            }
-        }
-        if(player1){player1=false;}
-        else{player1 = true;}
-        turnsCount++;
-        repaint();
-
-    }
 
     public void setMove(int chosenNode) {
         highlight(board.getSecNode(chosenNode));
@@ -332,7 +313,6 @@ public class GUI extends JComponent {
         }
     }
 
-
     class MousePressListener implements MouseListener {
         MousePressListener() {
         }
@@ -348,8 +328,15 @@ public class GUI extends JComponent {
             int var2 = var1.getX();
             int var3 = var1.getY();
             GUI.this.clickedForNode(var2, var3);
-            setAIMove(MCMCPlayer1.performMove(board));
-            setAIMove(heuristicPlayer2.performMove(board));
+//            setAIMove(MCMCPlayer1.performMove(board));
+//            setAIMove(heuristicPlayer2.performMove(board));
+//            if (!player1){
+//                setAIMove(heuristicPlayer1.performMove(board));
+//                player1 = true;
+//            }
+
+            double[] weights = {1,5,1};
+            weightTuning(normalize(weights));
         }
 
         public void mouseEntered(MouseEvent var1) {
@@ -363,37 +350,42 @@ public class GUI extends JComponent {
     public double[] weightTuning(double[] weights) {
         double[] newWeights = weights.clone();
         System.out.println(Arrays.toString(newWeights));
-        double learningFactor = 0.001; //Learning factor for tuning, initially set equal to 0.1 (for testing purposes)
-        for (int i = 0; i < 10000; i++) { // 50 is just a number to test a few iterations
+        double learningFactor = 0.1; //Learning factor for tuning, initially set equal to 0.1 (for testing purposes)
+        for (int i = 0; i < 100; i++) { // 100 is just a number to test a few iterations
+            System.out.println("Game number " + i);
+            if (i > 20) {
+                learningFactor = 0.01;
+            }
             AIHeuristics player1 = new AIHeuristics(newWeights[0], newWeights[1], newWeights[2], Color.RED);
             AIHeuristics player2 = new AIHeuristics(newWeights[0], newWeights[1], newWeights[2], Color.BLUE);
             ArrayList<double[]> temp = playGame(player1, player2);
-            printMatrix(temp);
+//            printMatrix(temp);
             for (int j = 0; j < 3; j++) {
-                newWeights[j] = newWeights[j] + learningFactor*(temp.get(j)[0]-newWeights[j]);
+                System.out.print("Weight " + j + " ");
+                System.out.println(newWeights[j] - normalize(listToArray(temp))[j]);
+                newWeights[j] = newWeights[j] + learningFactor*(normalize(listToArray(temp))[j]-newWeights[j]);
             }
-            System.out.println(Arrays.toString(newWeights));
+//            System.out.println(Arrays.toString(newWeights));
             reset();
             player1.resetTrajectory();
             player2.resetTrajectory();
         }
-        return newWeights;
+        System.out.print("The weights are " + Arrays.toString(newWeights));
+        return normalize(newWeights);
     }
 
     public ArrayList<double[]> playGame(AIHeuristics player1, AIHeuristics player2) {
         miniMaxScoresVector.clear(); //training values
         featureScoresMatrix.clear();
-        ArrayList<Double> player2minimax = new ArrayList<Double>();
         int turns = 0;
+        int predictedError = 0;
         boolean player1Done = false;
         boolean player2Done = false;
         while (!player1Done && !player2Done) { // Play 1 game, we focus on player 1
-            turns++;
-            turns++;
             if (!goalCheck(board,player1)) {
                 setAIMove(player1.performMove(board));
-                miniMaxScoresVector.add(player1.getBestValue()); //Stores the training values
-                featureScoresMatrix.add(player1.getBestFeatures());
+//                miniMaxScoresVector.add(player1.getBestValue()); //Stores the training values
+//                featureScoresMatrix.add(player1.getBestFeatures());
                 if (player2Done){
                     player1Done = true;
                 }
@@ -403,7 +395,9 @@ public class GUI extends JComponent {
             }
             if (!goalCheck(board,player2)){
                 setAIMove(player2.performMove(board)); //blue player moves
-                player2minimax.add(player2.getBestValue());
+                miniMaxScoresVector.add(player2.getBestValue()); //Stores the training values
+                featureScoresMatrix.add(player2.getBestFeatures());
+                predictedError += Math.pow((player2.getBestValue() - player2.getRawScore()),2);
                 if (player1Done){
                     player2Done = true;
                 }
@@ -414,11 +408,15 @@ public class GUI extends JComponent {
             if (turns > 300) {
                 System.out.println("Game is stuck");
             }
+            turns+=2;
         }
 //        System.out.println("Player 1: " + miniMaxScoresVector);
 //        System.out.println("Length is: " + miniMaxScoresVector.size());
 //        System.out.println("Player 2: " + player2minimax);
 //        System.out.println("Length is: " + player2minimax.size());
+//        System.out.println(featureScoresMatrix);
+//        System.out.println(miniMaxScoresVector);
+        System.out.println("The predicted error is: " + predictedError);
         return leastSquares(featureScoresMatrix,createVector(miniMaxScoresVector));
     }
 
