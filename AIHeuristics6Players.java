@@ -10,6 +10,7 @@ public class AIHeuristics6Players implements AIMultiPlayer{
     private Color colorAI;
     private Color[] orderOfPlay = {Color.BLUE, Color.GRAY, Color.ORANGE, Color.RED, Color.BLACK, Color.GREEN};
     private ArrayList<Integer> bestMove = new ArrayList<>();
+    private ArrayList<ArrayList<Integer>> trajectory = new ArrayList<>();
 
     private ArrayList<Node> oldArmy;
     private ArrayList<Node> newArmy;
@@ -331,13 +332,20 @@ public class AIHeuristics6Players implements AIMultiPlayer{
         return nodeArmy;
     }
 
+    public void resetTrajectory(){
+        trajectory.clear();
+    }
+
     private ArrayList<ArrayList<Integer>> stateGenerator(Color color, GraphOscar graph) {
         ArrayList<Integer> AIArmy = graph.getArmy(color); // |Army_1| times
         ArrayList<ArrayList<Integer>> armyStates = new ArrayList<>();
+        Node goalNode = graph.getAIDestinationNode(color);
         for (Integer node : AIArmy) { // |Army_1| times
             ArrayList<Node> tr = graph.popularChoice(graph.getSecNode(node)); //|Army_1|*6^(|Army_1+Army_2-1|) times
             for (Node move : tr) {
-                if (!move.getLabel().equals("null")) {
+                if (!move.getLabel().equals("null")
+                        && graph.straightLineDistance(move,goalNode) <= graph.straightLineDistance(graph.getSecNode(node),goalNode)
+                ) {
                     ArrayList<Integer> armyState = (ArrayList<Integer>) AIArmy.clone();
                     armyState.remove(node);
                     armyState.add(graph.getNodeIndex(move));

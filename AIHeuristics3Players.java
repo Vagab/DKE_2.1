@@ -1,20 +1,24 @@
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class AIHeuristics3Players implements AIMultiPlayer{
 
     private double radiusWeight;
     private double distanceFromMiddleWeight;
     private double distanceToGoalWeight;
+    private int statesConsidered;
     private Color colorAI;
     private Color[] orderOfPlay = {Color.BLUE, Color.ORANGE, Color.BLACK};
     private ArrayList<Integer> bestMove = new ArrayList<>();
+    private ArrayList<ArrayList<Integer>> trajectory = new ArrayList<>();
 
     private ArrayList<Node> oldArmy;
     private ArrayList<Node> newArmy;
 
     public AIHeuristics3Players(double distanceFromMiddleWeight, double distanceToGoalWeight, double radiusWeight, Color colorAI) {
+        this.statesConsidered = 0;
         this.distanceFromMiddleWeight = distanceFromMiddleWeight;
         this.distanceToGoalWeight = distanceToGoalWeight;
         this.radiusWeight = radiusWeight;
@@ -22,7 +26,7 @@ public class AIHeuristics3Players implements AIMultiPlayer{
     }
 
     public Node[] performMove(GraphOscar board) {
-        maxN(3, board);
+        maxN(4, board);
         return getMove();
     }
 
@@ -178,6 +182,7 @@ public class AIHeuristics3Players implements AIMultiPlayer{
         double[] evaluationValues = new double[3];
         evaluationValues[getColorIndex(color)] = -1000000000;
         for (ArrayList<Integer> armyState : armyStates) {
+            statesConsidered++;
 //            System.out.println(integerToNode(armyState,board));
             GraphOscar graphChild = new GraphOscar(3,armyState, armyOpponent1, armyOpponent2,
                     color, getNextColor(color,0), getNextColor(color,1));
@@ -191,7 +196,7 @@ public class AIHeuristics3Players implements AIMultiPlayer{
             evaluationValues = max(evaluationValues, maxValue(cutOff, graphChild, depth, getNextColor(color,0)),getColorIndex(color));
 //            System.out.println("At cutoff depth " + depth + " the evaluation values are: " + Arrays.toString(evaluationValues));
             if (!Arrays.equals(evaluationValuePrevious, evaluationValues) && depth == 1) {
-                System.out.println("The current best move is: " + integerToNode(armyState,board));
+//                System.out.println("The current best move is: " + integerToNode(armyState,board));
                 bestMove = armyState;
             }
         }
@@ -212,6 +217,8 @@ public class AIHeuristics3Players implements AIMultiPlayer{
         double[] bestValues = maxValue(cutoff,board, 0, colorAI);
         oldArmy = board.getNodeArmy(colorAI);
         newArmy = integerToNode(bestMove, board);
+        trajectory.add((ArrayList<Integer>) bestMove.clone());
+        System.out.println("The number of states considered is: " + statesConsidered + " for " + colorAI);
     }
 
     private ArrayList<Node> integerToNode(ArrayList<Integer> army, GraphOscar board) {
@@ -222,13 +229,20 @@ public class AIHeuristics3Players implements AIMultiPlayer{
         return nodeArmy;
     }
 
+    public void resetTrajectory(){
+        trajectory.clear();
+    }
+
     private ArrayList<ArrayList<Integer>> stateGenerator(Color color, GraphOscar graph) {
         ArrayList<Integer> AIArmy = graph.getArmy(color); // |Army_1| times
         ArrayList<ArrayList<Integer>> armyStates = new ArrayList<>();
+        Node goalNode = graph.getAIDestinationNode(color);
         for (Integer node : AIArmy) { // |Army_1| times
             ArrayList<Node> tr = graph.popularChoice(graph.getSecNode(node)); //|Army_1|*6^(|Army_1+Army_2-1|) times
             for (Node move : tr) {
-                if (!move.getLabel().equals("null")) {
+                if (!move.getLabel().equals("null")
+//                        && graph.straightLineDistance(move,goalNode) <= graph.straightLineDistance(graph.getSecNode(node),goalNode) //foward
+                ) {
                     ArrayList<Integer> armyState = (ArrayList<Integer>) AIArmy.clone();
                     armyState.remove(node);
                     armyState.add(graph.getNodeIndex(move));
@@ -238,6 +252,7 @@ public class AIHeuristics3Players implements AIMultiPlayer{
         }
         return armyStates;
     }
+
 
     private String armyToString(ArrayList<Integer> army, GraphOscar board) {
         String output = "The army is: ";

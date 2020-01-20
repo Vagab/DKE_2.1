@@ -3,20 +3,23 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Path2D;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
-public class GUI extends JComponent {
+public class GUI {
     //Jel
     private int diameter = 30;
     private double interval = diameter*2.0/Math.sqrt(3);
     private double offset = diameter/2.0;
     private double xOffset = 700;
     private double yOffset = 100;
+    private MatrixCalculator matrixCalculator;
 
-    
-//    double[] weights = {0.5, 10.0, 1.0};
+
+    double[] weights = {0.5, 10.0, 1.0};
     private AI1v1 heuristicPlayer1;
     private AI1v1 heuristicPlayer2;
     private AI1v1 MCMCPlayer1;
@@ -44,13 +47,18 @@ public class GUI extends JComponent {
     private int bestPreviousScore = -1;
 //0.11817334978149338, 0.7117125414209313, 0.6066114194523499
     public GUI() {
-        heuristicPlayer1 = new AIHeuristics(.0759158953972422, .8968531011056472, .42463784024472084, Color.BLUE);
-        heuristicPlayer2 = new AIHeuristics(.1231, .9847, .1231, Color.RED);
+        heuristicPlayer1 = new AIHeuristics(0.103, 0.989, 0.107, Color.BLUE);
+        heuristicPlayer2 = new AIHeuristics(0.103, 0.989, 0.107, Color.RED);
+//        heuristicPlayer1 = new AIHeuristics(0.041, 0.886, 0.190, Color.BLUE);
+//        heuristicPlayer2 = new AIHeuristics(0.041, 0.886, 0.190, Color.RED);
+//        heuristicPlayer1 = new AIHeuristics(0.049, 0.994, 0.072, Color.BLUE);
+//        heuristicPlayer2 = new AIHeuristics(0.049, 0.994, 0.072, Color.RED);
         MCMCPlayer1 = new AIMCMC(Color.BLUE,turnsCount);
         MCMCPlayer2 = new AIMCMC(Color.RED,turnsCount);
 
         this.board = new Graph();
         this.nodeList = board.getNodes();
+        this.matrixCalculator = new MatrixCalculator();
 
         MousePressListener var1 = new MousePressListener();
         this.addMouseListener(var1);
@@ -115,8 +123,8 @@ public class GUI extends JComponent {
                 g2.setPaint(Color.WHITE);
                 g2.draw(new Ellipse2D.Double(board.getNodeYCoords(i) * interval + xOffset - board.getNodeXCoords(i) * interval/2.0, board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + yOffset, diameter, diameter));
             }
-//            g2.setPaint(Color.ORANGE);
-//            g2.drawString(board.getNodeLabel(i), board.getNodeYCoords(i) * interval + 715 - board.getNodeXCoords(i) * interval/2, (int) (board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + 120));
+            g2.setPaint(Color.ORANGE);
+            g2.drawString(String.valueOf(i), (float) (board.getNodeYCoords(i) * interval + 715 - board.getNodeXCoords(i) * interval/2), (int) (board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + 120));
         }
 
     }
@@ -324,19 +332,24 @@ public class GUI extends JComponent {
         }
 
         public void mouseClicked(MouseEvent var1) {
-            int move = 0;
             int var2 = var1.getX();
             int var3 = var1.getY();
             GUI.this.clickedForNode(var2, var3);
-//            setAIMove(MCMCPlayer1.performMove(board));
-//            setAIMove(heuristicPlayer2.performMove(board));
-//            if (!player1){
+            // Play 1 game, we focus on player 1
+//            if (!goalCheck(board, (AIHeuristics) heuristicPlayer1)) {
 //                setAIMove(heuristicPlayer1.performMove(board));
+//            }
+//            if (!player1 && !goalCheck(board, (AIHeuristics) heuristicPlayer2)) {
+//                setAIMove(heuristicPlayer2.performMove(board));
 //                player1 = true;
 //            }
 
-            double[] weights = {1,5,1};
-            weightTuning(normalize(weights));
+            double[] weights = {1,8,1};
+            try {
+                weightTuning(matrixCalculator.normalize(weights));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
         public void mouseEntered(MouseEvent var1) {
@@ -347,13 +360,16 @@ public class GUI extends JComponent {
 
     }
 
-    public double[] weightTuning(double[] weights) {
+    public double[] weightTuning(double[] weights) throws FileNotFoundException {
+        PrintWriter out1 = new PrintWriter("Output1");
+        PrintWriter out2 = new PrintWriter("Output2");
+        PrintWriter out3 = new PrintWriter("Output3");
         double[] newWeights = weights.clone();
         System.out.println(Arrays.toString(newWeights));
         double learningFactor = 0.1; //Learning factor for tuning, initially set equal to 0.1 (for testing purposes)
-        for (int i = 0; i < 100; i++) { // 100 is just a number to test a few iterations
+        for (int i = 0; i < 150; i++) { // 100 is just a number to test a few iterations
             System.out.println("Game number " + i);
-            if (i > 20) {
+            if (i > 100) {
                 learningFactor = 0.01;
             }
             AIHeuristics player1 = new AIHeuristics(newWeights[0], newWeights[1], newWeights[2], Color.RED);
@@ -361,17 +377,24 @@ public class GUI extends JComponent {
             ArrayList<double[]> temp = playGame(player1, player2);
 //            printMatrix(temp);
             for (int j = 0; j < 3; j++) {
-                System.out.print("Weight " + j + " ");
-                System.out.println(newWeights[j] - normalize(listToArray(temp))[j]);
-                newWeights[j] = newWeights[j] + learningFactor*(normalize(listToArray(temp))[j]-newWeights[j]);
+                newWeights[j] = newWeights[j] + learningFactor*(matrixCalculator.normalize(matrixCalculator.listToArray(temp))[j]-newWeights[j]);
             }
+            out1.print(matrixCalculator.normalize(newWeights)[0]);
+            out1.println();
+            out2.print(matrixCalculator.normalize(newWeights)[1]);
+            out2.println();
+            out3.print(matrixCalculator.normalize(newWeights)[2]);
+            out3.println();
 //            System.out.println(Arrays.toString(newWeights));
             reset();
             player1.resetTrajectory();
             player2.resetTrajectory();
         }
-        System.out.print("The weights are " + Arrays.toString(newWeights));
-        return normalize(newWeights);
+        System.out.print("The weights are " + Arrays.toString(matrixCalculator.normalize(newWeights)));
+        out1.close();
+        out2.close();
+        out3.close();
+        return matrixCalculator.normalize(newWeights);
     }
 
     public ArrayList<double[]> playGame(AIHeuristics player1, AIHeuristics player2) {
@@ -417,216 +440,13 @@ public class GUI extends JComponent {
 //        System.out.println(featureScoresMatrix);
 //        System.out.println(miniMaxScoresVector);
         System.out.println("The predicted error is: " + predictedError);
-        return leastSquares(featureScoresMatrix,createVector(miniMaxScoresVector));
+        return matrixCalculator.leastSquares(featureScoresMatrix,matrixCalculator.createVector(miniMaxScoresVector));
     }
 
-    public ArrayList<double[]> leastSquares(ArrayList<double[]> matrix, ArrayList<double[]> vector) {
-        ArrayList<double[]> leastSquaresSolution =matrixMultiplication(matrixMultiplication(inverse(matrixMultiplication(transpose(matrix),matrix)),transpose(matrix)),vector);
-        return leastSquaresSolution;
-    }
-
-    public ArrayList<double[]> transpose(ArrayList<double[]> matrix) {
-        int columns = matrix.size(); //3
-        int rows = matrix.get(0).length; //2
-        ArrayList<double[]> matrixTranspose = new ArrayList<>();
-        for (int i = 0; i < rows; i++) {
-            matrixTranspose.add(new double[columns]);
-        }
-        for (int i = 0; i < rows; i++){
-            for (int j = 0; j < columns; j++) {
-                matrixTranspose.get(i)[j] = matrix.get(j)[i];
-            }
-        }
-        return matrixTranspose;
-    }
-
-    public void printMatrix(ArrayList<double[]> matrix) {
-        for (int i = 0; i < matrix.size(); i++) {
-            for (int j = 0; j < matrix.get(0).length; j++) {
-                System.out.print(matrix.get(i)[j] + " ");
-            }
-            System.out.println();
-        }
-    }
-
-    public ArrayList<double[]>  matrixMultiplication(ArrayList<double[]> matrix1, ArrayList<double[]> matrix2) {
-        int matrix1Rows = matrix1.size();
-        int matrix1Columns = matrix1.get(0).length;
-        int matrix2Rows = matrix2.size();
-        int matrix2Columns = matrix2.get(0).length;
-        if (matrix1Columns != matrix2Rows) {
-            System.out.println("Not possible!");
-        }
-        ArrayList<double[]> matrixMultiplied = new ArrayList<>();
-        for (int i = 0; i < matrix1Rows; i++) {
-            matrixMultiplied.add(new double[matrix2Columns]);
-        }
-        for (int i = 0; i < matrix1Rows; i++) {
-            for (int j = 0; j < matrix2Columns; j++) {
-                for (int k = 0; k < matrix2.size(); k++) {
-                    matrixMultiplied.get(i)[j] += matrix1.get(i)[k]*matrix2.get(k)[j];
-                }
-            }
-        }
-
-        return matrixMultiplied;
-    }
-
-    public double determinant(ArrayList<double[]> matrix, int n) //matrix needs to be square
-    {
-        int D = 0; // Initialize result
-
-        // Base case : if matrix contains single element
-        if (n == 1){
-            return matrix.get(0)[0];
-        }
-
-        ArrayList<double[]> temp = new ArrayList<>(); // To store cofactors
-        for (int i = 0; i < n; i++){
-            temp.add(new double[n]);
-        }
-
-        int sign = 1; // To store sign multiplier
-
-        // Iterate for each element of first row
-        for (int i = 0; i < n; i++)
-        {
-            // Getting Cofactor of A[0][f]
-            getCofactor(matrix, temp, 0, i, n);
-            D += sign * matrix.get(0)[i] * determinant(temp, n - 1);
-
-            // terms are to be added with alternate sign
-            sign = -sign;
-        }
-
-        return D;
-    }
-
-    // Function to get cofactor of A[p][q] in temp[][]. n is current
-// dimension of A[][]
-    public void getCofactor(ArrayList<double[]> matrix, ArrayList<double[]> temp, int p, int q, int n)
-    {
-        int i = 0, j = 0;
-        // Looping for each element of the matrix
-        for (int row = 0; row < n; row++)
-        {
-            for (int col = 0; col < n; col++)
-            {
-                // Copying into temporary matrix only those element
-                // which are not in given row and column
-                if (row != p && col != q)
-                {
-                    temp.get(i)[j++] = matrix.get(row)[col];
-
-                    // Row is filled, so increase row index and
-                    // reset col index
-                    if (j == n - 1)
-                    {
-                        j = 0;
-                        i++;
-                    }
-                }
-            }
-        }
-    }
-
-    // Function to get adjoint of A[N][N] in adj[N][N].
-    public void adjoint(ArrayList<double[]> matrix, ArrayList<double[]> adj)
-    {
-        int rows = matrix.size();
-        if (rows == 1)
-        {
-            adj.get(0)[0] = 1;
-            return;
-        }
-
-        // temp is used to store cofactors of A[][]
-        int sign = 1;
-        ArrayList<double[]> temp = new ArrayList<>();
-        for (int i = 0; i < rows; i++) {
-            temp.add(new double[rows]);
-        }
-
-        for (int i = 0; i < rows; i++)
-        {
-            for (int j = 0; j < rows; j++)
-            {
-                // Get cofactor of A[i][j]
-                getCofactor(matrix, temp, i, j, rows);
-
-                // sign of adj[j][i] positive if sum of row
-                // and column indexes is even.
-                sign = ((i + j) % 2 == 0)? 1: -1;
-
-                // Interchanging rows and columns to get the
-                // transpose of the cofactor matrix
-                adj.get(j)[i] = (sign)*(determinant(temp, rows-1));
-            }
-        }
-    }
-
-    public ArrayList<double[]> inverse(ArrayList<double[]> matrix)
-    {
-        int rows = matrix.size();
-        ArrayList<double[]> inverseMatrix = new ArrayList<>();
-        for (int i = 0; i < rows; i++){
-            inverseMatrix.add(new double[rows]);
-        }
-        // Find determinant of A[][]
-        double det = determinant(matrix, rows);
-        if (det == 0)
-        {
-            System.out.print("Singular matrix, can't find its inverse");
-        }
-        // Find adjoint
-        ArrayList<double[]> adj = new ArrayList<>();
-        for (int i = 0; i < rows; i++){
-            adj.add(new double[rows]);
-        }
-        adjoint(matrix, adj);
-
-        // Find Inverse using formula "inverse(A) = adj(A)/det(A)"
-        for (int i = 0; i < rows; i++) {
-            for (int j = 0; j < rows; j++) {
-                inverseMatrix.get(i)[j] = adj.get(i)[j]/((double)det);
-            }
-        }
-        return inverseMatrix;
-    }
-
-    public ArrayList<double[]> createVector(ArrayList<Double> list) {
-        ArrayList<double[]> vector = new ArrayList<>();
-        for (double k : list) {
-            vector.add(new double[]{k});
-        }
-        return vector;
-    }
 
     public void reset() {
         board = new Graph();
     }
-
-    public double[] normalize(double[] vector) {
-        double normalizationConstant = 0;
-        double[] normalizedVector = new double[vector.length];
-        for (double n : vector) {
-            normalizationConstant += n*n;
-        }
-        normalizationConstant = Math.sqrt(normalizationConstant);
-        for (int i = 0; i < vector.length; i++) {
-            normalizedVector[i] = vector[i]/normalizationConstant;
-        }
-        return normalizedVector;
-    }
-
-    public double[] listToArray(ArrayList<double[]> list) {
-        double[] array = new double[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            array[i] = list.get(i)[0];
-        }
-        return array;
-    }
-
 
 
 }

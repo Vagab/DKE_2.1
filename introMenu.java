@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.Scanner;
 
 
-public class introMenu {
+public class introMenu extends CCheckers {
 
     private static String guide = "Chinese Checkers is a game in which players race each other to see who can fill their destination triangle with colored pegs first. \n While the game is neither Chinese nor Checkers, it's a fun tactical game invented in Germany but based on an American game called Halma.\n You can play the game with two to six players.";
 

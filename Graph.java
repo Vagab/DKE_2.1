@@ -35,6 +35,7 @@ public class Graph {
         this.makeNodeList();
         this.connectEdges();
         this.initializeStartingPositions(2);
+//        this.testInitializeStartingPositions(2);
     }
 
     public Graph(ArrayList<Integer> army1, ArrayList<Integer> army2, Color army1Color, Color army2Color) {
@@ -295,6 +296,26 @@ public class Graph {
         }
     }
 
+    private void testInitializeStartingPositions(int n) {
+        if (n == 2) {
+            nodeList[22].setColor(Color.BLUE);
+            nodeList[30].setColor(Color.BLUE);
+            nodeList[33].setColor(Color.BLUE);
+            nodeList[41].setColor(Color.BLUE);
+            nodeList[48].setColor(Color.BLUE);
+            nodeList[55].setColor(Color.BLUE);
+
+            nodeList[23].setColor(Color.RED);
+            nodeList[31].setColor(Color.RED);
+            nodeList[38].setColor(Color.RED);
+            nodeList[49].setColor(Color.RED);
+            nodeList[62].setColor(Color.RED);
+            nodeList[69].setColor(Color.RED);
+
+
+        }
+    }
+
     public String getNodeLabel(int node) {
         return nodeList[node].getLabel();
     }
@@ -342,16 +363,19 @@ public class Graph {
                 choose(availableNodes[i], i);
             }
         }
+        oG.remove(n);
         return oG;
     }
 
     public void choose(Node n, int i){
         Node[] av = n.adjN();
-        if(!n.isOccupied()){ //if node n is not occupied, it is added to the list of available spots
+        if(!n.isOccupied() && !oG.contains(n)){ //if node n is not occupied, it is added to the list of available spots
             oG.add(n);
         }
         else if(!av[i].isOccupied()&&!av[i].getLabel().equals("null")){
-            oG.add(av[i]); //if node n is occupied, we check whether the node which lies in the i-direction is available
+            if (!oG.contains(av[i])) {
+                oG.add(av[i]); //if node n is occupied, we check whether the node which lies in the i-direction is available
+            }
             isItGucci(av[i], i);
         }
 
@@ -365,8 +389,7 @@ public class Graph {
                                                      // jump back to its original position
                 !y[i].getAdj(i).isOccupied() &&
                 !y[i].getAdj(i).getLabel().equals("null") &&
-                !oG.contains(y[i].getAdj(i))) {
-
+                !oG.contains(y[i].getAdj(i))){
                 oG.add(y[i].getAdj(i));
                 isItGucci(y[i].getAdj(i), i);
             }
