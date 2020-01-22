@@ -1,6 +1,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.awt.*;
 
 public class LobbySimulator {
 
@@ -18,16 +19,19 @@ public class LobbySimulator {
     private int mostCommonDestinationResult;
 
     private double[] probs;
-
+    private Color co;
     private int bestPreviousScore;
+    private int num;
 
 
 
-    public LobbySimulator(ArrayList<Integer> blue, ArrayList<Integer> red, int playLimit, int bestPreviousScore){
+    public LobbySimulator(ArrayList<Integer> blue, ArrayList<Integer> red, int playLimit, int bestPreviousScore, Color c){
         this.playLimit = playLimit; //sets the depth of the tree according to the progression of the game
         this.blue = blue;
         this.red = red;
         this.bestPreviousScore = bestPreviousScore;
+        this.co = c;
+        
 
         this.probs = NormalDistribution.normD(this.blue.size());
         for(double el : probs) {
@@ -85,7 +89,7 @@ public class LobbySimulator {
 
         for(int i=0; i<totalSimulations; i++){
             //System.out.print(i + " ");
-            Simulation simulation = new Simulation(blue, red, playLimit, this.probs);
+            Simulation simulation = new Simulation(blue, red, playLimit, this.probs, co);
             //Node candidate = simulation.startSimulation();
             int candidate = simulation.startSimulation();
             int score = simulation.getScoreResult();
@@ -161,7 +165,7 @@ public class LobbySimulator {
     }
 
 
-    public static void main(String[] args){
+/*    public static void main(String[] args){
 //        int[] blue = new int[]{0,1,2,3,4,5};
 //        int[] red = new int[]{80,79,78,77,76,75};
         ArrayList<Integer> blue = new ArrayList<>();
@@ -177,7 +181,7 @@ public class LobbySimulator {
         test.launch();
         System.out.println("Best candidate is: " + test.getBestCandidate());
 
-    }
+    }*/
 
 
 }

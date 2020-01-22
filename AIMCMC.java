@@ -31,7 +31,16 @@ public class AIMCMC implements AI1v1 {
             } else {
                 depthSimulation = 10;
             }
-            simulator = new LobbySimulator(board.getArmy(Color.BLUE), board.getArmy(Color.RED), depthSimulation, this.bestPreviousScore);
+            if(colorAI==Color.BLUE){
+                simulator = new LobbySimulator(board.getArmy(Color.BLUE), board.getArmy(Color.RED), depthSimulation, this.bestPreviousScore, Color.BLUE);
+            }
+            else if(colorAI==Color.GRAY){
+                simulator = new LobbySimulator(board.getArmy(Color.GRAY), board.getArmy(Color.BLACK), depthSimulation, this.bestPreviousScore, Color.GRAY);
+            }
+            else{
+                simulator = new LobbySimulator(board.getArmy(Color.RED), board.getArmy(Color.BLUE), depthSimulation, this.bestPreviousScore, Color.RED);
+            }
+
             simulator.launch();
             System.out.println("Launching Simulations...");
             while (!simulator.isDone()) {
@@ -81,5 +90,19 @@ public class AIMCMC implements AI1v1 {
             }
 
         }
+
     }
+    @Override
+    public Color getColor(){
+        return colorAI;
+    }
+
+    @Override
+    public double getBestValue(){return 0;}
+    @Override
+    public double[] getBestFeatures(){return new double[]{0, 0, 0};}
+    @Override
+    public double getRawScore(){return  0;}
+    @Override
+    public void resetTrajectory(){}
 }

@@ -537,6 +537,7 @@ public class GraphOscar {
         return 0;
 
     }
+    public int getBoardSize(){return nodeList.length;}
 
     public double centroidNodeDistance(ArrayList<Node> nodes, Node destinationNode) {
         double[] centroidCoordinates = centroid(nodes);
@@ -563,27 +564,6 @@ public class GraphOscar {
         double x = Math.abs(0.5*dx - dy);
         double y = Math.sqrt(3) / 2.0 * Math.abs(dx);
         return Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2));
-    }
-
-    public Node getAIDestinationNode(Color color){
-        if (color.equals(Color.RED)) {
-            return getRedAIDestinationNode();
-        }
-        else if (color.equals(Color.BLUE)) {
-            return getBlueAIDestinationNode();
-        }
-        else if (color.equals(Color.BLACK)) {
-            return getBlackAIDestinationNode();
-        }
-        else if (color.equals(Color.GRAY)) {
-            return getGrayAIDestinationNode();
-        }
-        else if (color.equals(Color.GREEN)) {
-            return getGreenAIDestinationNode();
-        }
-        else {
-            return getOrangeAIDestinationNode();
-        }
     }
 
     public Node getRedAIDestinationNode() {

@@ -1,7 +1,7 @@
 import java.awt.*;
 import java.util.ArrayList;
 
-public class GraphSimulation {
+public class GraphSimulation implements GraphSim{
 
     /*
      *   Creates a chinese checkers board as the form of a graph containing
@@ -337,9 +337,9 @@ public class GraphSimulation {
 
     //Oscar
 
-    public static ArrayList<Node> oG = new ArrayList<Node>();
+    public ArrayList<Node> oG = new ArrayList<Node>();
 
-    public static ArrayList<Node> popularChoice(Node n) {
+    public ArrayList<Node> popularChoice(Node n) {
         oG.clear();
         Node[] availableNodes = n.adjN(); //Gets adjacent nodes from node n
         for (int i = 0; i < availableNodes.length; i++) { // Goes through all neighbour nodes of n
@@ -348,7 +348,7 @@ public class GraphSimulation {
         return oG;
     }
 
-    public static void choose(Node n, int i) {
+    public void choose(Node n, int i) {
         Node[] av = n.adjN();
         if (!n.isOccupied()) { //if node n is not occupied, it is added to the list of available spots
             oG.add(n);
@@ -359,7 +359,7 @@ public class GraphSimulation {
 
     }
 
-    public static void isItGucci(Node n, int m) {
+    public void isItGucci(Node n, int m) {
         Node[] y = n.adjN(); //gets neighbours of node n
         for (int i = 0; i < y.length; i++) {
             if (y[i].getLabel() == null) {
@@ -379,7 +379,7 @@ public class GraphSimulation {
         }
     }
 
-    public static void display() {
+    public void display() {
         for (int i = 0; i < oG.size(); i++) {
             System.out.println("possible move " + oG.get(i).getLabel());
         }

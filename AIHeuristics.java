@@ -15,7 +15,6 @@ public class AIHeuristics implements AI1v1 {
     private ArrayList<Integer> bestMove = new ArrayList<>();
     private ArrayList<Integer> previousBestMove = new ArrayList<>();
     private ArrayList<ArrayList<Integer>> trajectory = new ArrayList<>();
-    private int statesConsidered;
     
     private ArrayList<Node> oldArmy;
     private ArrayList<Node> newArmy;
@@ -31,12 +30,11 @@ public class AIHeuristics implements AI1v1 {
         this.distanceToGoalWeight = distanceToGoalWeight;
         this.radiusWeight = radiusWeight;
         this.colorAI = colorAI;
-        this.statesConsidered = 0;
     }
 
     @Override
     public Node[] performMove(Graph board) {
-        miniMax(2, board);
+        miniMax(4, board);
         return getMove();
     }
 
@@ -118,6 +116,22 @@ public class AIHeuristics implements AI1v1 {
         double evaluationValue = 0;
         //Calculate features
         double[] featureScoresVector = featureCalculator(graph);
+//        if (colorAI.equals(Color.RED)) {
+//            if (redGoalCheck(graph)) {
+//                return 1000;
+//            }
+//            if (blueGoalCheck(graph)) {
+//                return -1000;
+//            }
+//        }
+//        if (colorAI.equals(Color.BLUE)) {
+//            if (blueGoalCheck(graph)) {
+//                return 1000;
+//            }
+//            if (redGoalCheck(graph)) {
+//                return -1000;
+//            }
+//        }
         //Evaluation function
         evaluationValue = - distanceFromMiddleWeight * featureScoresVector[0]
                 - distanceToGoalWeight * featureScoresVector[1]
@@ -134,24 +148,24 @@ public class AIHeuristics implements AI1v1 {
         ArrayList<ArrayList<Integer>> armyStates = new ArrayList<>();
         ArrayList<Integer> minArmy = new ArrayList<>();
         Color colorOpponent = Color.BLACK;
+        if (colorAI.equals(Color.RED)) {
+            armyStates = stateGenerator(Color.RED,graph);
+            minArmy = graph.getArmy(Color.BLUE);
+            colorOpponent = Color.BLUE;
+        }
+        else if (colorAI.equals(Color.BLUE)) {
+            armyStates = stateGenerator(Color.BLUE,graph);
+            minArmy = graph.getArmy(Color.RED);
+            colorOpponent = Color.RED;
+        }
+//        Collections.sort(armyStates,new graphComparator(minArmy,colorOpponent,colorAI)); //sorting by best evaluated move
         double evaluationValue = -1000000000;
         if (depth < cutOff) {
             depth++;
-            if (colorAI.equals(Color.RED)) {
-                armyStates = stateGenerator(Color.RED,graph);
-                minArmy = graph.getArmy(Color.BLUE);
-                colorOpponent = Color.BLUE;
-//                Collections.sort(armyStates,new redArmyComparator(minArmy));
-            }
-            else if (colorAI.equals(Color.BLUE)) {
-                armyStates = stateGenerator(Color.BLUE,graph);
-                minArmy = graph.getArmy(Color.RED);
-                colorOpponent = Color.RED;
-//                Collections.sort(armyStates,new blueArmyComparator(minArmy));
-            }
             for (ArrayList<Integer> armyState : armyStates) {
-                statesConsidered++;
                 Graph graphChild = new Graph(armyState, minArmy, colorAI, colorOpponent);
+//                System.out.println("Depth: " + depth);
+//                System.out.println(armyToString(armyState,graphChild) + " is being evaluated.");
                 if (redGoalCheck(graphChild) || blueGoalCheck(graphChild)) {
                     if (depth == 1) {
                         bestMove = armyState;
@@ -160,7 +174,9 @@ public class AIHeuristics implements AI1v1 {
                 }
                 double evaluationValuePrevious = evaluationValue;
                 evaluationValue = Math.max(evaluationValue, minValue(graphChild,cutOff, depth, alpha, beta));
+//                System.out.println("Evaluation value at maxValue: " + evaluationValue);
                 if (evaluationValuePrevious != evaluationValue && depth == 1) {
+//                    System.out.println(bestMove);
                     bestMove = armyState;
                 }
                 if (evaluationValue >= beta) {
@@ -171,6 +187,7 @@ public class AIHeuristics implements AI1v1 {
             return evaluationValue;
         }
         else {
+//            System.out.println("cutoff at depth: " + depth);
             return evaluationFunction(graph);
         }
     }
@@ -179,28 +196,34 @@ public class AIHeuristics implements AI1v1 {
         ArrayList<ArrayList<Integer>> armyStates = new ArrayList<>();
         ArrayList<Integer> maxArmy = new ArrayList<>();
         Color colorOpponent = Color.BLACK;
+        if (colorAI.equals(Color.RED)) {
+            armyStates = stateGenerator(Color.BLUE,graph);
+            maxArmy = graph.getArmy(Color.RED);
+            colorOpponent = Color.BLUE;
+        }
+        else if (colorAI.equals(Color.BLUE)) {
+            armyStates = stateGenerator(Color.RED,graph);
+            maxArmy = graph.getArmy(Color.BLUE);
+            colorOpponent = Color.RED;
+        }
+//        Collections.sort(armyStates,new graphComparator(maxArmy,colorOpponent,colorAI)); //sorting by best evaluated move
         double evaluationValue = 1000000000;
         if (depth < cutOff) {
-            if (colorAI.equals(Color.RED)) {
-                armyStates = stateGenerator(Color.BLUE,graph);
-                maxArmy = graph.getArmy(Color.RED);
-                colorOpponent = Color.BLUE;
-//                Collections.sort(armyStates,new redArmyComparator(maxArmy));
-            }
-            else if (colorAI.equals(Color.BLUE)) {
-                armyStates = stateGenerator(Color.RED,graph);
-                maxArmy = graph.getArmy(Color.BLUE);
-                colorOpponent = Color.RED;
-//                Collections.sort(armyStates,new blueArmyComparator(maxArmy));
-            }
             depth++;
             for (ArrayList<Integer> armyState : armyStates) {
-                statesConsidered++;
                 Graph graphChild = new Graph(maxArmy,armyState, colorAI, colorOpponent);
+//                System.out.println("Depth: " + depth);
+//                System.out.println(armyToString(armyState,graphChild) + " is being evaluated.");
                 if (redGoalCheck(graphChild) || blueGoalCheck(graphChild)) {
                     return evaluationFunction(graphChild);
                 }
+                double evaluationValuePrevious = evaluationValue;
                 evaluationValue = Math.min(evaluationValue, maxValue(graphChild, cutOff, depth, alpha, beta));
+//                System.out.println("Evaluation value at minValue: " + evaluationValue);
+//                if (evaluationValuePrevious != evaluationValue && depth == 1) {
+//                        previousBestMove = bestMove;
+//                        bestMove = armyState;
+//                }
                 if (evaluationValue <= alpha) {
                     return evaluationValue;
                 }
@@ -209,21 +232,26 @@ public class AIHeuristics implements AI1v1 {
             return evaluationValue;
         }
         else {
+//            System.out.println("cutoff");
+//            System.out.println(graph);
+//            System.out.println("Evaluation value is " +  evaluationFunction(graph));
             return evaluationFunction(graph);
         }
     }
 
     private void miniMax(int cutOff, Graph board) {
-//        statesConsidered = 0;
+//        System.out.println("The color of the AI is: " + colorAI);
         bestMove.clear();
         bestValue = maxValue(board,cutOff,0,-1000000000,1000000000); // bestValue is the target function approximation
+//        System.out.println("The best move is: " + armyToString(bestMove, board) + " and the best value is: " + bestValue);
         for (int i = 0; i < 3; i++) {
             bestFeatures[i] = featureCalculator(board)[i];
         }
+//        System.out.println("Best features are :" + Arrays.toString(bestFeatures));
         oldArmy = board.getNodeArmy(colorAI); 
         newArmy = integerToNode(bestMove, board);
         trajectory.add((ArrayList<Integer>) bestMove.clone());
-//        System.out.println("The number of considered states was: " + statesConsidered + " for the color " + colorAI);
+//        System.out.println(trajectory);
     }
 
     public void resetTrajectory(){
@@ -270,7 +298,7 @@ public class AIHeuristics implements AI1v1 {
             ArrayList<Node> tr = graph.popularChoice(graph.getSecNode(node)); //|Army_1|*6^(|Army_1+Army_2-1|) times
             for (Node move : tr) {
                 if (!move.getLabel().equals("null")
-                        && graph.stepDistance(move,goalNode) <= graph.stepDistance(graph.getSecNode(node),goalNode)
+                        && graph.straightLineDistance(move,goalNode) <= graph.straightLineDistance(graph.getSecNode(node),goalNode)
                 ) {
                     ArrayList<Integer> armyState = (ArrayList<Integer>) AIArmy.clone();
                     armyState.remove(node);
@@ -285,48 +313,27 @@ public class AIHeuristics implements AI1v1 {
         return armyStates;
     }
 
-    class blueArmyComparator implements Comparator<ArrayList<Integer>> {
-        private ArrayList<Integer> stationaryArmy;
-        blueArmyComparator(ArrayList<Integer> stationaryArmy) {
-            this.stationaryArmy = stationaryArmy;
-        }
-
-        @Override
-        public int compare(ArrayList<Integer> army1, ArrayList<Integer> army2) {
-            Graph graph1 = new Graph(army1, stationaryArmy, Color.BLUE,Color.RED);
-            Graph graph2 = new Graph(army2, stationaryArmy, Color.BLUE,Color.RED);
-            if (evaluationFunction(graph1) > evaluationFunction(graph2)) {
-                return -1;
-            }
-            else if (evaluationFunction(graph1) == evaluationFunction(graph2) ) {
-                return 0;
-            }
-            else {
-                return 1;
-            }
-        }
-    }
-
-    class redArmyComparator implements Comparator<ArrayList<Integer>> {
-        private ArrayList<Integer> stationaryArmy;
-        redArmyComparator(ArrayList<Integer> stationaryArmy) {
-            this.stationaryArmy = stationaryArmy;
-        }
-
-        @Override
-        public int compare(ArrayList<Integer> army1, ArrayList<Integer> army2) {
-            Graph graph1 = new Graph(army1, stationaryArmy, Color.BLUE,Color.BLUE);
-            Graph graph2 = new Graph(army2, stationaryArmy, Color.BLUE,Color.BLUE);
-            if (evaluationFunction(graph1) > evaluationFunction(graph2)) {
-                return -1;
-            }
-            else if (evaluationFunction(graph1) == evaluationFunction(graph2) ) {
-                return 0;
-            }
-            else {
-                return 1;
-            }
-        }
-    }
+//    class graphComparator implements Comparator<ArrayList<Integer>> {
+//        ArrayList<Integer> stationaryArmy;
+//        Color colorStationary;
+//        Color colorSort;
+//        graphComparator(ArrayList<Integer> stationaryArmy, Color colorStationary, Color colorSort) {
+//            this.stationaryArmy = stationaryArmy;
+//            this.colorStationary = colorStationary;
+//            this.colorSort = colorSort;
+//        }
+//        @Override
+//        public int compare(ArrayList<Integer> army1, ArrayList<Integer> army2) {
+//            if (evaluationFunction(new Graph(army1,stationaryArmy,colorSort,colorStationary)) < evaluationFunction(new Graph(army2,stationaryArmy,colorSort,colorStationary))) {
+//                return -1;
+//            }
+//            else if (evaluationFunction(new Graph(army1,stationaryArmy,colorSort,colorStationary)) == evaluationFunction(new Graph(army2,stationaryArmy,colorSort,colorStationary))){
+//                return 0;
+//            }
+//            else {
+//                return 1;
+//            }
+//        }
+//    }
     
 }

@@ -3,11 +3,11 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
-public class GUI6players {
+public class GUI6players extends JComponent {
 
+    private String gameType;
     //Jel
     private int diameter = 30;
     private double interval = diameter*2.0/Math.sqrt(3);
@@ -22,6 +22,9 @@ public class GUI6players {
     private AIMultiPlayer aiPlayer5;
     private AIMultiPlayer aiPlayer6;
 
+    private AIMCMC aiM;
+    private AIMCMC aiM1;
+
     private GraphOscar board;
     private Node[] nodeList;
     private int selectedNode;
@@ -29,34 +32,54 @@ public class GUI6players {
     private int currentPlayer = 1;
     private int turnsCount = 1;
     private int numberOfPlayers;
-    MatrixCalculator matrixCalculator = new MatrixCalculator();
 
 
-    GUI6players(int numberOfPlayers) {
+    GUI6players(int numberOfPlayers, String gameType) {
+        this.gameType=gameType;
         this.numberOfPlayers = numberOfPlayers;
         this.board = new GraphOscar(numberOfPlayers);
-
+//        if(numberOfPlayers==9){
+//            this.board = new GraphOscar(6);
+//        }
+//        else{
+//            this.board = new GraphOscar(numberOfPlayers);
+//        }
         double middle = 0.5;
         double radius = 1;
         double goal = 10;
-        if (numberOfPlayers == 6) {
-            aiPlayer1 = new AIHeuristics6Players(middle, goal, radius, Color.BLUE);
-            aiPlayer2 = new AIHeuristics6Players(middle, goal, radius, Color.GRAY);
-            aiPlayer3 = new AIHeuristics6Players(middle, goal, radius, Color.ORANGE);
-            aiPlayer4 = new AIHeuristics6Players(middle, goal, radius, Color.RED);
-            aiPlayer5 = new AIHeuristics6Players(middle, goal, radius, Color.BLACK);
-            aiPlayer6 = new AIHeuristics6Players(middle, goal, radius, Color.GREEN);
+        if (numberOfPlayers == 6) { // 6 MaxN players
+            if (gameType.equals("6maxN")) {
+                aiPlayer1 = new AIHeuristics6Players(middle, goal, radius, Color.BLUE);
+                aiPlayer2 = new AIHeuristics6Players(middle, goal, radius, Color.GRAY);
+                aiPlayer3 = new AIHeuristics6Players(middle, goal, radius, Color.ORANGE);
+                aiPlayer4 = new AIHeuristics6Players(middle, goal, radius, Color.RED);
+                aiPlayer5 = new AIHeuristics6Players(middle, goal, radius, Color.BLACK);
+                aiPlayer6 = new AIHeuristics6Players(middle, goal, radius, Color.GREEN);
+            }
+           else if (gameType.equals("4maxN2MCMC")) {
+               //            aiM = new AIMCMC(Color.BLUE, turnsCount);
+//            aiM1 = new AIMCMC(Color.GRAY, turnsCount);
+               aiPlayer3 = new AIHeuristics6Players(middle, goal, radius, Color.ORANGE);
+               aiPlayer4 = new AIHeuristics6Players(middle, goal, radius, Color.RED);
+               aiPlayer5 = new AIHeuristics6Players(middle, goal, radius, Color.BLACK);
+               aiPlayer6 = new AIHeuristics6Players(middle, goal, radius, Color.GREEN);
+               System.out.println("W IN");
+           }
         }
-        else if (numberOfPlayers == 4) {
-            aiPlayer1 = new AIHeuristics4Players(middle, goal, radius, Color.GRAY);
-            aiPlayer2 = new AIHeuristics4Players(middle, goal, radius, Color.ORANGE);
-            aiPlayer3 = new AIHeuristics4Players(middle, goal, radius, Color.BLACK);
-            aiPlayer4 = new AIHeuristics4Players(middle, goal, radius, Color.GREEN);
+        else if (numberOfPlayers == 4) { // 4 MaxN players
+            if (gameType.equals("4maxN")) {
+                aiPlayer1 = new AIHeuristics4Players(middle, goal, radius, Color.GRAY);
+                aiPlayer2 = new AIHeuristics4Players(middle, goal, radius, Color.ORANGE);
+                aiPlayer3 = new AIHeuristics4Players(middle, goal, radius, Color.BLACK);
+                aiPlayer4 = new AIHeuristics4Players(middle, goal, radius, Color.GREEN);
+            }
         }
-        else if (numberOfPlayers == 3) {
-            aiPlayer1 = new AIHeuristics3Players(middle, goal, radius, Color.BLUE);
-            aiPlayer2 = new AIHeuristics3Players(middle, goal, radius, Color.ORANGE);
-            aiPlayer3 = new AIHeuristics3Players(middle, goal, radius, Color.BLACK);
+        else if (numberOfPlayers == 3) { // 2 MaxN players 1 mcmc
+            if (gameType.equals("2maxN1MCMC")) {
+                aiM = new AIMCMC(Color.BLUE, turnsCount);
+                aiPlayer2 = new AIHeuristics3Players(middle, goal, radius, Color.ORANGE);
+                aiPlayer3 = new AIHeuristics3Players(middle, goal, radius, Color.BLACK);
+            }
         }
 
         this.nodeList = board.getNodes();
@@ -439,7 +462,7 @@ public class GUI6players {
                 nodeList[previousSelectedNode].setColor(Color.WHITE);
                 if (isWinningCondition(currentPlayer)) {
                     if (currentPlayer == 1) {
-                        JOptionPane.showMessageDialog(this, currentPlayer + " has won!", 
+                        JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
                                 "PLAYER 1 HAS WON", JOptionPane.WARNING_MESSAGE);
                     } else if (currentPlayer == 2) {
                         JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
@@ -490,7 +513,7 @@ public class GUI6players {
                             currentPlayer++;
                         }
                         break;
-                    case 6:
+                    case 8:
                         if (currentPlayer == 6) {
                             currentPlayer = 1;
                             turnsCount++;
@@ -580,13 +603,14 @@ public class GUI6players {
             int var2 = var1.getX();
             int var3 = var1.getY();
             GUI6players.this.clickedForNode(var2, var3);
-            if (numberOfPlayers == 3) {
-                setAIMove(aiPlayer1.performMove(board));
-                if (currentPlayer != 1) {
-                    setAIMove(aiPlayer2.performMove(board));
+            if (numberOfPlayers == 9) {
+
+//                    setAIMove(aiM.performMove(board));
+//                    setAIMove(aiM1.performMove(board));
+                    setAIMove(aiPlayer4.performMove(board));
                     setAIMove(aiPlayer3.performMove(board));
-                    currentPlayer = 1;
-                }
+                    setAIMove(aiPlayer5.performMove(board));
+                    setAIMove(aiPlayer6.performMove(board));
             }
             else if (numberOfPlayers == 4) {
                 if (currentPlayer != 2) {
@@ -597,13 +621,13 @@ public class GUI6players {
                 }
             }
             else if (numberOfPlayers == 6) {
-                if (currentPlayer != 1) {
+                if (gameType.equals("6maxN")){
+                    setAIMove(aiPlayer1.performMove(board));
                     setAIMove(aiPlayer2.performMove(board));
                     setAIMove(aiPlayer3.performMove(board));
                     setAIMove(aiPlayer4.performMove(board));
                     setAIMove(aiPlayer5.performMove(board));
                     setAIMove(aiPlayer6.performMove(board));
-                    currentPlayer = 1;
                 }
             }
         }
@@ -614,84 +638,6 @@ public class GUI6players {
         public void mouseExited(MouseEvent var1) {
         }
 
-    }
-
-//    public double[] weightTuning(double[] weights) {
-//        double[] newWeights = weights.clone();
-//        System.out.println(Arrays.toString(newWeights));
-//        double learningFactor = 0.1; //Learning factor for tuning, initially set equal to 0.1 (for testing purposes)
-//        for (int i = 0; i < 100; i++) { // 100 is just a number to test a few iterations
-//            System.out.println("Game number " + i);
-//            if (i > 20) {
-//                learningFactor = 0.01;
-//            }
-//            AIHeuristics player1 = new AIHeuristics(newWeights[0], newWeights[1], newWeights[2], Color.RED);
-//            AIHeuristics player2 = new AIHeuristics(newWeights[0], newWeights[1], newWeights[2], Color.BLUE);
-//            ArrayList<double[]> temp = playGame(player1, player2);
-////            printMatrix(temp);
-//            for (int j = 0; j < 3; j++) {
-//                System.out.print("Weight " + j + " ");
-//                System.out.println(newWeights[j] - matrixCalculator.normalize(matrixCalculator.listToArray(temp))[j]);
-//                newWeights[j] = newWeights[j] + learningFactor*(matrixCalculator.normalize(matrixCalculator.listToArray(temp))[j]-newWeights[j]);
-//            }
-////            System.out.println(Arrays.toString(newWeights));
-//            reset();
-//            player1.resetTrajectory();
-//            player2.resetTrajectory();
-//        }
-//        System.out.print("The weights are " + Arrays.toString(newWeights));
-//        return matrixCalculator.normalize(newWeights);
-//    }
-
-//    public ArrayList<double[]> playGame(AIHeuristics player1, AIHeuristics player2) {
-//        miniMaxScoresVector.clear(); //training values
-//        featureScoresMatrix.clear();
-//        int turns = 0;
-//        int predictedError = 0;
-//        boolean player1Done = false;
-//        boolean player2Done = false;
-//        while (!player1Done && !player2Done) { // Play 1 game, we focus on player 1
-//            if (!goalCheck(board,player1)) {
-//                setAIMove(player1.performMove(board));
-////                miniMaxScoresVector.add(player1.getBestValue()); //Stores the training values
-////                featureScoresMatrix.add(player1.getBestFeatures());
-//                if (player2Done){
-//                    player1Done = true;
-//                }
-//            }
-//            else {
-//                player1Done = true;
-//            }
-//            if (!goalCheck(board,player2)){
-//                setAIMove(player2.performMove(board)); //blue player moves
-//                miniMaxScoresVector.add(player2.getBestValue()); //Stores the training values
-//                featureScoresMatrix.add(player2.getBestFeatures());
-//                predictedError += Math.pow((player2.getBestValue() - player2.getRawScore()),2);
-//                if (player1Done){
-//                    player2Done = true;
-//                }
-//            }
-//            else {
-//                player2Done = true;
-//            }
-//            if (turns > 300) {
-//                System.out.println("Game is stuck");
-//            }
-//            turns+=2;
-//        }
-////        System.out.println("Player 1: " + miniMaxScoresVector);
-////        System.out.println("Length is: " + miniMaxScoresVector.size());
-////        System.out.println("Player 2: " + player2minimax);
-////        System.out.println("Length is: " + player2minimax.size());
-////        System.out.println(featureScoresMatrix);
-////        System.out.println(miniMaxScoresVector);
-//        System.out.println("The predicted error is: " + predictedError);
-//        return matrixCalculator.leastSquares(featureScoresMatrix,matrixCalculator.createVector(miniMaxScoresVector));
-//    }
-
-
-    public void reset() {
-        board = new GraphOscar(numberOfPlayers);
     }
 
 

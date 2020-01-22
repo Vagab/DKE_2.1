@@ -5,7 +5,8 @@ import java.util.Random;
 
 public class Simulation {
 
-    private GraphSimulation boardSim;
+    
+    private GraphSim boardSim;
 
     private Node[] nodeList;
     private int selectedNode, previousSelectedNode = -1;
@@ -27,14 +28,23 @@ public class Simulation {
     private int totalScoreBlue = 0;
 
 
-    public Simulation(ArrayList<Integer> blue, ArrayList<Integer> red, int maxPlays, double[] probs){
-        boardSim = new GraphSimulation(red, blue, Color.RED, Color.BLUE);   //sets the starting positions for the simulation
+    public Simulation(ArrayList<Integer> blue, ArrayList<Integer> red, int maxPlays, double[] probs, Color c){
+        if(c==Color.BLUE){
+            boardSim = new GraphSimulation(red, blue, Color.RED, Color.BLUE);
+        }
+        else if(c==Color.RED){
+            boardSim = new GraphSimulation4();
+        }
+        else{
+            boardSim = new GraphSimulation2();
+        }  //sets the starting positions for the simulation
         this.maxPlays = maxPlays;
         nodeList = boardSim.getNodes();
         rand = new Random();
         this.probs = probs;
         this.numberOfPawns = blue.size();
     }
+
 
     public int getNodeNumber(Node node){
         return node.getIndex();
