@@ -6,9 +6,6 @@ import java.util.Random;
 
 public class AIRandom implements AI1v1 {
 
-    private double radiusWeight;
-    private double distanceFromMiddleWeight;
-    private double distanceToGoalWeight;
     private Color colorAI;
 
     private ArrayList<Node> oldArmy;
@@ -16,10 +13,7 @@ public class AIRandom implements AI1v1 {
     private Random randomGenerator;
 
 
-    public AIRandom(double distanceFromMiddleWeight, double distanceToGoalWeight, double radiusWeight, Color colorAI) {
-        this.distanceFromMiddleWeight = distanceFromMiddleWeight;
-        this.distanceToGoalWeight = distanceToGoalWeight;
-        this.radiusWeight = radiusWeight;
+    public AIRandom(Color colorAI) {
         this.colorAI = colorAI;
         randomGenerator = new Random();
     }
@@ -69,71 +63,6 @@ public class AIRandom implements AI1v1 {
         return returnArray;
     }
 
-    private boolean blueGoalCheck(Graph graph) {
-        for (int i = 80; i >= 75; i--) {
-            if (!graph.getNodeColor(i).equals(Color.BLUE))
-                return false;
-        }
-        return true;
-    }
-
-    private boolean redGoalCheck(Graph graph) {
-        for (int i = 0; i <= 5; i++) {
-            if (!graph.getNodeColor(i).equals(Color.RED))
-                return false;
-        }
-        return true;
-    }
-
-    public double[] featureCalculator(Graph graph) {
-        ArrayList<Node> redArmy = graph.getNodeArmy(Color.RED);
-        ArrayList<Node> blueArmy = graph.getNodeArmy(Color.BLUE);
-
-        Node destinationNodeRed = graph.getAIDestinationNode(Color.RED);
-        Node destinationNodeBlue = graph.getAIDestinationNode(Color.BLUE);
-
-        //Calculate distance to goal by treating the army as 1 single node by using its centroid
-        double distanceToGoalRed = graph.centroidNodeDistance(redArmy, destinationNodeRed);
-        double distanceToGoalBlue = graph.centroidNodeDistance(blueArmy, destinationNodeBlue);
-
-        //Calculate distance from central line
-        double distanceFromMiddleRed = 0;
-        for (Node node : redArmy) {
-            distanceFromMiddleRed += graph.distanceToMiddleLine(node);
-        }
-        double distanceFromMiddleBlue = 0;
-        for (Node node : blueArmy) {
-            distanceFromMiddleBlue += graph.distanceToMiddleLine(node);
-        }
-
-        //Pieces stay within a smallest possible radius
-        double radiusRed = graph.radius(redArmy);
-        double radiusBlue = graph.radius(blueArmy);
-
-        //Heuristics/features
-        double feature1 = distanceFromMiddleRed - distanceFromMiddleBlue;
-        double feature2 = distanceToGoalRed - distanceToGoalBlue;
-        double feature3 = radiusRed - radiusBlue;
-
-        double[] featureScoresVector = {feature1, feature2, feature3};
-        return featureScoresVector;
-    }
-
-    public double evaluationFunction(Graph graph) {
-        double evaluationValue = 0;
-        //Calculate features
-        double[] featureScoresVector = featureCalculator(graph);
-        //Evaluation function
-        evaluationValue = -distanceFromMiddleWeight * featureScoresVector[0]
-                - distanceToGoalWeight * featureScoresVector[1]
-                - radiusWeight * featureScoresVector[2];
-        if (colorAI.equals(Color.RED)) {
-            return evaluationValue;
-        } else { // If color is blue
-            return -evaluationValue;
-        }
-    }
-
     private void randomSearch(Graph board) {
         ArrayList<ArrayList<Integer>> armyList = stateGenerator(colorAI, board);
         int index = randomGenerator.nextInt(armyList.size());
@@ -150,7 +79,6 @@ public class AIRandom implements AI1v1 {
     public void resetTrajectory() {
 
     }
-
     private ArrayList<Node> integerToNode(ArrayList<Integer> army, Graph board) {
         ArrayList<Node> nodeArmy = new ArrayList<>();
         for (int i : army) {
@@ -182,45 +110,4 @@ public class AIRandom implements AI1v1 {
         return armyStates;
     }
 
-    class blueArmyComparator implements Comparator<ArrayList<Integer>> {
-        private ArrayList<Integer> stationaryArmy;
-
-        blueArmyComparator(ArrayList<Integer> stationaryArmy) {
-            this.stationaryArmy = stationaryArmy;
-        }
-
-        @Override
-        public int compare(ArrayList<Integer> army1, ArrayList<Integer> army2) {
-            Graph graph1 = new Graph(army1, stationaryArmy, Color.BLUE, Color.RED);
-            Graph graph2 = new Graph(army2, stationaryArmy, Color.BLUE, Color.RED);
-            if (evaluationFunction(graph1) > evaluationFunction(graph2)) {
-                return -1;
-            } else if (evaluationFunction(graph1) == evaluationFunction(graph2)) {
-                return 0;
-            } else {
-                return 1;
-            }
-        }
-    }
-
-    class redArmyComparator implements Comparator<ArrayList<Integer>> {
-        private ArrayList<Integer> stationaryArmy;
-
-        redArmyComparator(ArrayList<Integer> stationaryArmy) {
-            this.stationaryArmy = stationaryArmy;
-        }
-
-        @Override
-        public int compare(ArrayList<Integer> army1, ArrayList<Integer> army2) {
-            Graph graph1 = new Graph(army1, stationaryArmy, Color.BLUE, Color.BLUE);
-            Graph graph2 = new Graph(army2, stationaryArmy, Color.BLUE, Color.BLUE);
-            if (evaluationFunction(graph1) > evaluationFunction(graph2)) {
-                return -1;
-            } else if (evaluationFunction(graph1) == evaluationFunction(graph2)) {
-                return 0;
-            } else {
-                return 1;
-            }
-        }
-    }
 }

@@ -161,12 +161,26 @@ public class introMenu {
 
         });
 
+        final JButton greedy = new JButton("Greedy");
+        greedy.addActionListener(e -> {
+            if(greedyClick==false){
+                greedyClick = true;
+                greedy.setBackground(Color.RED);
+            }
+            else {
+                greedy.setBackground(null);
+                greedyClick = false;
+            }
+
+        });
+
 
         control_panel.add(abPruning);
         control_panel.add(MCMC);
         control_panel.add(maxN);
         control_panel.add(human);
         control_panel.add(random);
+        control_panel.add(greedy);
 
         final JButton help = new JButton("Help");
         help.addActionListener(new ActionListener() {
@@ -200,15 +214,37 @@ public class introMenu {
         int value = slider.getValue();
         switch(value){
             case 1:
-                if(abClick &&!MCMCClick &&!maxNClick){
+                if(abClick &&!MCMCClick && !greedyClick && !randomClick){
                     new CCheckers(2,"2minimax");
                 }
-                else if(!abClick && MCMCClick &&!maxNClick){
-                    new CCheckers(2,"2MCMC");
-                }
-                else if(abClick && MCMCClick &&!maxNClick){
+                else if(abClick && MCMCClick && !greedyClick && !randomClick){
                     new CCheckers(2, "1minimax1MCMC");
                 }
+                else if(abClick && !MCMCClick && greedyClick && !randomClick) {
+                    new CCheckers(2,"1minimax1greedy");
+                }
+                else if(abClick && !MCMCClick  && !greedyClick && randomClick) {
+                    new CCheckers(2,"1minimax1random");
+                }
+                else if(!abClick && MCMCClick  && !greedyClick && !randomClick){
+                    new CCheckers(2,"2MCMC");
+                }
+                else if(!abClick && MCMCClick  && greedyClick && !randomClick){
+                    new CCheckers(2,"1MCMC1greedy");
+                }
+                else if(!abClick && MCMCClick  && !greedyClick && randomClick){
+                    new CCheckers(2,"1MCMC1random");
+                }
+                else if(!abClick && !MCMCClick  && greedyClick && !randomClick){
+                    new CCheckers(2,"2greedy");
+                }
+                else if(!abClick && !MCMCClick  && greedyClick && randomClick){
+                    new CCheckers(2,"1greedy1random");
+                }
+                else if(!abClick && !MCMCClick  && !greedyClick && randomClick){
+                    new CCheckers(2,"2random");
+                }
+
 //                else if (!abClick &&!MCMCClick &&!maxNClick) {
 //                    new CCheckers(2,"HumanVHuman");
 //                }

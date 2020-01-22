@@ -35,6 +35,36 @@ public class CCheckers {
                 disp.setLayout(new GridLayout(0, 10));
                 frame.setContentPane(disp);
             }
+            else if (gameType.equals("1minimax1greedy")) {
+                disp = new GUI("1minimax1greedy");
+                disp.setLayout(new GridLayout(0, 10));
+                frame.setContentPane(disp);
+            }
+            else if (gameType.equals("1greedy1random")) {
+                disp = new GUI("1greedy1random");
+                disp.setLayout(new GridLayout(0, 10));
+                frame.setContentPane(disp);
+            }
+            else if (gameType.equals("2greedy")) {
+                disp = new GUI("2greedy");
+                disp.setLayout(new GridLayout(0, 10));
+                frame.setContentPane(disp);
+            }
+            else if (gameType.equals("2random")) {
+                disp = new GUI("2random");
+                disp.setLayout(new GridLayout(0, 10));
+                frame.setContentPane(disp);
+            }
+            else if (gameType.equals("1MCMC1greedy")) {
+                disp = new GUI("1MCMC1greedy");
+                disp.setLayout(new GridLayout(0, 10));
+                frame.setContentPane(disp);
+            }
+            else if (gameType.equals("1MCMC1random")) {
+                disp = new GUI("1MCMC1random");
+                disp.setLayout(new GridLayout(0, 10));
+                frame.setContentPane(disp);
+            }
             else if (gameType.equals("HumanVHuman")) {
                 disp = new GUI("HumanVHuman");
                 disp.setLayout(new GridLayout(0, 10));

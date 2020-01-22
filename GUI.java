@@ -23,6 +23,10 @@ public class GUI extends JComponent {
     private AI1v1 heuristicPlayer2;
     private AI1v1 MCMCPlayer1;
     private AI1v1 MCMCPlayer2;
+    private AI1v1 greedyPlayer1;
+    private AI1v1 greedyPlayer2;
+    private AI1v1 randomPlayer1;
+    private AI1v1 randomPlayer2;
 
     private ArrayList<Double> miniMaxScoresVector = new ArrayList<>();
     private ArrayList<double[]> featureScoresMatrix = new ArrayList<>();
@@ -48,10 +52,14 @@ public class GUI extends JComponent {
 
     //0.11817334978149338, 0.7117125414209313, 0.6066114194523499
     public GUI(String gameType) {
-        /*heuristicPlayer1 = new AIHeuristics(.0759158953972422, .8968531011056472, .42463784024472084, Color.BLUE);
+        heuristicPlayer1 = new AIHeuristics(.0759158953972422, .8968531011056472, .42463784024472084, Color.BLUE);
         heuristicPlayer2 = new AIHeuristics(.1231, .9847, .1231, Color.RED);
-        MCMCPlayer1 = new AIMCMC(Color.BLUE,turnsCount);
-        MCMCPlayer2 = new AIMCMC(Color.RED,turnsCount);*/
+        MCMCPlayer1 = new AIMCMC(Color.BLUE, turnsCount);
+        MCMCPlayer2 = new AIMCMC(Color.RED, turnsCount);
+        greedyPlayer1 = new AIGreedy(3, Color.BLUE);
+        greedyPlayer2 = new AIGreedy(3, Color.RED);
+        randomPlayer1 = new AIRandom(Color.BLUE);
+        randomPlayer2 = new AIRandom(Color.RED);
         this.gameType = gameType;
         this.board = new Graph();
         this.nodeList = board.getNodes();
@@ -336,29 +344,37 @@ public class GUI extends JComponent {
             /*int var2 = var1.getX();
             int var3 = var1.getY();
             GUI.this.clickedForNode(var2, var3);*/
-            ArrayList<double[]> temp = new ArrayList<>();
-            double[] weights = {1, 5, 1};
-            double[] newWeights = matrixCalculator.normalize(weights);
-
             switch (gameType) {
                 case "2minimax":
-                    heuristicPlayer1 = new AIHeuristics(newWeights[0], newWeights[1], newWeights[2], Color.BLUE);
-                    heuristicPlayer2 = new AIHeuristics(newWeights[0], newWeights[1], newWeights[2], Color.RED);
                     simulation(heuristicPlayer1, heuristicPlayer2);
                     break;
                 case "2MCMC":
-                    MCMCPlayer1 = new AIMCMC(Color.BLUE, turnsCount);
-                    MCMCPlayer2 = new AIMCMC(Color.RED, turnsCount);
                     simulation(MCMCPlayer1, MCMCPlayer2);
                     break;
                 case "1minimax1MCMC":
-                    heuristicPlayer1 = new AIHeuristics(newWeights[0], newWeights[1], newWeights[2], Color.RED);
-                    MCMCPlayer1 = new AIMCMC(Color.BLUE, turnsCount);
-                    simulation(MCMCPlayer1, heuristicPlayer1);
+                    simulation(heuristicPlayer1, MCMCPlayer2);
+                    break;
                 case "HumanVHuman":
                     int var2 = var1.getX();
                     int var3 = var1.getY();
                     GUI.this.clickedForNode(var2, var3);
+                case "1minimax1greedy":
+                    simulation(heuristicPlayer1, greedyPlayer2);
+                    break;
+                case "1greedy1random":
+                    simulation(randomPlayer1, greedyPlayer2);
+                    break;
+                case "2greedy":
+                    simulation(greedyPlayer1, greedyPlayer2);
+                    break;
+                case "2random":
+                    simulation(randomPlayer1, randomPlayer2);
+                    break;
+                case "1MCMC1greedy":
+                    simulation(MCMCPlayer1,greedyPlayer2);
+                    break;
+                case "1MCMC1random":
+                    simulation(MCMCPlayer1,randomPlayer2);
             }
 
         }
@@ -495,7 +511,6 @@ public class GUI extends JComponent {
         ArrayList<double[]> leastSquaresSolution = matrixCalculator.matrixMultiplication(matrixCalculator.matrixMultiplication(matrixCalculator.inverse(matrixCalculator.matrixMultiplication(matrixCalculator.transpose(matrix), matrix)), matrixCalculator.transpose(matrix)), vector);
         return leastSquaresSolution;
     }
-
 
 
     public void reset() {
