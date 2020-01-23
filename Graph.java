@@ -11,23 +11,23 @@ public class Graph {
     public int numPly; // Number of players
 
     private Node
-                            AA,
-                          BA, BB,
-                        CA, CB, CC,
-                      DA, DB, DC, DD,
-                    EA, EB, EC, ED, EE,
-                  FA, FB, FC, FD, FE, FF,
-                GA, GB, GC, GD, GE, GF, GG,
-              HA, HB, HC, HD, HE, HF, HG, HH,
+            AA,
+            BA, BB,
+            CA, CB, CC,
+            DA, DB, DC, DD,
+            EA, EB, EC, ED, EE,
+            FA, FB, FC, FD, FE, FF,
+            GA, GB, GC, GD, GE, GF, GG,
+            HA, HB, HC, HD, HE, HF, HG, HH,
             IA, IB, IC, ID, IE, IF, IG, IH, II,
-              JA, JB, JC, JD, JE, JF, JG, JH,
-                KA, KB, KC, KD, KE, KF, KG,
-                  LA, LB, LC, LD, LE, LF,
-                    MA, MB, MC, MD, ME,
-                      NA, NB, NC, ND,
-                        OA, OB, OC,
-                          PA, PB,
-                            QA;
+            JA, JB, JC, JD, JE, JF, JG, JH,
+            KA, KB, KC, KD, KE, KF, KG,
+            LA, LB, LC, LD, LE, LF,
+            MA, MB, MC, MD, ME,
+            NA, NB, NC, ND,
+            OA, OB, OC,
+            PA, PB,
+            QA;
 
     public Graph() {
         this.numPly = 2;
@@ -303,7 +303,7 @@ public class Graph {
 
     public Node getSecNode(int node) {
 
-            return nodeList[node];
+        return nodeList[node];
 
     }
 
@@ -363,11 +363,11 @@ public class Graph {
         Node[] y = n.adjN(); // gets neighbours of node n
         for (int i = 0; i < y.length; i++) {
             if (!y[i].getLabel().equals("null") &&
-                y[i].isOccupied() && (i + m) != 5 && // The (i+m)!=5 statement is to make sure that the piece doesn't
-                                                     // jump back to its original position
-                !y[i].getAdj(i).isOccupied() &&
-                !y[i].getAdj(i).getLabel().equals("null") &&
-                !oG.contains(y[i].getAdj(i))) {
+                    y[i].isOccupied() && (i + m) != 5 && // The (i+m)!=5 statement is to make sure that the piece doesn't
+                    // jump back to its original position
+                    !y[i].getAdj(i).isOccupied() &&
+                    !y[i].getAdj(i).getLabel().equals("null") &&
+                    !oG.contains(y[i].getAdj(i))) {
 
                 oG.add(y[i].getAdj(i));
                 isItGucci(y[i].getAdj(i), i);

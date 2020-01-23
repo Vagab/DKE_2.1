@@ -239,12 +239,13 @@ public class GUI extends JComponent {
 
         ArrayList<Node> stopBugs = board.popularChoice(nodeList[previousSelectedNode]);
         boolean allgood = false;
-        for (int i = 0; i < stopBugs.size(); i++) {
-            if (stopBugs.get(i) == nodeList[selectedNode]) {
+        for (Node stopBug : stopBugs) {
+            if (stopBug == nodeList[selectedNode]) {
                 allgood = true;
+                break;
             }
         }
-        if (allgood == false) {
+        if (!allgood) {
             removeOneHighlight(nodeList[previousSelectedNode]);
         }
 
@@ -255,7 +256,7 @@ public class GUI extends JComponent {
         }
 
         if (((nodeList[previousSelectedNode].getColor().equals(Color.BLUE) && player1)
-//                || (nodeList[previousSelectedNode].getColor().equals(Color.RED) && !player1)
+                || (nodeList[previousSelectedNode].getColor().equals(Color.RED) && !player1)
 
         )) {
             this.firstMove = false;
@@ -277,11 +278,7 @@ public class GUI extends JComponent {
                     }
                 }
 
-                if (player1) {
-                    player1 = false;
-                } else {
-                    player1 = true;
-                }
+                player1 = !player1;
 
                 turnsCount++;
             } else {
@@ -298,8 +295,14 @@ public class GUI extends JComponent {
     public void highlight(Node n) {
         if (player1 && n.getColor() == Color.BLUE) {
             ArrayList<Node> tr = board.popularChoice(n);
-            for (int i = 0; i < tr.size(); i++) {
-                tr.get(i).setColor(Color.YELLOW);
+            for (Node node : tr) {
+                node.setColor(Color.YELLOW);
+            }
+        }
+        else if (!player1 && n.getColor() == Color.RED) {
+            ArrayList<Node> tr = board.popularChoice(n);
+            for (Node node : tr) {
+                node.setColor(Color.YELLOW);
             }
         }
 
@@ -340,7 +343,6 @@ public class GUI extends JComponent {
         }
 
         public void mouseClicked(MouseEvent var1) {
-            int move = 0;
             /*int var2 = var1.getX();
             int var3 = var1.getY();
             GUI.this.clickedForNode(var2, var3);*/
@@ -354,12 +356,14 @@ public class GUI extends JComponent {
                 case "1minimax1MCMC":
                     simulation(heuristicPlayer1, MCMCPlayer2);
                     break;
-                case "HumanVHuman":
-                    int var2 = var1.getX();
-                    int var3 = var1.getY();
-                    GUI.this.clickedForNode(var2, var3);
+                case "2human":
+                    GUI.this.clickedForNode(var1.getX(), var1.getY());
+                    break;
                 case "1minimax1greedy":
                     simulation(heuristicPlayer1, greedyPlayer2);
+                    break;
+                case "1minimax1random":
+                    simulation(heuristicPlayer1,randomPlayer2);
                     break;
                 case "1greedy1random":
                     simulation(randomPlayer1, greedyPlayer2);
@@ -375,6 +379,36 @@ public class GUI extends JComponent {
                     break;
                 case "1MCMC1random":
                     simulation(MCMCPlayer1,randomPlayer2);
+                    break;
+                case "1minimax1human":
+                    System.out.println(player1);
+                    GUI.this.clickedForNode(var1.getX(), var1.getY());
+                    if (!player1) {
+                        setAIMove(heuristicPlayer2.performMove(board));
+                        player1 = true;
+                    }
+                    break;
+                case "1MCMC1human":
+                    GUI.this.clickedForNode(var1.getX(), var1.getY());
+                    if (!player1) {
+                        setAIMove(MCMCPlayer2.performMove(board));
+                        player1 = true;
+                    }
+                    break;
+                case "1greedy1human":
+                    GUI.this.clickedForNode(var1.getX(), var1.getY());
+                    if (!player1) {
+                        setAIMove(greedyPlayer2.performMove(board));
+                        player1 = true;
+                    }
+                    break;
+                case "1random1human":
+                    GUI.this.clickedForNode(var1.getX(), var1.getY());
+                    if (!player1) {
+                        setAIMove(randomPlayer2.performMove(board));
+                        player1 = true;
+                    }
+                    break;
             }
 
         }

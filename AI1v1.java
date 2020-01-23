@@ -11,4 +11,5 @@ public interface AI1v1 {
     public double getRawScore();
     public Color getColor();
     public void resetTrajectory();
+
 }

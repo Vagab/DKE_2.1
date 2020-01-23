@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 
 public class GUI6players extends JComponent {
@@ -10,17 +11,29 @@ public class GUI6players extends JComponent {
     private String gameType;
     //Jel
     private int diameter = 30;
-    private double interval = diameter*2.0/Math.sqrt(3);
-    private double offset = diameter/2.0;
+    private double interval = diameter * 2.0 / Math.sqrt(3);
+    private double offset = diameter / 2.0;
     private double xOffset = 700;
     private double yOffset = 100;
 
-    private AIMultiPlayer aiPlayer1;
-    private AIMultiPlayer aiPlayer2;
-    private AIMultiPlayer aiPlayer3;
-    private AIMultiPlayer aiPlayer4;
-    private AIMultiPlayer aiPlayer5;
-    private AIMultiPlayer aiPlayer6;
+    private AIMultiPlayer aiMaxNPlayer1;
+    private AIMultiPlayer aiMaxNPlayer2;
+    private AIMultiPlayer aiMaxNPlayer3;
+    private AIMultiPlayer aiMaxNPlayer4;
+    private AIMultiPlayer aiMaxNPlayer5;
+    private AIMultiPlayer aiMaxNPlayer6;
+    private AIMultiPlayer aiRandomPlayer1;
+    private AIMultiPlayer aiRandomPlayer2;
+    private AIMultiPlayer aiRandomPlayer3;
+    private AIMultiPlayer aiRandomPlayer4;
+    private AIMultiPlayer aiRandomPlayer5;
+    private AIMultiPlayer aiRandomPlayer6;
+    private AIMultiPlayer aiGreedyPlayer1;
+    private AIMultiPlayer aiGreedyPlayer2;
+    private AIMultiPlayer aiGreedyPlayer3;
+    private AIMultiPlayer aiGreedyPlayer4;
+    private AIMultiPlayer aiGreedyPlayer5;
+    private AIMultiPlayer aiGreedyPlayer6;
 
     private AIMCMC aiM;
     private AIMCMC aiM1;
@@ -35,59 +48,35 @@ public class GUI6players extends JComponent {
 
 
     GUI6players(int numberOfPlayers, String gameType) {
-        this.gameType=gameType;
+        this.gameType = gameType;
         this.numberOfPlayers = numberOfPlayers;
         this.board = new GraphOscar(numberOfPlayers);
-//        if(numberOfPlayers==9){
-//            this.board = new GraphOscar(6);
-//        }
-//        else{
-//            this.board = new GraphOscar(numberOfPlayers);
-//        }
         double middle = 0.5;
         double radius = 1;
         double goal = 10;
-        if (numberOfPlayers == 6) { // 6 MaxN players
-            if (gameType.equals("6maxN")) {
-                aiPlayer1 = new AIHeuristics6Players(middle, goal, radius, Color.BLUE);
-                aiPlayer2 = new AIHeuristics6Players(middle, goal, radius, Color.GRAY);
-                aiPlayer3 = new AIHeuristics6Players(middle, goal, radius, Color.ORANGE);
-                aiPlayer4 = new AIHeuristics6Players(middle, goal, radius, Color.RED);
-                aiPlayer5 = new AIHeuristics6Players(middle, goal, radius, Color.BLACK);
-                aiPlayer6 = new AIHeuristics6Players(middle, goal, radius, Color.GREEN);
-            }
-           else if (gameType.equals("4maxN2MCMC")) {
-               //            aiM = new AIMCMC(Color.BLUE, turnsCount);
-//            aiM1 = new AIMCMC(Color.GRAY, turnsCount);
-               aiPlayer3 = new AIHeuristics6Players(middle, goal, radius, Color.ORANGE);
-               aiPlayer4 = new AIHeuristics6Players(middle, goal, radius, Color.RED);
-               aiPlayer5 = new AIHeuristics6Players(middle, goal, radius, Color.BLACK);
-               aiPlayer6 = new AIHeuristics6Players(middle, goal, radius, Color.GREEN);
-               System.out.println("W IN");
-           }
-        }
-        else if (numberOfPlayers == 4) { // 4 MaxN players
-            if (gameType.equals("4maxN")) {
-                aiPlayer1 = new AIHeuristics4Players(middle, goal, radius, Color.GRAY);
-                aiPlayer2 = new AIHeuristics4Players(middle, goal, radius, Color.ORANGE);
-                aiPlayer3 = new AIHeuristics4Players(middle, goal, radius, Color.BLACK);
-                aiPlayer4 = new AIHeuristics4Players(middle, goal, radius, Color.GREEN);
-            }
-        }
-        else if (numberOfPlayers == 3) { // 2 MaxN players 1 mcmc
-            if (gameType.equals("2maxN1MCMC")) {
-                aiM = new AIMCMC(Color.BLUE, turnsCount);
-                aiPlayer2 = new AIHeuristics3Players(middle, goal, radius, Color.ORANGE);
-                aiPlayer3 = new AIHeuristics3Players(middle, goal, radius, Color.BLACK);
-            }
-        }
+        aiMaxNPlayer1 = new AIHeuristics6Players(middle, goal, radius, Color.BLUE);
+        aiMaxNPlayer2 = new AIHeuristics6Players(middle, goal, radius, Color.GRAY);
+        aiMaxNPlayer3 = new AIHeuristics6Players(middle, goal, radius, Color.ORANGE);
+        aiMaxNPlayer4 = new AIHeuristics6Players(middle, goal, radius, Color.RED);
+        aiMaxNPlayer5 = new AIHeuristics6Players(middle, goal, radius, Color.BLACK);
+        aiMaxNPlayer6 = new AIHeuristics6Players(middle, goal, radius, Color.GREEN);
+        aiRandomPlayer1 = new AIRandomMultiplayer(Color.BLUE);
+        aiRandomPlayer2 = new AIRandomMultiplayer(Color.GRAY);
+        aiRandomPlayer3 = new AIRandomMultiplayer(Color.ORANGE);
+        aiRandomPlayer4 = new AIRandomMultiplayer(Color.RED);
+        aiRandomPlayer5 = new AIRandomMultiplayer(Color.BLACK);
+        aiRandomPlayer6 = new AIRandomMultiplayer(Color.GREEN);
+        aiGreedyPlayer1 = new AIGreedyMultiplayer(3, Color.BLUE);
+        aiGreedyPlayer2 = new AIGreedyMultiplayer(3, Color.GRAY);
+        aiGreedyPlayer3 = new AIGreedyMultiplayer(3, Color.ORANGE);
+        aiGreedyPlayer4 = new AIGreedyMultiplayer(3, Color.RED);
+        aiGreedyPlayer5 = new AIGreedyMultiplayer(3, Color.BLACK);
+        aiGreedyPlayer6 = new AIGreedyMultiplayer(3, Color.GREEN);
 
         this.nodeList = board.getNodes();
-
         if(numberOfPlayers == 4){
             currentPlayer=2;
         }
-
         MousePressListener var1 = new MousePressListener();
         this.addMouseListener(var1);
 
@@ -112,41 +101,41 @@ public class GUI6players extends JComponent {
         } else if (currentPlayer == 2) {
             g2.setPaint(Color.GRAY);
             g2.drawString("It is Player " + currentPlayer + "'s turn", 1000, 100);
-        } else if (currentPlayer == 3){
+        } else if (currentPlayer == 3) {
             g2.setPaint(Color.ORANGE);
-            g2.drawString("It is Player " + currentPlayer + "'s turn", 1000,100);
-        } else if(currentPlayer == 4) {
+            g2.drawString("It is Player " + currentPlayer + "'s turn", 1000, 100);
+        } else if (currentPlayer == 4) {
             g2.setPaint(Color.RED);
-            g2.drawString("It is Player " + currentPlayer + "'s turn", 1000,100);
-        } else if(currentPlayer == 5) {
+            g2.drawString("It is Player " + currentPlayer + "'s turn", 1000, 100);
+        } else if (currentPlayer == 5) {
             g2.setPaint(Color.BLACK);
             g2.drawString("It is Player " + currentPlayer + "'s turn", 1000, 100);
         } else {
             g2.setPaint(Color.GREEN);
-            g2.drawString("It is Player " + currentPlayer + "'s turn",1000,100);
+            g2.drawString("It is Player " + currentPlayer + "'s turn", 1000, 100);
         }
 
-        double yTop = board.getNodeXCoords(0) * Math.sqrt(3)/2.0 * interval + yOffset - offset;
-        double yRef = board.getNodeXCoords(120) * Math.sqrt(3)/2.0 * interval + yOffset + diameter + offset;
+        double yTop = board.getNodeXCoords(0) * Math.sqrt(3) / 2.0 * interval + yOffset - offset;
+        double yRef = board.getNodeXCoords(120) * Math.sqrt(3) / 2.0 * interval + yOffset + diameter + offset;
         double diameterCircle = yRef - yTop;
-        double xRef = board.getNodeYCoords(0) * interval + xOffset - board.getNodeXCoords(0) * interval/2.0 + diameter/2.0;
-        double xLeft = xRef - diameterCircle/2.0;
+        double xRef = board.getNodeYCoords(0) * interval + xOffset - board.getNodeXCoords(0) * interval / 2.0 + diameter / 2.0;
+        double xLeft = xRef - diameterCircle / 2.0;
 
         Ellipse2D.Double bigCircle = new Ellipse2D.Double(xLeft, yTop, diameterCircle, diameterCircle);
         g2.setPaint(Color.pink);
         g2.fill(bigCircle);
-        g2.setPaint(new Color(255,102,102));
-        g2.fill(triangle(board.getSecNode(6),0));
-        g2.setPaint(new Color(204,204,204));
-        g2.fill(triangle(board.getSecNode(98),0));
-        g2.setPaint(new Color(102,255,102));
-        g2.fill(triangle(board.getSecNode(107),0));
-        g2.setPaint(new Color(255,153,0));
-        g2.fill(triangle(board.getSecNode(10),1));
-        g2.setPaint(new Color(51,51,51));
-        g2.fill(triangle(board.getSecNode(19),1));
-        g2.setPaint(new Color(51,204,255));
-        g2.fill(triangle(board.getSecNode(111),1));
+        g2.setPaint(new Color(255, 102, 102));
+        g2.fill(triangle(board.getSecNode(6), 0));
+        g2.setPaint(new Color(204, 204, 204));
+        g2.fill(triangle(board.getSecNode(98), 0));
+        g2.setPaint(new Color(102, 255, 102));
+        g2.fill(triangle(board.getSecNode(107), 0));
+        g2.setPaint(new Color(255, 153, 0));
+        g2.fill(triangle(board.getSecNode(10), 1));
+        g2.setPaint(new Color(51, 51, 51));
+        g2.fill(triangle(board.getSecNode(19), 1));
+        g2.setPaint(new Color(51, 204, 255));
+        g2.fill(triangle(board.getSecNode(111), 1));
 
         g2.setPaint((Color.BLACK));
         g2.drawString("Turns count: " + turnsCount, 1000, 120);
@@ -156,44 +145,39 @@ public class GUI6players extends JComponent {
 
 
         g2.setPaint(Color.WHITE);
-
         for (int i = 0; i < nodeList.length; i++) {
             g2.setPaint(board.getNodeColor(i));
-            Ellipse2D.Double circle = new Ellipse2D.Double(board.getNodeYCoords(i) * interval + xOffset - board.getNodeXCoords(i) * interval/2.0, board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + yOffset, diameter, diameter);
+            Ellipse2D.Double circle = new Ellipse2D.Double(board.getNodeYCoords(i) * interval + xOffset - board.getNodeXCoords(i) * interval / 2.0, board.getNodeXCoords(i) * Math.sqrt(3) / 2.0 * interval + yOffset, diameter, diameter);
             g2.fill(circle);
             if (!board.getNodeColor(i).equals(Color.WHITE)) {
                 g2.setPaint(Color.WHITE);
-                g2.draw(new Ellipse2D.Double(board.getNodeYCoords(i) * interval + xOffset - board.getNodeXCoords(i) * interval/2.0, board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + yOffset, diameter, diameter));
+                g2.draw(new Ellipse2D.Double(board.getNodeYCoords(i) * interval + xOffset - board.getNodeXCoords(i) * interval / 2.0, board.getNodeXCoords(i) * Math.sqrt(3) / 2.0 * interval + yOffset, diameter, diameter));
             }
-//            g2.setPaint(Color.ORANGE);
-//            g2.drawString(board.getNodeLabel(i), board.getNodeYCoords(i) * interval + 715 - board.getNodeXCoords(i) * interval/2, (int) (board.getNodeXCoords(i) * Math.sqrt(3)/2.0 * interval + 120));
-        }
-
+     }
 
     }
 
-    private Path2D triangle(Node node,int a) {
-        double startX = node.getY() * interval + xOffset - node.getX() * interval/2.0 + diameter/2.0*(1-1/Math.tan(30/180.0*Math.PI));
-        double startY = node.getX()  * Math.sqrt(3)/2.0 * interval + yOffset + diameter;
-        double deltaX = 3*interval/2.0 + diameter/2.0*1/Math.tan(30/180.0*Math.PI);
-        double deltaY = 4.5*diameter;
-        double[] xUp = {startX,startX + deltaX, startX + 2*deltaX};
-        double[] yUp = {startY,startY-deltaY,startY};
-        double[] xDown = {startX, startX + 2*deltaX,startX + deltaX};
-        double[] yDown = {startY-diameter, startY-diameter,startY-diameter+deltaY};
+    private Path2D triangle(Node node, int a) {
+        double startX = node.getY() * interval + xOffset - node.getX() * interval / 2.0 + diameter / 2.0 * (1 - 1 / Math.tan(30 / 180.0 * Math.PI));
+        double startY = node.getX() * Math.sqrt(3) / 2.0 * interval + yOffset + diameter;
+        double deltaX = 3 * interval / 2.0 + diameter / 2.0 * 1 / Math.tan(30 / 180.0 * Math.PI);
+        double deltaY = 4.5 * diameter;
+        double[] xUp = {startX, startX + deltaX, startX + 2 * deltaX};
+        double[] yUp = {startY, startY - deltaY, startY};
+        double[] xDown = {startX, startX + 2 * deltaX, startX + deltaX};
+        double[] yDown = {startY - diameter, startY - diameter, startY - diameter + deltaY};
 
         Path2D path = new Path2D.Double();
 
         if (a == 0) { //a == 0 for the upward pointing triangles
             path.moveTo(xUp[0], yUp[0]);
-            for(int i = 1; i < xUp.length; ++i) {
+            for (int i = 1; i < xUp.length; ++i) {
                 path.lineTo(xUp[i], yUp[i]);
             }
             path.closePath();
-        }
-        else if (a == 1) {
+        } else if (a == 1) {
             path.moveTo(xDown[0], yDown[0]);
-            for(int i = 1; i < xDown.length; ++i) {
+            for (int i = 1; i < xDown.length; ++i) {
                 path.lineTo(xDown[i], yDown[i]);
             }
             path.closePath();
@@ -312,20 +296,15 @@ public class GUI6players extends JComponent {
 
         if (currentPlayer == 4) {       //checking for red
             return redGoalCheck(board);
-        }
-        else if (currentPlayer == 5) {    //checking for black
+        } else if (currentPlayer == 5) {    //checking for black
             return blackGoalCheck(board);
-        }
-        else if (currentPlayer == 6) {   //checking for green
+        } else if (currentPlayer == 6) {   //checking for green
             return greenGoalCheck(board);
-            }
-        else if (currentPlayer == 1) { //checking for blue
+        } else if (currentPlayer == 1) { //checking for blue
             return blueGoalCheck(board);
-        }
-        else if (currentPlayer == 2) {   // checking for gray
+        } else if (currentPlayer == 2) {   // checking for gray
             return grayGoalCheck(board);
-        }
-        else if (currentPlayer == 3) {    // checking for orange
+        } else if (currentPlayer == 3) {    // checking for orange
             return orangeGoalCheck(board);
         }
         return false;
@@ -334,13 +313,13 @@ public class GUI6players extends JComponent {
     public void clickedForNode(int var1, int var2) {
 
         for (int i = 0; i <= 120; i++) {
-                if (var1 >= board.getNodeYCoords(i) * interval + 700 - board.getNodeXCoords(i) * interval/2
-                        && var1 <= board.getNodeYCoords(i) * interval + 700 - board.getNodeXCoords(i) * interval/2 + diameter
-                        && var2 >= board.getNodeXCoords(i) * (int)(Math.sqrt(3)/2.0 * interval) + 100
-                        && var2 <= board.getNodeXCoords(i) * (int)(Math.sqrt(3)/2.0 * interval) + 100 + diameter) {
+            if (var1 >= board.getNodeYCoords(i) * interval + 700 - board.getNodeXCoords(i) * interval / 2
+                    && var1 <= board.getNodeYCoords(i) * interval + 700 - board.getNodeXCoords(i) * interval / 2 + diameter
+                    && var2 >= board.getNodeXCoords(i) * (int) (Math.sqrt(3) / 2.0 * interval) + 100
+                    && var2 <= board.getNodeXCoords(i) * (int) (Math.sqrt(3) / 2.0 * interval) + 100 + diameter) {
 
-                    setMove(i);
-                }
+                setMove(i);
+            }
         }
 
         /*System.out.println("PreviousSelectedNode: " + board.getNodeLabel(this.previousSelectedNode) +
@@ -353,55 +332,43 @@ public class GUI6players extends JComponent {
         nodes[0].setColor(Color.WHITE);
         nodes[1].setColor(color);
 
-//        if (isWinningCondition(currentPlayer)) {
-//            if (currentPlayer == 1) {
-//                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
-//                        "PLAYER 1 HAS WON", JOptionPane.WARNING_MESSAGE);
-//            } else if (currentPlayer == 2) {
-//                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
-//                        "PLAYER 2 HAS WON", JOptionPane.WARNING_MESSAGE);
-//            } else if (currentPlayer == 3) {
-//                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
-//                        "PLAYER 3 HAS WON", JOptionPane.WARNING_MESSAGE);
-//            } else if (currentPlayer == 4) {
-//                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
-//                        "PLAYER 4 HAS WON", JOptionPane.WARNING_MESSAGE);
-//            } else if (currentPlayer == 5) {
-//                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
-//                        "PLAYER 5 HAS WON", JOptionPane.WARNING_MESSAGE);
-//            } else if (currentPlayer == 6) {
-//                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
-//                        "PLAYER 6 HAS WON", JOptionPane.WARNING_MESSAGE);
-//            }
-//        }
-        switch(numberOfPlayers){
-//            case 2:
-//                if(currentPlayer==4){
-//                    currentPlayer=1;
-//                    turnsCount++;
-//                }
-//                else{
-//                    currentPlayer=currentPlayer+3;
-//                }
-//                break;
+        if (isWinningCondition(currentPlayer)) {
+            if (currentPlayer == 1) {
+                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
+                        "PLAYER 1 HAS WON", JOptionPane.WARNING_MESSAGE);
+            } else if (currentPlayer == 2) {
+                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
+                        "PLAYER 2 HAS WON", JOptionPane.WARNING_MESSAGE);
+            } else if (currentPlayer == 3) {
+                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
+                        "PLAYER 3 HAS WON", JOptionPane.WARNING_MESSAGE);
+            } else if (currentPlayer == 4) {
+                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
+                        "PLAYER 4 HAS WON", JOptionPane.WARNING_MESSAGE);
+            } else if (currentPlayer == 5) {
+                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
+                        "PLAYER 5 HAS WON", JOptionPane.WARNING_MESSAGE);
+            } else if (currentPlayer == 6) {
+                JOptionPane.showMessageDialog(this, currentPlayer + " has won!",
+                        "PLAYER 6 HAS WON", JOptionPane.WARNING_MESSAGE);
+            }
+        }
+        switch (numberOfPlayers) {
             case 3:
-                if(currentPlayer==5){
-                    currentPlayer=1;
+                if (currentPlayer == 5) {
+                    currentPlayer = 1;
                     turnsCount++;
-                }
-                else{
-                    currentPlayer=currentPlayer+2;
+                } else {
+                    currentPlayer = currentPlayer + 2;
                 }
                 break;
             case 4:
-                if(currentPlayer==3){
-                    currentPlayer=5;
+                if (currentPlayer == 3) {
+                    currentPlayer = 5;
                     turnsCount++;
-                }
-                else if(currentPlayer==6){
-                    currentPlayer=2;
-                }
-                else{
+                } else if (currentPlayer == 6) {
+                    currentPlayer = 2;
+                } else {
                     currentPlayer++;
                 }
                 break;
@@ -416,7 +383,7 @@ public class GUI6players extends JComponent {
         }
 //        if (redGoalCheck(board) || blueGoalCheck(board) || grayGoalCheck(board) || blackGoalCheck(board) || greenGoalCheck(board) ||
 //        orangeGoalCheck(board)){
-            repaint();
+        repaint();
 //        } // remove after test
     }
 
@@ -483,15 +450,6 @@ public class GUI6players extends JComponent {
                 }
 
                 switch(numberOfPlayers){
-//                    case 2:
-//                        if(currentPlayer==4){
-//                            currentPlayer=1;
-//                            turnsCount++;
-//                        }
-//                        else{
-//                            currentPlayer=currentPlayer+3;
-//                        }
-//                        break;
                     case 3:
                         if(currentPlayer==5){
                             currentPlayer=1;
@@ -513,7 +471,7 @@ public class GUI6players extends JComponent {
                             currentPlayer++;
                         }
                         break;
-                    case 8:
+                    case 6:
                         if (currentPlayer == 6) {
                             currentPlayer = 1;
                             turnsCount++;
@@ -538,28 +496,22 @@ public class GUI6players extends JComponent {
             for (Node node : tr) {
                 node.setColor(Color.YELLOW);
             }
-        }
-        else if (currentPlayer == 3 && n.getColor() == Color.ORANGE) {
+        } else if (currentPlayer == 3 && n.getColor() == Color.ORANGE) {
             ArrayList<Node> tr = board.popularChoice(n);
             for (Node node : tr) {
                 node.setColor(Color.YELLOW);
             }
-        }
-
-        else if (currentPlayer == 4 && n.getColor() == Color.RED) {
+        } else if (currentPlayer == 4 && n.getColor() == Color.RED) {
             ArrayList<Node> tr = board.popularChoice(n);
             for (Node node : tr) {
                 node.setColor(Color.YELLOW);
             }
-        }
-        else if (currentPlayer == 5 && n.getColor() == Color.BLACK) {
+        } else if (currentPlayer == 5 && n.getColor() == Color.BLACK) {
             ArrayList<Node> tr = board.popularChoice(n);
             for (Node node : tr) {
                 node.setColor(Color.YELLOW);
             }
-        }
-
-        else if (currentPlayer == 6 && n.getColor() == Color.GREEN) {
+        } else if (currentPlayer == 6 && n.getColor() == Color.GREEN) {
             ArrayList<Node> tr = board.popularChoice(n);
             for (Node node : tr) {
                 node.setColor(Color.YELLOW);
@@ -581,7 +533,7 @@ public class GUI6players extends JComponent {
         }
     }
 
-    private void removeOneHighlight(Node n){//method that removes the highlight when choosing another node
+    private void removeOneHighlight(Node n) {//method that removes the highlight when choosing another node
         ArrayList<Node> tr = board.popularChoice(n);
         for (Node node : tr) {
             node.setColor(Color.WHITE);
@@ -603,31 +555,78 @@ public class GUI6players extends JComponent {
             int var2 = var1.getX();
             int var3 = var1.getY();
             GUI6players.this.clickedForNode(var2, var3);
-            if (numberOfPlayers == 9) {
-
-//                    setAIMove(aiM.performMove(board));
-//                    setAIMove(aiM1.performMove(board));
-                    setAIMove(aiPlayer4.performMove(board));
-                    setAIMove(aiPlayer3.performMove(board));
-                    setAIMove(aiPlayer5.performMove(board));
-                    setAIMove(aiPlayer6.performMove(board));
-            }
-            else if (numberOfPlayers == 4) {
-                if (currentPlayer != 2) {
-                    setAIMove(aiPlayer2.performMove(board));
-                    setAIMove(aiPlayer3.performMove(board));
-                    setAIMove(aiPlayer4.performMove(board));
-                    currentPlayer = 2;
+            System.out.println(numberOfPlayers);
+            if (numberOfPlayers == 3) {
+                switch (gameType) {
+                    case "3maxN":
+                        setAIMove(aiMaxNPlayer1.performMove(board));
+                        setAIMove(aiMaxNPlayer3.performMove(board));
+                        setAIMove(aiMaxNPlayer5.performMove(board));
+                        break;
+                    case "2maxN1human":
+                        System.out.println("Click");
+                        if (currentPlayer != 1) {
+                            setAIMove(aiMaxNPlayer3.performMove(board));
+                            setAIMove(aiMaxNPlayer5.performMove(board));
+                            currentPlayer = 1;
+                        }
+                        break;
+                    case "2greedy1human":
+                        if (currentPlayer != 1) {
+                            setAIMove(aiGreedyPlayer3.performMove(board));
+                            setAIMove(aiGreedyPlayer5.performMove(board));
+                            currentPlayer = 1;
+                        }
+                        break;
+                    case "2random1human":
+                        if (currentPlayer != 1) {
+                            setAIMove(aiRandomPlayer3.performMove(board));
+                            setAIMove(aiRandomPlayer5.performMove(board));
+                            currentPlayer = 1;
+                        }
+                        break;
+                    case "3human":
+                        break;
                 }
-            }
-            else if (numberOfPlayers == 6) {
-                if (gameType.equals("6maxN")){
-                    setAIMove(aiPlayer1.performMove(board));
-                    setAIMove(aiPlayer2.performMove(board));
-                    setAIMove(aiPlayer3.performMove(board));
-                    setAIMove(aiPlayer4.performMove(board));
-                    setAIMove(aiPlayer5.performMove(board));
-                    setAIMove(aiPlayer6.performMove(board));
+            } else if (numberOfPlayers == 4) {
+                if (gameType.equals("3maxN1human")) {
+                    if (currentPlayer != 2) {
+                        setAIMove(aiMaxNPlayer3.performMove(board));
+                        setAIMove(aiMaxNPlayer5.performMove(board));
+                        setAIMove(aiMaxNPlayer6.performMove(board));
+                        currentPlayer = 2;
+                    }
+                } else if (gameType.equals("3greedy1human")) {
+                    if (currentPlayer != 2) {
+                        setAIMove(aiGreedyPlayer3.performMove(board));
+                        setAIMove(aiGreedyPlayer5.performMove(board));
+                        setAIMove(aiGreedyPlayer6.performMove(board));
+                        currentPlayer = 2;
+                    }
+                } else if (gameType.equals("3random1human")) {
+                    if (currentPlayer != 2) {
+                        setAIMove(aiRandomPlayer3.performMove(board));
+                        setAIMove(aiRandomPlayer5.performMove(board));
+                        setAIMove(aiRandomPlayer6.performMove(board));
+                        currentPlayer = 2;
+                    }
+                } else if (gameType.equals("4maxN")) {
+                    setAIMove(aiMaxNPlayer2.performMove(board));
+                    setAIMove(aiRandomPlayer3.performMove(board));
+                    setAIMove(aiRandomPlayer5.performMove(board));
+                    setAIMove(aiRandomPlayer6.performMove(board));
+                } else if (gameType.equals("4human")){
+
+                }
+
+            } else if (numberOfPlayers == 6) {
+                if (gameType.equals("6maxN")) {
+                    setAIMove(aiMaxNPlayer1.performMove(board));
+                    setAIMove(aiMaxNPlayer2.performMove(board));
+                    setAIMove(aiMaxNPlayer3.performMove(board));
+                    setAIMove(aiMaxNPlayer4.performMove(board));
+                    setAIMove(aiMaxNPlayer5.performMove(board));
+                    setAIMove(aiMaxNPlayer6.performMove(board));
                 }
             }
         }

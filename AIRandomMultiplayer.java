@@ -3,8 +3,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-public class AIRandom implements AI1v1 {
-
+public class AIRandomMultiplayer implements AIMultiPlayer{
     private Color colorAI;
 
     private ArrayList<Node> oldArmy;
@@ -12,31 +11,17 @@ public class AIRandom implements AI1v1 {
     private Random randomGenerator;
 
 
-    public AIRandom(Color colorAI) {
+    public AIRandomMultiplayer(Color colorAI) {
         this.colorAI = colorAI;
         randomGenerator = new Random();
     }
 
     @Override
-    public Node[] performMove(Graph board) {
+    public Node[] performMove(GraphOscar board) {
         randomSearch(board);
         return getMove();
     }
 
-    @Override
-    public double getBestValue() {
-        return 0;
-    }
-
-    @Override
-    public double[] getBestFeatures() {
-        return new double[0];
-    }
-
-    @Override
-    public double getRawScore() {
-        return 0;
-    }
 
     private Node[] getMove() {
         Node[] returnArray = new Node[2];
@@ -62,7 +47,7 @@ public class AIRandom implements AI1v1 {
         return returnArray;
     }
 
-    private void randomSearch(Graph board) {
+    private void randomSearch(GraphOscar board) {
         ArrayList<ArrayList<Integer>> armyList = stateGenerator(colorAI, board);
         int index = randomGenerator.nextInt(armyList.size());
         oldArmy = board.getNodeArmy(colorAI);
@@ -74,11 +59,7 @@ public class AIRandom implements AI1v1 {
         return colorAI;
     }
 
-    @Override
-    public void resetTrajectory() {
-
-    }
-    private ArrayList<Node> integerToNode(ArrayList<Integer> army, Graph board) {
+    private ArrayList<Node> integerToNode(ArrayList<Integer> army, GraphOscar board) {
         ArrayList<Node> nodeArmy = new ArrayList<>();
         for (int i : army) {
             nodeArmy.add(board.getSecNode(i));
@@ -86,7 +67,7 @@ public class AIRandom implements AI1v1 {
         return nodeArmy;
     }
 
-    private ArrayList<ArrayList<Integer>> stateGenerator(Color color, Graph graph) {
+    private ArrayList<ArrayList<Integer>> stateGenerator(Color color, GraphOscar graph) {
         ArrayList<Integer> AIArmy = graph.getArmy(color); // |Army_1| times
         Node goalNode = graph.getAIDestinationNode(color);
         ArrayList<ArrayList<Integer>> armyStates = new ArrayList<>();
@@ -108,5 +89,4 @@ public class AIRandom implements AI1v1 {
         }
         return armyStates;
     }
-
 }

@@ -1,8 +1,6 @@
 import java.awt.Color;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 
 //TODO: implement pruning
 public class AIHeuristics implements AI1v1 {

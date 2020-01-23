@@ -31,11 +31,13 @@ public class GraphOscar {
 
 
     public GraphOscar(int numberOfPlayers){
+        System.out.println(numberOfPlayers);
         makeNodes();
         makeNodeList();
         connectEdges();
         initializeStartingPositions(numberOfPlayers);
     }
+
 
     //6 players
     public GraphOscar(int numberOfPlayers, ArrayList<Integer> army1, ArrayList<Integer> army2,
@@ -610,4 +612,24 @@ public class GraphOscar {
         return army;
     }
 
+    public Node getAIDestinationNode(Color color){
+        if (color.equals(Color.RED)) {
+            return getRedAIDestinationNode();
+        }
+        else if (color.equals(Color.BLUE)) {
+            return getBlueAIDestinationNode();
+        }
+        else if (color.equals(Color.BLACK)) {
+            return getBlackAIDestinationNode();
+        }
+        else if (color.equals(Color.GRAY)) {
+            return getGrayAIDestinationNode();
+        }
+        else if (color.equals(Color.GREEN)) {
+            return getGreenAIDestinationNode();
+        }
+        else {
+            return getOrangeAIDestinationNode();
+        }
+    }
 }
