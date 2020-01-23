@@ -362,29 +362,31 @@ public class introMenu {
                     introMenu.getFrame().setVisible(true);
                     break;
                 } else if (!abClick && MCMCClick && !greedyClick && !randomClick && humanClick) {
-                    //new CCheckers(2,"1MCMC1human");
-                    try {
-                        // runProcess("pwd");
-                        System.out.println("**********");
-                        // runProcess("javac -cp Group10/MCMC/introMenu.java");
-                        //  C:\Users\lucas\Desktop\DKE\CCheckers_QLearning\src
-                        System.out.println("**********");
+                    if(!abClick &&MCMCClick && !greedyClick && !randomClick && humanClick){
+                        //new CCheckers(2,"1MCMC1human");
+                        try {
+                            // runProcess("pwd");
+                            System.out.println("**********");
+                            // runProcess("javac -cp Group10/MCMC/introMenu.java");
+                            //  C:\Users\lucas\Desktop\DKE\CCheckers_QLearning\src
+                            System.out.println("**********");
 
-                        String chosenPlayers = "2";
+                            String chosenPlayers = "2";
 
-                        File dir = new File("C:\\Users\\Jel Vankan\\IdeaProjects\\ChineseCheckers__Final__\\MCMC");
-                        String cmd = "javac introMenu.java";
-                        Process process = Runtime.getRuntime().exec(cmd, null, dir);
+                            File dir = new File("C:\\Users\\Jel Vankan\\IdeaProjects\\ChineseCheckers__Final__\\MCMC\\src");
+                            String cmd = "javac introMenu.java";
+                            Process process = Runtime.getRuntime().exec(cmd, null, dir);
 
-                        File dir2 = new File("C:\\Users\\Jel Vankan\\IdeaProjects\\ChineseCheckers__Final__\\MCMC");
-                        String cmd2 = "java introMenu " + chosenPlayers;
-                        Process process2 = Runtime.getRuntime().exec(cmd2, null, dir2);
+                            File dir2 = new File("C:\\Users\\Jel Vankan\\IdeaProjects\\ChineseCheckers__Final__\\MCMC\\src");
+                            String cmd2 = "java introMenu " + chosenPlayers;
+                            Process process2 = Runtime.getRuntime().exec(cmd2, null, dir2);
 
-                        System.exit(0);
-                        // runProcess("java -cp introMenu " + chosenPlayers);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        System.out.println("crash");
+                            System.exit(0);
+                            // runProcess("java -cp introMenu " + chosenPlayers);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            System.out.println("crash");
+                        }
                     }
                     break;
                 } else if (abClick && !MCMCClick && !greedyClick && !randomClick && !humanClick) {
@@ -455,8 +457,7 @@ public class introMenu {
                     break;
                 }
 
-                else if (MCMCClick && !maxNClick && humanClick) {//2x MCMC vs 1 human
-                    //new CCheckers(4,"2MCMC1human");
+                else if (MCMCClick && !maxNClick && humanClick && !greedyClick && !randomClick) {//2x MCMC vs 1 human
                     try {
                         // runProcess("pwd");
                         System.out.println("**********");
@@ -502,6 +503,29 @@ public class introMenu {
                 } else if (!MCMCClick && !maxNClick && !greedyClick && !randomClick && humanClick ){
                     new CCheckers(4,"4human");
                     break;
+                } else if (MCMCClick && !maxNClick && humanClick && !greedyClick && !randomClick) {
+                    try {
+                        // runProcess("pwd");
+                        System.out.println("**********");
+                        // runProcess("javac -cp Group10/MCMC/introMenu.java");
+                        //  C:\Users\lucas\Desktop\DKE\CCheckers_QLearning\src
+                        System.out.println("**********");
+
+                        String chosenPlayers = "4";
+
+                        File dir = new File("C:\\Users\\Jel Vankan\\IdeaProjects\\ChineseCheckers__Final__\\MCMC");
+                        String cmd = "javac introMenu.java";
+                        Process process = Runtime.getRuntime().exec(cmd, null, dir);
+
+                        File dir2 = new File("C:\\Users\\Jel Vankan\\IdeaProjects\\ChineseCheckers__Final__\\MCMC");
+                        String cmd2 = "java introMenu " + chosenPlayers;
+                        Process process2 = Runtime.getRuntime().exec(cmd2, null, dir2);
+                        System.exit(0);
+                        // runProcess("java -cp introMenu " + chosenPlayers);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("crash");
+                    }
                 }
                 break;
             case 4:
@@ -511,7 +535,7 @@ public class introMenu {
                     introMenu.getFrame().setVisible(true);
                     break;
                 } else if (!MCMCClick && !maxNClick && !greedyClick && !randomClick && humanClick) {
-                    new CCheckers(6, "6Human");
+                    new CCheckers(6, "6human");
                     break;
                 } else if (!MCMCClick && !maxNClick && greedyClick && !randomClick && humanClick) {
                     new CCheckers(6,"5greedy1human");
@@ -522,6 +546,29 @@ public class introMenu {
                 } else if (!MCMCClick && maxNClick && !greedyClick && !randomClick && humanClick) {
                     new CCheckers(6,"5maxN1human");
                     break;
+                } else if (MCMCClick && !maxNClick && humanClick && !greedyClick && !randomClick) {
+                    try {
+                        // runProcess("pwd");
+                        System.out.println("**********");
+                        // runProcess("javac -cp Group10/MCMC/introMenu.java");
+                        //  C:\Users\lucas\Desktop\DKE\CCheckers_QLearning\src
+                        System.out.println("**********");
+
+                        String chosenPlayers = "6";
+
+                        File dir = new File("C:\\Users\\Jel Vankan\\IdeaProjects\\ChineseCheckers__Final__\\MCMC");
+                        String cmd = "javac introMenu.java";
+                        Process process = Runtime.getRuntime().exec(cmd, null, dir);
+
+                        File dir2 = new File("C:\\Users\\Jel Vankan\\IdeaProjects\\ChineseCheckers__Final__\\MCMC");
+                        String cmd2 = "java introMenu " + chosenPlayers;
+                        Process process2 = Runtime.getRuntime().exec(cmd2, null, dir2);
+                        System.exit(0);
+                        // runProcess("java -cp introMenu " + chosenPlayers);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        System.out.println("crash");
+                    }
                 }
                 break;
         }

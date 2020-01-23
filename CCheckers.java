@@ -125,17 +125,22 @@ public class CCheckers {
             disp6.setLayout(new GridLayout(0, 10));
             frame.setContentPane(disp6);
         } else if (numberOfPlayers == 6) {
-            if (gameType.equals("6maxN")) {
-                disp6 = new GUI6players(6, "6maxN");
-
-            } else if (gameType.equals("6human")) {
-                disp6 = new GUI6players(6, "6human");
-            } else if (gameType.equals("5greedy1human")) {
-                disp6 = new GUI6players(6, "5greedy1human");
-            } else if (gameType.equals("5random1human")) {
-                disp6 = new GUI6players(6, "5random1human");
-            } else if (gameType.equals("5maxN1human")) {
-                disp6 = new GUI6players(6, "5greedy1human");
+            switch (gameType) {
+                case "6maxN":
+                    disp6 = new GUI6players(6, "6maxN");
+                    break;
+                case "6human":
+                    disp6 = new GUI6players(6, "6human");
+                    break;
+                case "5greedy1human":
+                    disp6 = new GUI6players(6, "5greedy1human");
+                    break;
+                case "5random1human":
+                    disp6 = new GUI6players(6, "5random1human");
+                    break;
+                case "5maxN1human":
+                    disp6 = new GUI6players(6, "5greedy1human");
+                    break;
             }
             disp6.setLayout(new GridLayout(0, 10));
             frame.setContentPane(disp6);
