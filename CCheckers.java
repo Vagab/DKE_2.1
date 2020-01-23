@@ -126,14 +126,19 @@ public class CCheckers {
             frame.setContentPane(disp6);
         } else if (numberOfPlayers == 6) {
             if (gameType.equals("6maxN")) {
-                GUI6players disp6 = new GUI6players(6, "6maxN");
-                disp6.setLayout(new GridLayout(0, 10));
-                frame.setContentPane(disp6);
-            } else if (gameType.equals("4maxN2MCMC")) {
-                GUI6players disp6 = new GUI6players(6, "4maxN2MCMC");
-                disp6.setLayout(new GridLayout(0, 10));
-                frame.setContentPane(disp6);
+                disp6 = new GUI6players(6, "6maxN");
+
+            } else if (gameType.equals("6human")) {
+                disp6 = new GUI6players(6, "6human");
+            } else if (gameType.equals("5greedy1human")) {
+                disp6 = new GUI6players(6, "5greedy1human");
+            } else if (gameType.equals("5random1human")) {
+                disp6 = new GUI6players(6, "5random1human");
+            } else if (gameType.equals("5maxN1human")) {
+                disp6 = new GUI6players(6, "5greedy1human");
             }
+            disp6.setLayout(new GridLayout(0, 10));
+            frame.setContentPane(disp6);
         }
         JButton exitButton = new JButton("Exit To Menu");
         exitButton.addActionListener(e -> {

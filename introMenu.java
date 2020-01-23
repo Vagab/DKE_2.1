@@ -451,7 +451,7 @@ public class introMenu {
                     new CCheckers(3, "2random1human");
                     break;
                 } else if (!MCMCClick && !maxNClick && !greedyClick && !randomClick && humanClick ){
-                    new CCheckers(4,"3human");
+                    new CCheckers(3,"3human");
                     break;
                 }
 
@@ -510,11 +510,17 @@ public class introMenu {
                     introMenu introMenu = new introMenu();
                     introMenu.getFrame().setVisible(true);
                     break;
-                } else if (!MCMCClick && !maxNClick && humanClick) {
+                } else if (!MCMCClick && !maxNClick && !greedyClick && !randomClick && humanClick) {
                     new CCheckers(6, "6Human");
                     break;
-                } else if (!abClick && MCMCClick && maxNClick && !humanClick) {
-                    new CCheckers(6, "4maxN2MCMC");
+                } else if (!MCMCClick && !maxNClick && greedyClick && !randomClick && humanClick) {
+                    new CCheckers(6,"5greedy1human");
+                    break;
+                } else if (!MCMCClick && !maxNClick && !greedyClick && randomClick && humanClick) {
+                    new CCheckers(6,"5random1human");
+                    break;
+                } else if (!MCMCClick && maxNClick && !greedyClick && !randomClick && humanClick) {
+                    new CCheckers(6,"5maxN1human");
                     break;
                 }
                 break;

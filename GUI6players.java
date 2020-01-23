@@ -627,6 +627,35 @@ public class GUI6players extends JComponent {
                     setAIMove(aiMaxNPlayer4.performMove(board));
                     setAIMove(aiMaxNPlayer5.performMove(board));
                     setAIMove(aiMaxNPlayer6.performMove(board));
+                } else if (gameType.equals("5maxN1human")) {
+                    if (currentPlayer != 1){
+                        setAIMove(aiMaxNPlayer2.performMove(board));
+                        setAIMove(aiMaxNPlayer3.performMove(board));
+                        setAIMove(aiMaxNPlayer4.performMove(board));
+                        setAIMove(aiMaxNPlayer5.performMove(board));
+                        setAIMove(aiMaxNPlayer6.performMove(board));
+                        currentPlayer =1;
+                    }
+                } else if (gameType.equals("5greedy1human")){
+                    if (currentPlayer != 1){
+                        setAIMove(aiGreedyPlayer2.performMove(board));
+                        setAIMove(aiGreedyPlayer3.performMove(board));
+                        setAIMove(aiGreedyPlayer4.performMove(board));
+                        setAIMove(aiGreedyPlayer5.performMove(board));
+                        setAIMove(aiGreedyPlayer6.performMove(board));
+                        currentPlayer =1;
+                    }
+                } else if (gameType.equals("5random1human")){
+                    if (currentPlayer != 1){
+                        setAIMove(aiRandomPlayer2.performMove(board));
+                        setAIMove(aiRandomPlayer3.performMove(board));
+                        setAIMove(aiRandomPlayer4.performMove(board));
+                        setAIMove(aiRandomPlayer5.performMove(board));
+                        setAIMove(aiRandomPlayer6.performMove(board));
+                        currentPlayer =1;
+                    }
+                } else if (gameType.equals("6human")){
+
                 }
             }
         }
